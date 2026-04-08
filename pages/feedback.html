@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback — Språkmönsterlabbet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #ffffff;
+    color: #1a1a1a;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 64px 32px 96px;
+  }
+  .step { display: none; }
+  .step.active { display: block; }
+
+  /* INTRO */
+  .intro-img {
+    display: block;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 24px;
+  }
+  .intro-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .intro-text {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    display: block;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    background: #534AB7;
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: #4339a0; }
+  .btn-primary:disabled { background: #ccc; cursor: default; }
+
+  /* QUESTIONS */
+  .question-group {
+    margin-bottom: 36px;
+  }
+  .question-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+  .question-textarea {
+    width: 100%;
+    min-height: 80px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 12px 14px;
+    resize: vertical;
+    transition: border-color 0.15s;
+  }
+  .question-textarea:focus {
+    outline: none;
+    border-color: #534AB7;
+  }
+
+  /* STARS */
+  .stars {
+    display: flex;
+    gap: 8px;
+  }
+  .star {
+    font-size: 28px;
+    cursor: pointer;
+    color: #e0e0e0;
+    transition: color 0.1s;
+    user-select: none;
+    line-height: 1;
+  }
+  .star.active { color: #534AB7; }
+  .star:hover { color: #534AB7; }
+
+  /* OPTION BUTTONS */
+  .option-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .option-btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .option-btn.selected {
+    background: #534AB7;
+    color: #ffffff;
+    border-color: #534AB7;
+  }
+
+  /* SPINNER */
+  .spinner-wrap {
+    text-align: center;
+    padding: 16px 0;
+    display: none;
+  }
+  .spinner-wrap.visible { display: block; }
+  .spinner-small {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #e8e8e8;
+    border-top-color: #534AB7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner-text {
+    font-size: 14px;
+    color: #666;
+    vertical-align: middle;
+  }
+
+  /* THANK YOU */
+  .tack-img {
+    display: block;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 24px;
+  }
+  .tack-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .tack-text {
+    text-align: center;
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 32px;
+  }
+  .tack-brand {
+    text-align: center;
+    font-size: 12px;
+    color: #ccc;
+  }
+
+  /* ERROR */
+  .error-msg {
+    text-align: center;
+    padding: 120px 24px;
+    font-size: 18px;
+    color: #666;
+  }
+  .submit-error {
+    text-align: center;
+    color: #d44;
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* SECTION DIVIDER */
+  .divider {
+    height: 1px;
+    background: #e8e8e8;
+    margin: 8px 0 36px;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap" id="mainWrap">
+
+  <!-- STEP 1 — Intro -->
+  <div class="step active" id="step1">
+    <img class="intro-img" src="/images/fundersam.png" alt="Sprak">
+    <div class="intro-title">Hur upplevde du din rapport?</div>
+    <div class="intro-text">Det tar under en minut. Din feedback hj&auml;lper oss g&ouml;ra Spr&aring;km&ouml;nsterlabbet b&auml;ttre.</div>
+    <button class="btn-primary" id="btnStart">Ge feedback &rarr;</button>
+  </div>
+
+  <!-- STEP 2 — Questions -->
+  <div class="step" id="step2">
+
+    <!-- Q1 Stars -->
+    <div class="question-group">
+      <div class="question-label">Upplevde du rapporten som tr&auml;ffs&auml;ker?</div>
+      <div class="stars" id="starsWrap">
+        <span class="star" data-val="1">&#9733;</span>
+        <span class="star" data-val="2">&#9733;</span>
+        <span class="star" data-val="3">&#9733;</span>
+        <span class="star" data-val="4">&#9733;</span>
+        <span class="star" data-val="5">&#9733;</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q2 -->
+    <div class="question-group">
+      <div class="question-label">Vad var mest anv&auml;ndbart i rapporten?</div>
+      <textarea class="question-textarea" id="qMest" placeholder="Beskriv fritt..."></textarea>
+    </div>
+
+    <!-- Q3 -->
+    <div class="question-group">
+      <div class="question-label">Vad saknades eller var otydligt?</div>
+      <textarea class="question-textarea" id="qSaknades" placeholder="Beskriv fritt..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q4 -->
+    <div class="question-group">
+      <div class="question-label">Skulle du anv&auml;nda insikterna fr&aring;n rapporten i ditt arbete?</div>
+      <div class="option-buttons" id="qSkulle">
+        <button class="option-btn" data-val="Ja">Ja</button>
+        <button class="option-btn" data-val="Kanske">Kanske</button>
+        <button class="option-btn" data-val="Nej">Nej</button>
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="question-group">
+      <div class="question-label">&Ouml;vriga tankar (valfri)</div>
+      <textarea class="question-textarea" id="qOvriga" placeholder="Skriv vad du vill..."></textarea>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Q6 -->
+    <div class="question-group">
+      <div class="question-label">Vad hade du betalat f&ouml;r det h&auml;r verktyget?</div>
+      <div class="option-buttons" id="qBetal">
+        <button class="option-btn" data-val="Ingenting">Ingenting</button>
+        <button class="option-btn" data-val="49 kr eng&aring;ng">49 kr eng&aring;ng</button>
+        <button class="option-btn" data-val="99&ndash;149 kr/m&aring;nad">99&ndash;149 kr/m&aring;nad</button>
+        <button class="option-btn" data-val="249 kr/m&aring;nad">249 kr/m&aring;nad</button>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="btnSubmit">Skicka feedback &rarr;</button>
+    <div class="spinner-wrap" id="spinnerWrap">
+      <span class="spinner-small"></span>
+      <span class="spinner-text">Sparar...</span>
+    </div>
+    <div class="submit-error" id="submitError"></div>
+  </div>
+
+  <!-- STEP 3 — Thank you -->
+  <div class="step" id="step3">
+    <img class="tack-img" src="/images/glad.png" alt="Sprak">
+    <div class="tack-title" id="tackTitle">Tack!</div>
+    <div class="tack-text">Din feedback &auml;r v&auml;rdefull och hj&auml;lper oss utveckla Spr&aring;km&ouml;nsterlabbet.</div>
+    <div class="tack-brand">holmberg &amp; friends</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  var API = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token');
+  var mainWrap = document.getElementById('mainWrap');
+
+  if (!token) {
+    mainWrap.innerHTML = '<div class="error-msg">Ogiltig l&auml;nk.</div>';
+    return;
+  }
+
+  var profileData = null;
+
+  // Fetch profile info
+  fetch(API + '/api/feedback-report?token=' + encodeURIComponent(token))
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.data.error || 'Rapport ej hittad');
+      profileData = r.data;
+    })
+    .catch(function(err) {
+      mainWrap.innerHTML = '<div class="error-msg">' + err.message + '</div>';
+    });
+
+  // State
+  var starRating = 0;
+  var skulleVal = '';
+  var betalVal = '';
+
+  // Step navigation
+  document.getElementById('btnStart').addEventListener('click', function() {
+    showStep(2);
+  });
+
+  // Stars
+  var stars = document.querySelectorAll('#starsWrap .star');
+  for (var i = 0; i < stars.length; i++) {
+    stars[i].addEventListener('click', function() {
+      starRating = parseInt(this.getAttribute('data-val'));
+      updateStars();
+    });
+  }
+  function updateStars() {
+    for (var i = 0; i < stars.length; i++) {
+      var val = parseInt(stars[i].getAttribute('data-val'));
+      stars[i].className = 'star' + (val <= starRating ? ' active' : '');
+    }
+  }
+
+  // Option buttons — Q4
+  var skulleBtns = document.querySelectorAll('#qSkulle .option-btn');
+  for (var j = 0; j < skulleBtns.length; j++) {
+    skulleBtns[j].addEventListener('click', function() {
+      skulleVal = this.getAttribute('data-val');
+      for (var k = 0; k < skulleBtns.length; k++) skulleBtns[k].className = 'option-btn';
+      this.className = 'option-btn selected';
+    });
+  }
+
+  // Option buttons — Q6
+  var betalBtns = document.querySelectorAll('#qBetal .option-btn');
+  for (var b = 0; b < betalBtns.length; b++) {
+    betalBtns[b].addEventListener('click', function() {
+      betalVal = this.textContent;
+      for (var k = 0; k < betalBtns.length; k++) betalBtns[k].className = 'option-btn';
+      this.className = 'option-btn selected';
+    });
+  }
+
+  // Submit
+  document.getElementById('btnSubmit').addEventListener('click', function() {
+    if (starRating === 0) {
+      showError('V\u00e4lj ett betyg (stj\u00e4rnor) f\u00f6r tr\u00e4ffs\u00e4kerhet.');
+      return;
+    }
+
+    var btn = document.getElementById('btnSubmit');
+    var spinner = document.getElementById('spinnerWrap');
+    btn.style.display = 'none';
+    spinner.className = 'spinner-wrap visible';
+    hideError();
+
+    var payload = {
+      profile_id: profileData ? profileData.profile_id : '',
+      traffsakker: starRating,
+      mest_anvandbart: document.getElementById('qMest').value,
+      saknades: document.getElementById('qSaknades').value,
+      skulle_anvanda: skulleVal,
+      ovriga_tankar: document.getElementById('qOvriga').value,
+      betalningsvilja: betalVal
+    };
+
+    fetch(API + '/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        var namn = profileData && profileData.name ? profileData.name : '';
+        if (namn) {
+          document.getElementById('tackTitle').textContent = 'Tack, ' + namn + '!';
+        }
+        showStep(3);
+      })
+      .catch(function() {
+        btn.style.display = 'block';
+        spinner.className = 'spinner-wrap';
+        showError('N\u00e5got gick fel. F\u00f6rs\u00f6k igen.');
+      });
+  });
+
+  function showStep(n) {
+    var steps = document.querySelectorAll('.step');
+    for (var i = 0; i < steps.length; i++) steps[i].className = 'step';
+    document.getElementById('step' + n).className = 'step active';
+    window.scrollTo(0, 0);
+  }
+
+  function showError(msg) {
+    var el = document.getElementById('submitError');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+  function hideError() {
+    document.getElementById('submitError').style.display = 'none';
+  }
+
+})();
+</script>
+</body>
+</html>

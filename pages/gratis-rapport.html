@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Din förståelseprofil — Språkmönsterlabbet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --color-primary: #c8b89a;
+    --color-gold: #c8b89a;
+    --color-text: #f0ede6;
+    --color-text-light: rgba(240,237,230,0.5);
+    --color-text-subtle: rgba(240,237,230,0.35);
+    --color-border: rgba(240,237,230,0.08);
+    --color-bg: #0c0c0b;
+    --color-bg-subtle: rgba(240,237,230,0.05);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* LAYOUT */
+  .gr-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .gr-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100vh;
+    background: #111110;
+    border-right: 0.5px solid rgba(240,237,230,0.08);
+    padding: 32px 24px;
+    overflow-y: auto;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+  .gr-sidebar-label {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #c8b89a;
+    margin-bottom: 20px;
+  }
+  .gr-sidebar-nav {
+    list-style: none;
+    margin-bottom: auto;
+  }
+  .gr-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(240,237,230,0.25);
+    border-left: 2px solid transparent;
+    margin-bottom: 2px;
+  }
+  .gr-nav-item.active {
+    background: rgba(200,184,154,0.1);
+    border-left: 2px solid #c8b89a;
+    color: #f0ede6;
+  }
+  .gr-nav-lock {
+    font-size: 10px;
+    opacity: 0.4;
+  }
+
+  /* SIDEBAR CTA */
+  .gr-sidebar-cta {
+    border-top: 0.5px solid rgba(240,237,230,0.08);
+    margin-top: 24px;
+    padding-top: 24px;
+  }
+  .gr-cta-text {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: #c8b89a;
+    margin-bottom: 8px;
+  }
+  .gr-cta-price {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 400;
+    color: #f0ede6;
+    margin-bottom: 4px;
+  }
+  .gr-cta-meta {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: rgba(240,237,230,0.35);
+    margin-bottom: 16px;
+  }
+  .gr-cta-btn {
+    display: block;
+    width: 100%;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #f0ede6;
+    color: #0c0c0b;
+    border: none;
+    border-radius: 0;
+    padding: 14px 0;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: center;
+  }
+  .gr-cta-btn:hover { background: #fff; }
+  .gr-cta-btn:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: not-allowed; }
+  .gr-cta-stripe {
+    font-family: var(--font-body);
+    font-size: 10px;
+    color: rgba(240,237,230,0.25);
+    margin-top: 10px;
+    text-align: center;
+  }
+
+  /* MAIN */
+  .gr-main {
+    margin-left: 220px;
+    background: #0c0c0b;
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* APP HEADER */
+  .gr-header {
+    padding: 0 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 0.5px solid rgba(240,237,230,0.08);
+  }
+  .gr-header-brand {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(240,237,230,0.4);
+  }
+  .gr-header-meta {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: rgba(240,237,230,0.5);
+  }
+
+  /* CONTENT */
+  .gr-content {
+    padding: 64px 56px 96px;
+    max-width: 720px;
+  }
+
+  /* LOADING */
+  .loading {
+    text-align: center;
+    padding: 120px 24px;
+  }
+  .loading-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-size: 14px;
+    color: var(--color-text-light);
+  }
+
+  .error-msg {
+    text-align: center;
+    padding: 120px 24px;
+    font-size: 18px;
+    color: var(--color-text-light);
+  }
+
+  /* EYEBROW */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #c8b89a;
+    margin-bottom: 16px;
+  }
+
+  /* SECTION */
+  .section {
+    padding-top: 0;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    color: #f0ede6;
+    margin-bottom: 8px;
+  }
+  .section-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--color-border);
+    margin-top: 12px;
+    margin-bottom: 32px;
+  }
+
+  /* BLOCK A — Om mönstret */
+  .block-om {
+    border-left: 1px solid var(--color-border);
+    padding-left: 24px;
+    margin-bottom: 40px;
+  }
+  .block-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(240,237,230,0.35);
+    margin-bottom: 16px;
+  }
+  .block-om p {
+    color: rgba(240,237,230,0.65);
+    font-weight: 300;
+    margin-bottom: 16px;
+    line-height: 1.75;
+  }
+  .block-om p:last-child { margin-bottom: 0; }
+
+  /* Pattern reveal */
+  .pattern-reveal {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #c8b89a;
+    margin-top: 48px;
+    margin-bottom: 16px;
+  }
+
+  /* BLOCK B — Resultat */
+  .block-resultat {
+    border-left: 1px solid #c8b89a;
+    padding-left: 24px;
+  }
+  .block-resultat p {
+    color: rgba(240,237,230,0.65);
+    font-weight: 300;
+    margin-bottom: 16px;
+    line-height: 1.75;
+  }
+  .block-resultat p:last-child { margin-bottom: 0; }
+
+  /* Scale viz card */
+  .viz-card {
+    border: 0.5px solid rgba(240,237,230,0.1);
+    border-radius: 0;
+    padding: 32px 40px;
+    margin: 40px 0;
+    background: rgba(240,237,230,0.05);
+  }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(240,237,230,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .scale-track {
+    position: relative;
+    height: 2px;
+    background: rgba(240,237,230,0.15);
+    border-radius: 1px;
+    margin: 20px 0 8px;
+  }
+  .scale-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: #c8b89a;
+    border-radius: 1px;
+  }
+  .scale-thumb {
+    position: absolute;
+    top: 50%;
+    width: 14px;
+    height: 14px;
+    background: #0c0c0b;
+    border: 1.5px solid #c8b89a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .scale-value {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: #c8b89a;
+  }
+  .strength-tydlig { color: #c8b89a; }
+  .strength-trolig { color: #c8b89a; }
+  .strength-mojlig { color: rgba(240,237,230,0.35); }
+
+  /* SELL SECTION (inline in main) */
+  .sell-separator {
+    height: 0.5px;
+    background: var(--color-border);
+    margin: 64px 0;
+  }
+  .sell-title {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+    color: #f0ede6;
+    margin-bottom: 24px;
+  }
+  .sell-text {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(240,237,230,0.65);
+    line-height: 1.8;
+    margin-bottom: 40px;
+  }
+  .sell-price {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 400;
+    color: #f0ede6;
+    margin-bottom: 8px;
+  }
+  .sell-price-meta {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: rgba(240,237,230,0.35);
+    margin-bottom: 32px;
+  }
+  .sell-btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: #f0ede6;
+    color: #0c0c0b;
+    border: none;
+    border-radius: 0;
+    padding: 16px 40px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .sell-btn:hover { background: #fff; }
+  .sell-btn:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: default; }
+  .sell-stripe-note {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: rgba(240,237,230,0.25);
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 32px 0;
+    margin-top: 56px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: rgba(240,237,230,0.25);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .gr-sidebar { display: none; }
+    .gr-main { margin-left: 0; }
+    .gr-header { padding: 0 20px; }
+    .gr-content { padding: 48px 20px 72px; }
+    .section-title { font-size: 28px; }
+    .block-om, .block-resultat { padding-left: 16px; }
+    .viz-card { padding: 24px 20px; }
+    .sell-title { font-size: 24px; }
+    .sell-price { font-size: 28px; }
+    .sell-btn { padding: 14px 32px; width: 100%; text-align: center; }
+  }
+
+  /* PRINT */
+  @media print {
+    .gr-sidebar { display: none !important; }
+    .gr-main { margin-left: 0 !important; }
+    .sell-separator, .sell-section, .footer { display: none !important; }
+    body { background: white; color: #1a1a1a; }
+  }
+</style>
+</head>
+<body>
+
+<div class="gr-layout">
+  <!-- SIDEBAR -->
+  <aside class="gr-sidebar" id="grSidebar">
+    <div class="gr-sidebar-label">DITT RESULTAT</div>
+    <ul class="gr-sidebar-nav">
+      <li class="gr-nav-item active">Förståelse</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Motivationsriktning</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Beslutsram</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Sinneskanal</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Förändringsrelation</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Handlingsstil</li>
+      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Detaljnivå</li>
+    </ul>
+    <div class="gr-sidebar-cta" id="sidebarCta" style="display:none;">
+      <div class="gr-cta-text">Lås upp hela rapporten</div>
+      <div class="gr-cta-price">499 kr</div>
+      <div class="gr-cta-meta">Engångsbetalning</div>
+      <button class="gr-cta-btn" id="sidebarBuyBtn">KÖP HELA RAPPORTEN</button>
+      <div class="gr-cta-stripe">Säker betalning via Stripe</div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="gr-main">
+    <div class="gr-header" id="grHeader" style="display:none;">
+      <span class="gr-header-brand">SPRÅKMÖNSTERLABBET</span>
+      <span class="gr-header-meta" id="grHeaderMeta"></span>
+    </div>
+    <div class="gr-content" id="mainWrap">
+      <div class="loading" id="loadingState">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">H&auml;mtar din rapport...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var API = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
+  var RAPPORT_PRICE_ID = 'price_1TE6FFHrTws6MQZqOiYLRzGE';
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token');
+  var wrap = document.getElementById('mainWrap');
+
+  // ── Payment success screen ──────────────────────────────────
+  if (params.get('payment') === 'success') {
+    var savedProfileId = sessionStorage.getItem('checkout_profile_id');
+
+    if (savedProfileId) {
+      // Till mig-köp — polla efter rapport-token
+      wrap.innerHTML = '<div class="loading"><div class="loading-spinner"></div><div class="loading-text">Din rapport genereras... detta kan ta upp till 30 sekunder.</div></div>';
+      sessionStorage.removeItem('checkout_profile_id');
+      var attempts = 0;
+      var maxAttempts = 10;
+      function pollReport() {
+        attempts++;
+        fetch(API + '/api/report-by-profile?profile_id=' + encodeURIComponent(savedProfileId))
+          .then(function(res) { return res.json(); })
+          .then(function(data) {
+            if (data.ready && data.token) {
+              window.location.href = 'https://sprakmonsterlabbet.holmbergfriends.com/rapport.html?token=' + encodeURIComponent(data.token);
+            } else if (attempts < maxAttempts) {
+              setTimeout(pollReport, 3000);
+            } else {
+              wrap.innerHTML = '<div style="text-align:center;padding:80px 24px;">'
+                + '<div class="eyebrow">SPR\u00c5KM\u00d6NSTERLABBET</div>'
+                + '<div class="section-title">Tack f\u00f6r ditt k\u00f6p!</div>'
+                + '<p style="font-size:14px;color:rgba(240,237,230,0.65);line-height:1.8;margin-top:24px;">Din rapport genereras och skickas till din e-post inom n\u00e5gra minuter.</p>'
+                + '<div class="footer">holmberg &amp; friends</div>';
+            }
+          })
+          .catch(function() {
+            if (attempts < maxAttempts) {
+              setTimeout(pollReport, 3000);
+            }
+          });
+      }
+      setTimeout(pollReport, 3000);
+    } else {
+      // Fallback
+      wrap.innerHTML = '<div style="text-align:center;padding:80px 24px;">'
+        + '<div class="eyebrow">SPR\u00c5KM\u00d6NSTERLABBET</div>'
+        + '<div class="section-title">Tack f\u00f6r ditt k\u00f6p!</div>'
+        + '<p style="font-size:14px;color:rgba(240,237,230,0.65);line-height:1.8;margin-top:24px;">Din fullst\u00e4ndiga rapport genereras nu och skickas till din e-post inom n\u00e5gra minuter.</p>'
+        + '<div class="footer">holmberg &amp; friends</div>';
+    }
+    return;
+  }
+
+  if (!token) {
+    wrap.innerHTML = '<div class="error-msg">Ogiltig l\u00e4nk.</div>';
+    return;
+  }
+
+  fetch(API + '/api/gratis-rapport?token=' + encodeURIComponent(token))
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.data.error || 'Rapport ej hittad');
+      renderPage(r.data);
+    })
+    .catch(function(err) {
+      wrap.innerHTML = '<div class="error-msg">' + esc(err.message) + '</div>';
+    });
+
+  function renderPage(data) {
+    var name = data.name || 'Respondent';
+    var situation = data.situation || 'Arbete';
+    var profileId = data.profile_id || '';
+    var f = data.f\u00f6rst\u00e5else || {};
+    var pedText = data.pedagogik_text || '';
+    var signal = f.signal || '';
+    var styrka = f.styrka || '';
+    var skala = f.skala || 5;
+    var analys = f.analys || '';
+    var date = new Date().toLocaleDateString('sv-SE');
+
+    // Show header
+    document.getElementById('grHeader').style.display = 'flex';
+    document.getElementById('grHeaderMeta').textContent = name + ' \u00b7 ' + date;
+
+    // Show sidebar CTA
+    document.getElementById('sidebarCta').style.display = 'block';
+
+    var html = '';
+
+    // EYEBROW + SECTION
+    html += '<div class="eyebrow">F\u00d6RST\u00c5ELSE \u00b7 DITT GRATISM\u00d6NSTER</div>';
+    html += '<div class="section">';
+    html += '<div class="section-title">Hur du f\u00f6rst\u00e5r</div>';
+    html += '<div class="section-divider"></div>';
+
+    // Block A — Om mönstret
+    html += '<div class="block-om">';
+    html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+    html += textToHtml(pedText);
+    html += '</div>';
+
+    // Pattern reveal
+    if (signal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(signal) + '</div>';
+    }
+
+    // Block B — Personlig analys
+    html += '<div class="block-resultat">';
+    html += textToHtml(analys);
+
+    // Scale visualization
+    var pct = ((skala - 1) / 9 * 100).toFixed(1);
+    var badge = '';
+    if (styrka === 'Tydlig') badge = '<span class="strength-tydlig">Tydlig</span>';
+    else if (styrka === 'Trolig') badge = '<span class="strength-trolig">Trolig</span>';
+    else if (styrka === 'M\u00f6jlig') badge = '<span class="strength-mojlig">M\u00f6jlig</span>';
+
+    html += '<div class="viz-card">';
+    html += '<div class="scale-labels"><span>PROCEDUR</span><span>ALTERNATIV</span></div>';
+    html += '<div class="scale-track">';
+    html += '<div class="scale-fill" style="width:' + pct + '%"></div>';
+    html += '<div class="scale-thumb" style="left:' + pct + '%"></div>';
+    html += '</div>';
+    html += '<div class="scale-value">' + skala + ' / 10 \u00b7 ' + badge + '</div>';
+    html += '</div>';
+
+    html += '</div>'; // block-resultat
+    html += '</div>'; // section
+
+    // SELL SECTION (inline)
+    html += '<div class="sell-separator"></div>';
+    html += '<div class="sell-section">';
+    html += '<div class="sell-title">Din fullst\u00e4ndiga kommunikationsprofil</div>';
+    html += '<div class="sell-text">';
+    html += 'Det h\u00e4r \u00e4r bara ett av sju kommunikationsm\u00f6nster i din profil. Den fullst\u00e4ndiga rapporten inneh\u00e5ller:<br><br>';
+    html += '\u00b7 Motivationsriktning \u2014 vad som driver din kommunikation<br>';
+    html += '\u00b7 Beslutsram \u2014 var du h\u00e4mtar din tyngd<br>';
+    html += '\u00b7 Sinneskanal \u2014 vilket sinne som dominerar ditt spr\u00e5k<br>';
+    html += '\u00b7 Din relation till f\u00f6r\u00e4ndring<br>';
+    html += '\u00b7 Handlingsstil och detaljniv\u00e5<br>';
+    html += '\u00b7 En helhetsbild av hur dina m\u00f6nster samspelar';
+    html += '</div>';
+
+    html += '<div class="sell-price">499 kr</div>';
+    html += '<div class="sell-price-meta">Eng\u00e5ngsbetalning. Rapporten levereras direkt till din e-post.</div>';
+    html += '<button class="sell-btn" id="buyBtn">K\u00d6P HELA RAPPORTEN</button>';
+    html += '<div class="sell-stripe-note">S\u00e4ker betalning via Stripe</div>';
+    html += '</div>';
+
+    html += '<div class="footer">holmberg &amp; friends</div>';
+
+    wrap.innerHTML = html;
+
+    // Buy button handler
+    function handleBuy(btn) {
+      btn.disabled = true;
+      btn.textContent = 'Laddar...';
+
+      fetch(API + '/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          priceId: RAPPORT_PRICE_ID,
+          price_type: 'rapport_full',
+          profile_id: profileId,
+        }),
+      })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.ok && data.url) {
+            sessionStorage.setItem('checkout_profile_id', profileId);
+            sessionStorage.removeItem('gift_to_name');
+            sessionStorage.removeItem('gift_to_email');
+            window.location.href = data.url;
+          } else {
+            btn.disabled = false;
+            btn.textContent = 'K\u00d6P HELA RAPPORTEN';
+            alert('N\u00e5got gick fel. F\u00f6rs\u00f6k igen.');
+          }
+        })
+        .catch(function() {
+          btn.disabled = false;
+          btn.textContent = 'K\u00d6P HELA RAPPORTEN';
+          alert('N\u00e5got gick fel. F\u00f6rs\u00f6k igen.');
+        });
+    }
+
+    // Main buy button
+    document.getElementById('buyBtn').addEventListener('click', function() {
+      handleBuy(this);
+    });
+
+    // Sidebar buy button
+    document.getElementById('sidebarBuyBtn').addEventListener('click', function() {
+      handleBuy(this);
+    });
+  }
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function formatMarkdown(s) {
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return s;
+  }
+
+  function textToHtml(text) {
+    if (!text) return '';
+    var parts = text.split(/\n\n+/);
+    var html = '';
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i].trim();
+      if (!p) continue;
+      html += '<p>' + formatMarkdown(esc(p.replace(/\n/g, ' '))) + '</p>';
+    }
+    return html;
+  }
+
+})();
+</script>
+</body>
+</html>

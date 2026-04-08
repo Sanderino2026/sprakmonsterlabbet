@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Språkmönsterlabbet</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #f5f3f0;
+    --surface:  #ffffff;
+    --border:   #e2ddd8;
+    --text:     #1a1a1a;
+    --muted:    #888580;
+    --accent:   #2c4a3e;
+    --accent-l: #3d6b5a;
+    --danger:   #c0392b;
+    --correct:  #2e7d52;
+    --wrong:    #c0392b;
+    --radius:   10px;
+    --shadow:   0 2px 12px rgba(0,0,0,.07);
+    --serif:    'Georgia', serif;
+    --sans:     system-ui, -apple-system, sans-serif;
+  }
+
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); line-height: 1.6; }
+
+  #sml-root { max-width: 720px; margin: 0 auto; padding: 2rem 1rem; }
+
+  /* Kort */
+  .sml-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 2rem; margin-bottom: 1.25rem;
+  }
+
+  /* Typografi */
+  .sml-logo  { font-family: var(--serif); font-size: 1.6rem; font-weight: normal; color: var(--accent); margin-bottom: .3rem; }
+  .sml-sub   { color: var(--muted); font-size: .875rem; margin-bottom: 1.75rem; }
+  .sml-label { font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; display: block; }
+  .sml-section-title { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 1rem; }
+
+  /* Formulär */
+  .sml-input {
+    width: 100%; padding: .75rem 1rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    font-size: .95rem; font-family: inherit; background: #faf9f8;
+    transition: border-color .15s; outline: none;
+  }
+  .sml-input:focus { border-color: var(--accent); }
+  textarea.sml-input { resize: vertical; min-height: 120px; }
+
+  /* Knappar */
+  .sml-btn {
+    display: inline-block; padding: .7rem 1.5rem;
+    border: none; border-radius: 6px; cursor: pointer;
+    font-size: .9rem; font-family: inherit; font-weight: 500;
+    transition: opacity .15s, background .15s;
+  }
+  .sml-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .sml-btn-primary { background: var(--accent); color: #fff; }
+  .sml-btn-primary:hover:not(:disabled) { background: var(--accent-l); }
+  .sml-btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .sml-btn-ghost:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .sml-btn-sm { padding: .5rem 1rem; font-size: .85rem; }
+
+  /* Status */
+  .sml-status { font-size: .875rem; margin-top: .75rem; min-height: 1.25rem; }
+  .sml-status.ok  { color: var(--correct); }
+  .sml-status.err { color: var(--danger); }
+
+  /* Laddning */
+  .sml-loading { display: none; color: var(--muted); font-size: .875rem; padding: .5rem 0; }
+
+  /* Flikar */
+  .sml-tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.75rem; }
+  .sml-tab {
+    padding: .6rem 1.1rem; border: none; background: none; cursor: pointer;
+    font-size: .9rem; font-family: inherit; color: var(--muted);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    transition: color .15s, border-color .15s;
+  }
+  .sml-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .sml-tab:hover:not(.active) { color: var(--text); }
+  .sml-panel { display: none; }
+  .sml-panel.active { display: block; }
+
+  /* Analysresultat */
+  .sml-pattern-item {
+    display: grid; grid-template-columns: 160px 1fr;
+    gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border);
+  }
+  .sml-pattern-item:last-of-type { border-bottom: none; }
+  .sml-pattern-cat { font-weight: 600; font-size: .85rem; margin-bottom: .25rem; }
+  .sml-pattern-signal {
+    display: inline-block; padding: .2rem .6rem;
+    background: #eef3f1; color: var(--accent);
+    border-radius: 4px; font-size: .78rem; font-weight: 500; margin-bottom: .3rem;
+  }
+  .sml-pattern-strength { font-size: .78rem; color: var(--muted); }
+  .sml-pattern-evidence { font-style: italic; font-size: .85rem; color: var(--muted); margin-bottom: .4rem; }
+  .sml-pattern-expl { font-size: .875rem; line-height: 1.55; }
+  .sml-summary { margin-top: 1.25rem; padding: 1rem 1.25rem; background: #f0f4f2; border-radius: 6px; font-size: .9rem; line-height: 1.6; }
+  .sml-note { font-size: .78rem; color: var(--muted); margin-top: .75rem; }
+
+  /* Profilfrågor */
+  .sml-question-card { margin-bottom: 1.25rem; }
+  .sml-question-meta { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .3rem; }
+  .sml-question-text { font-size: .95rem; margin-bottom: .5rem; }
+  .sml-profile-strip {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+    margin-top: 1.25rem; padding: 1.25rem; background: #f0f4f2; border-radius: 6px;
+  }
+  .sml-profile-strip-label { font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: .3rem; }
+  .sml-profile-strip-val { font-size: .9rem; line-height: 1.55; }
+
+  /* Träning */
+  .sml-score { font-size: .85rem; color: var(--muted); text-align: right; margin-bottom: 1rem; }
+  .sml-exercise-ctx { font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .75rem; }
+  .sml-exercise-quote {
+    font-family: var(--serif); font-size: 1rem; line-height: 1.65;
+    border-left: 3px solid var(--accent); padding-left: 1rem;
+    margin-bottom: 1.25rem; color: #333;
+  }
+  .sml-exercise-q { font-weight: 600; font-size: .9rem; margin-bottom: .85rem; }
+  .sml-choices { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; margin-bottom: 1rem; }
+  .sml-choice {
+    padding: .65rem .9rem; border: 1px solid var(--border);
+    border-radius: 6px; background: var(--surface);
+    font-size: .875rem; font-family: inherit; cursor: pointer;
+    transition: border-color .15s; text-align: left;
+  }
+  .sml-choice:hover:not(:disabled) { border-color: var(--accent); }
+  .sml-choice.correct { background: #edf7f1; border-color: var(--correct); color: var(--correct); font-weight: 500; }
+  .sml-choice.wrong   { background: #fdf0ef; border-color: var(--wrong);   color: var(--wrong); }
+  .sml-choice:disabled { cursor: default; }
+  .sml-feedback { display: none; padding: .9rem 1rem; background: #f5f3f0; border-radius: 6px; font-size: .875rem; line-height: 1.55; margin-bottom: 1rem; }
+  .sml-feedback.show { display: block; }
+  .sml-next-btn { display: none; }
+  .sml-next-btn.show { display: inline-block; }
+
+  /* Paywall */
+  .sml-paywall-box { text-align: center; padding: 2rem 1rem; }
+  .sml-paywall-box h3 { font-family: var(--serif); font-size: 1.3rem; margin-bottom: .75rem; }
+  .sml-paywall-box p  { color: var(--muted); font-size: .9rem; line-height: 1.65; margin-bottom: 1.5rem; max-width: 420px; margin-left: auto; margin-right: auto; }
+
+  /* Sprak laddningspill */
+  #sml-sprak-loading {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 999; pointer-events: none;
+    display: flex; align-items: center; gap: .5rem;
+    padding: .4rem .85rem .4rem .5rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 999px; box-shadow: 0 2px 10px rgba(0,0,0,.10);
+    opacity: 0; transition: opacity .35s ease;
+    white-space: nowrap;
+  }
+  #sml-sprak-loading.active { opacity: 1; }
+  #sml-sprak-loading-img { height: 28px; width: auto; }
+  #sml-sprak-loading-msg {
+    font-size: .78rem; color: var(--muted);
+    transition: opacity .25s;
+  }
+
+  /* Sprock */
+  #sml-sprock-wrap {
+    text-align: center; margin-bottom: .75rem;
+    height: 120px; display: flex; align-items: center; justify-content: center;
+  }
+  #sml-sprock {
+    height: 110px; width: auto;
+    transition: opacity .15s;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,.10));
+  }
+  @keyframes sprock-bounce {
+    0%,100% { transform: translateY(0) scale(1); }
+    30%     { transform: translateY(-20px) scale(1.12); }
+    60%     { transform: translateY(-8px) scale(1.05); }
+  }
+  @keyframes sprock-shake {
+    0%,100% { transform: translateX(0) rotate(0); }
+    20%     { transform: translateX(-9px) rotate(-4deg); }
+    40%     { transform: translateX(9px) rotate(4deg); }
+    60%     { transform: translateX(-5px) rotate(-2deg); }
+    80%     { transform: translateX(5px) rotate(2deg); }
+  }
+  .sprock-bounce { animation: sprock-bounce .55s ease; }
+  .sprock-shake  { animation: sprock-shake .5s ease; }
+
+  /* Dold som standard */
+  #sml-app     { display: none; }
+  #sml-paywall { display: none; }
+
+  /* Responsiv */
+  @media (max-width: 520px) {
+    .sml-card { padding: 1.25rem; }
+    .sml-pattern-item { grid-template-columns: 1fr; }
+    .sml-choices { grid-template-columns: 1fr; }
+    .sml-profile-strip { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="sml-root">
+
+  <!-- ── LOGIN ─────────────────────────────────────────── -->
+  <div id="sml-login">
+    <div class="sml-card">
+      <div class="sml-logo">Språkmönsterlabbet</div>
+      <div class="sml-sub">Holmberg &amp; Friends</div>
+      <label class="sml-label" for="sml-email">E-postadress</label>
+      <input class="sml-input" type="email" id="sml-email" placeholder="din@epost.se" autocomplete="email">
+      <div style="margin-top:1rem">
+        <button class="sml-btn sml-btn-primary" id="sml-login-btn">Skicka inloggningslänk</button>
+      </div>
+      <div class="sml-status" id="sml-status"></div>
+    </div>
+  </div>
+
+  <!-- ── APP ───────────────────────────────────────────── -->
+  <div id="sml-app">
+    <nav class="sml-tabs">
+      <button class="sml-tab active" data-tab="analyse">Analysera</button>
+      <button class="sml-tab" data-tab="profile">Profil</button>
+      <button class="sml-tab" data-tab="train">Träna</button>
+    </nav>
+
+    <!-- Analysera -->
+    <div class="sml-panel active" id="sml-panel-analyse">
+      <div class="sml-card">
+        <label class="sml-label" for="sml-analyse-input">Text att analysera</label>
+        <textarea class="sml-input" id="sml-analyse-input" placeholder="Klistra in ett citat, ett mejl eller ett talat svar – vad som helst på minst en mening."></textarea>
+        <div style="margin-top:1rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap">
+          <button class="sml-btn sml-btn-primary" id="sml-analyse-btn">Analysera</button>
+          <button class="sml-btn sml-btn-ghost sml-btn-sm" id="sml-analyse-clear">Rensa</button>
+        </div>
+      </div>
+      <div id="sml-analyse-result" style="display:none">
+        <div class="sml-card" id="sml-analyse-output"></div>
+      </div>
+    </div>
+
+    <!-- Profil -->
+    <div class="sml-panel" id="sml-panel-profile">
+      <div class="sml-card">
+        <div class="sml-section-title">Ditt kommunikationsmönster</div>
+        <p style="font-size:.875rem;color:var(--muted);margin-bottom:1.5rem">Svara med egna ord. Det finns inga rätta svar — det är strukturen i svaret som analyseras, inte innehållet.</p>
+        <div id="sml-profile-questions"></div>
+        <div style="margin-top:1.25rem">
+          <button class="sml-btn sml-btn-primary" id="sml-profile-btn">Se mitt mönster</button>
+        </div>
+      </div>
+      <div id="sml-profile-result" style="display:none">
+        <div class="sml-card" id="sml-profile-output"></div>
+      </div>
+    </div>
+
+    <!-- Träna -->
+    <div class="sml-panel" id="sml-panel-train">
+      <div class="sml-card">
+        <div class="sml-score" id="sml-score">0 / 0</div>
+        <div id="sml-sprock-wrap">
+          <img id="sml-sprock" src="../icons/sprites/fundersam.png" alt="Sprock">
+        </div>
+        <div id="sml-exercise-container">
+          <div style="text-align:center;padding:2rem 0">
+            <button class="sml-btn sml-btn-primary" id="sml-start-train">Starta träning</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PAYWALL ────────────────────────────────────────── -->
+  <div id="sml-paywall">
+    <div class="sml-card">
+      <div class="sml-paywall-box">
+        <h3>Du har använt dina 10 gratis sessioner</h3>
+        <p>För att fortsätta analysera, utforska din profil och träna vidare behöver du uppgradera din tillgång.</p>
+        <a href="#" class="sml-btn sml-btn-primary">Uppgradera</a>
+        <div style="margin-top:1rem">
+          <button class="sml-btn sml-btn-ghost sml-btn-sm" id="sml-logout-paywall">Logga ut</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sprak laddning -->
+  <div id="sml-sprak-loading">
+    <img id="sml-sprak-loading-img" src="../icons/sprites/fundersam.png" alt="">
+    <span id="sml-sprak-loading-msg"></span>
+  </div>
+
+</div><!-- /#sml-root -->
+
+<script>
+  // ── Konfiguration ─────────────────────────────────────
+  const BASE_URL = "https://sprakmonsterlabbet.alexander-894.workers.dev";
+  const CONTEXT  = "work"; // V2: ersätt med värde från UI
+
+  const PROFILE_QUESTIONS = [
+    { question_id: "q1", metaprogram: "Motivationsriktning",       question: "Vad vill du uppnå med din roll som ledare?" },
+    { question_id: "q2", metaprogram: "Beslutsram",                 question: "Hur vet du att du har gjort ett bra arbete?" },
+    { question_id: "q3", metaprogram: "Förståelse",                 question: "Varför valde du ditt nuvarande arbete?" },
+    { question_id: "q4", metaprogram: "Förändringsrelation",        question: "Vad är relationen mellan ditt arbete nu och för ett år sedan?" },
+    { question_id: "q5", metaprogram: "Detaljnivå",                 question: "Berätta om ett projekt du nyligen arbetat med." },
+    { question_id: "q6", metaprogram: "Handlingsstil",              question: "När du får en ny uppgift – vad händer då?" },
+    { question_id: "q7", metaprogram: "Sinneskommunikationskanal",  question: "Hur vet du att någon annan har gjort ett bra arbete?" },
+  ];
+
+  // ── Sprak laddningsmeddelanden ────────────────────────
+  const SPRAK_MSGS = [
+    "Sprak tänker... eller sover. Svårt att säga.",
+    "Sprak letar efter mönster i dina ord...",
+    "Sprak knåpar ihop något smart åt dig...",
+    "Sprak kollar sina anteckningar...",
+    "Sprak pratar med AI:n. De är gamla vänner.",
+    "Sprak sorterar dina ord efter storlek...",
+    "Sprak är nästan klar. Nästan.",
+    "Sprak funderar djupt. Väldigt djupt.",
+    "Sprak hade en idé. Den var bra.",
+    "Sprak varnar: bra saker tar tid.",
+    "Sprak räknar... oklart vad.",
+    "Sprak nickar. Det betyder ingenting ännu.",
+    "Sprak blundar och koncentrerar sig.",
+    "Sprak googlade inte. Sprak vet.",
+    "Sprak tar saken på största allvar.",
+    "Sprak har sett värre texter. Ungefär.",
+    "Sprak gnuggar händerna. Snart klart.",
+  ];
+  let _sprakTimer = null;
+
+  function showSprakLoading() {
+    const overlay = document.getElementById("sml-sprak-loading");
+    const msg     = document.getElementById("sml-sprak-loading-msg");
+    if (!overlay) return;
+    msg.style.opacity = "1";
+    msg.textContent = SPRAK_MSGS[Math.floor(Math.random() * SPRAK_MSGS.length)];
+    overlay.classList.add("active");
+    _sprakTimer = setInterval(() => {
+      msg.style.opacity = "0";
+      setTimeout(() => {
+        msg.textContent = SPRAK_MSGS[Math.floor(Math.random() * SPRAK_MSGS.length)];
+        msg.style.opacity = "1";
+      }, 250);
+    }, 3000);
+  }
+
+  function hideSprakLoading() {
+    const overlay = document.getElementById("sml-sprak-loading");
+    if (!overlay) return;
+    overlay.classList.remove("active");
+    clearInterval(_sprakTimer);
+    _sprakTimer = null;
+  }
+
+  // ── Träningsstate ──────────────────────────────────────
+  let currentExercise = null;
+  let trainScore = 0;
+  let trainTotal = 0;
+  let answered   = false;
+  const recentAnswers = []; // Glidande fönster, max 5
+
+  const SPRITES_BASE = "../icons/sprites/";
+  function setSprock(name, anim) {
+    const el = document.getElementById("sml-sprock");
+    if (!el) return;
+    el.src = SPRITES_BASE + name + ".png";
+    el.className = "";
+    if (anim) {
+      void el.offsetWidth; // force reflow
+      el.classList.add(anim);
+      el.addEventListener("animationend", () => el.classList.remove(anim), { once: true });
+    }
+  }
+
+  // ── Hjälpfunktioner ───────────────────────────────────
+  function show(id) { const el = document.getElementById(id); if (el) el.style.display = "block"; }
+  function hide(id) { const el = document.getElementById(id); if (el) el.style.display = "none"; }
+
+  function setStatus(msg, type = "") {
+    const el = document.getElementById("sml-status");
+    if (!el) return;
+    el.textContent = msg;
+    el.className = "sml-status " + type;
+  }
+
+  function showLogin() { show("sml-login"); hide("sml-app"); hide("sml-paywall"); }
+  function showApp()   { hide("sml-login"); show("sml-app"); hide("sml-paywall"); }
+  function showPaywall(){ hide("sml-login"); hide("sml-app"); show("sml-paywall"); }
+
+  async function apiFetch(method, path, body = null) {
+    const opts = { method, credentials: "include", headers: { "Content-Type": "application/json" } };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(BASE_URL + path, opts);
+    if (res.status === 401) { showLogin(); return null; }
+    if (res.status === 402) { showPaywall(); return null; }
+    return res.json().catch(() => null);
+  }
+
+  // ── AUTH ──────────────────────────────────────────────
+  document.getElementById("sml-login-btn").addEventListener("click", async () => {
+    const email = document.getElementById("sml-email").value.trim();
+    if (!email) { setStatus("Ange din e-postadress.", "err"); return; }
+    const btn = document.getElementById("sml-login-btn");
+    btn.disabled = true;
+    setStatus("Skickar…");
+    const data = await apiFetch("POST", "/api/auth/login", { email });
+    btn.disabled = false;
+    if (!data) return;
+    if (data.ok) { setStatus("Kolla din e-post – vi har skickat en länk!", "ok"); return; }
+    if (data.error === "user_not_found") setStatus("Ingen användare med den e-postadressen har tillgång.", "err");
+    else if (data.error === "user_blocked") setStatus("Det här kontot är inte aktivt.", "err");
+    else setStatus("Något gick fel. Försök igen.", "err");
+  });
+
+  document.getElementById("sml-email").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("sml-login-btn").click();
+  });
+
+  async function verifyToken() {
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (!token) return;
+    window.history.replaceState({}, "", window.location.pathname);
+    setStatus("Loggar in…");
+    const data = await apiFetch("POST", "/api/auth/verify", { token });
+    if (!data) return;
+    if (data.ok) { showApp(); return; }
+    setStatus("Länken är ogiltig eller har gått ut. Begär en ny.", "err");
+  }
+
+  async function logout() {
+    await apiFetch("POST", "/api/auth/logout");
+    showLogin();
+  }
+
+  document.getElementById("sml-logout-paywall").addEventListener("click", logout);
+
+  // ── FLIKAR ────────────────────────────────────────────
+  document.querySelectorAll(".sml-tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".sml-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".sml-panel").forEach(p => p.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("sml-panel-" + tab.dataset.tab).classList.add("active");
+      if (tab.dataset.tab === "train" && !currentExercise) getExercise();
+    });
+  });
+
+  // ── ANALYSERA ─────────────────────────────────────────
+  document.getElementById("sml-analyse-btn").addEventListener("click", async () => {
+    const text = document.getElementById("sml-analyse-input").value.trim();
+    if (!text) return;
+    const btn = document.getElementById("sml-analyse-btn");
+    btn.disabled = true;
+    showSprakLoading();
+    hide("sml-analyse-result");
+    const data = await apiFetch("POST", "/api/analyse-text", { text, context: CONTEXT });
+    btn.disabled = false;
+    hideSprakLoading();
+    if (!data || !data.ok) {
+      document.getElementById("sml-analyse-output").innerHTML = `<p style="color:var(--danger);font-size:.875rem">Kunde inte analysera texten. Försök igen.</p>`;
+      show("sml-analyse-result");
+      return;
+    }
+    renderAnalysis(data.result);
+    show("sml-analyse-result");
+  });
+
+  document.getElementById("sml-analyse-clear").addEventListener("click", () => {
+    document.getElementById("sml-analyse-input").value = "";
+    hide("sml-analyse-result");
+  });
+
+  function renderAnalysis(d) {
+    document.getElementById("sml-analyse-output").innerHTML =
+      d.patterns.map(p => `
+        <div class="sml-pattern-item">
+          <div>
+            <div class="sml-pattern-cat">${p.category}</div>
+            <span class="sml-pattern-signal">${p.signal}</span>
+            <div class="sml-pattern-strength">${p.strength} signal</div>
+          </div>
+          <div>
+            <div class="sml-pattern-evidence">${(p.evidence||[]).map(e=>`"${e}"`).join(" · ")}</div>
+            <div class="sml-pattern-expl">${p.explanation}</div>
+          </div>
+        </div>`).join("") +
+      `<div class="sml-summary">${d.summary}</div>
+       <div class="sml-note">${d.note||""}</div>`;
+  }
+
+  // ── PROFIL ────────────────────────────────────────────
+  (function buildProfileQuestions() {
+    document.getElementById("sml-profile-questions").innerHTML =
+      PROFILE_QUESTIONS.map((pq, i) => `
+        <div class="sml-question-card">
+          <div class="sml-question-meta">Fråga ${i+1} / ${PROFILE_QUESTIONS.length} · ${pq.metaprogram}</div>
+          <div class="sml-question-text">${pq.question}</div>
+          <textarea class="sml-input" id="sml-pq-${pq.question_id}" placeholder="Skriv ditt svar…"></textarea>
+        </div>`).join("");
+  })();
+
+  document.getElementById("sml-profile-btn").addEventListener("click", async () => {
+    const answers = PROFILE_QUESTIONS
+      .map(pq => ({ question_id: pq.question_id, question: pq.question, answer: (document.getElementById(`sml-pq-${pq.question_id}`)?.value||"").trim() }))
+      .filter(a => a.answer.length > 5);
+    if (answers.length < 4) { alert("Svara på minst 4 frågor för att få din profil."); return; }
+    const btn = document.getElementById("sml-profile-btn");
+    btn.disabled = true;
+    showSprakLoading();
+    hide("sml-profile-result");
+    const data = await apiFetch("POST", "/api/profile", { answers, context: CONTEXT });
+    btn.disabled = false;
+    hideSprakLoading();
+    if (!data || !data.ok) {
+      document.getElementById("sml-profile-output").innerHTML = `<p style="color:var(--danger);font-size:.875rem">Kunde inte skapa profil. Försök igen.</p>`;
+      show("sml-profile-result");
+      return;
+    }
+    renderProfile(data.result);
+    show("sml-profile-result");
+    document.getElementById("sml-profile-result").scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
+  function renderProfile(d) {
+    document.getElementById("sml-profile-output").innerHTML =
+      d.profile.map(p => `
+        <div class="sml-pattern-item">
+          <div>
+            <div class="sml-pattern-cat">${p.category}</div>
+            <span class="sml-pattern-signal">${p.signal}</span>
+            <div class="sml-pattern-strength">${p.strength}</div>
+          </div>
+          <div>
+            <div class="sml-pattern-evidence">${(p.evidence||[]).map(e=>`"${e}"`).join(" · ")}</div>
+            <div class="sml-pattern-expl">${p.insight}</div>
+          </div>
+        </div>`).join("") +
+      `<div class="sml-profile-strip">
+         <div>
+           <div class="sml-profile-strip-label">Din kommunikationsstil</div>
+           <div class="sml-profile-strip-val">${d.communication_style}</div>
+         </div>
+         <div>
+           <div class="sml-profile-strip-label">Att utforska vidare</div>
+           <div class="sml-profile-strip-val">${d.development_hint}</div>
+         </div>
+       </div>
+       <div class="sml-note">${d.note||""}</div>`;
+  }
+
+  // ── TRÄNING ───────────────────────────────────────────
+  document.getElementById("sml-start-train").addEventListener("click", getExercise);
+
+  async function getExercise() {
+    const container = document.getElementById("sml-exercise-container");
+    showSprakLoading();
+    const data = await apiFetch("GET", "/api/training/exercise");
+    hideSprakLoading();
+    if (!data || !data.ok) {
+      container.innerHTML = `<p style="color:var(--danger);font-size:.875rem">Inga övningar tillgängliga just nu.</p>`;
+      return;
+    }
+    currentExercise = data.exercise;
+    answered = false;
+    renderExercise(data.exercise);
+  }
+
+  function renderExercise(ex) {
+    updateScore();
+    setSprock("fundersam");
+    const container = document.getElementById("sml-exercise-container");
+    container.innerHTML = `
+      <div class="sml-exercise-ctx" id="sml-exercise-ctx" style="visibility:hidden">${[ex.pattern_category, ex.pattern_signal].filter(Boolean).join(" · ")}</div>
+      <div class="sml-exercise-quote">${ex.text}</div>
+      <div class="sml-exercise-q">${ex.question}</div>
+      <div class="sml-choices">
+        ${ex.options.map((opt, i) => `<button class="sml-choice" data-index="${i}">${opt}</button>`).join("")}
+      </div>
+      <div class="sml-feedback" id="sml-feedback"></div>
+      <button class="sml-btn sml-btn-ghost sml-next-btn" id="sml-next-btn">Nästa övning →</button>
+    `;
+    container.querySelectorAll(".sml-choice").forEach(btn => {
+      btn.addEventListener("click", () => submitAnswer(parseInt(btn.dataset.index)));
+    });
+    document.getElementById("sml-next-btn").addEventListener("click", getExercise);
+  }
+
+  async function submitAnswer(selectedIndex) {
+    if (answered || !currentExercise) return;
+    answered = true;
+    document.querySelectorAll(".sml-choice").forEach(b => b.disabled = true);
+    showSprakLoading();
+    const data = await apiFetch("POST", "/api/training/answer", {
+      exercise_id: currentExercise.exercise_id,
+      selected_index: selectedIndex,
+    });
+    hideSprakLoading();
+    if (!data || !data.ok) { answered = false; document.querySelectorAll(".sml-choice").forEach(b => b.disabled = false); return; }
+    const { correct, correct_index, explanation } = data.result;
+    trainTotal++;
+    if (correct) trainScore++;
+    updateScore();
+
+    // Sprock-reaktion
+    recentAnswers.push(correct);
+    if (recentAnswers.length > 5) recentAnswers.shift();
+    const recentCorrect = recentAnswers.filter(Boolean).length;
+    if (recentAnswers.length === 5 && recentCorrect === 5) {
+      setSprock("cool", "sprock-bounce");
+    } else if (recentAnswers.length === 5 && recentCorrect <= 2) {
+      setSprock("explosiv", "sprock-shake");
+    } else if (correct) {
+      setSprock(trainTotal % 2 === 0 ? "skrattande" : "glad", "sprock-bounce");
+    } else {
+      setSprock(trainTotal % 2 === 0 ? "ledsen" : "arg", "sprock-shake");
+    }
+    document.querySelectorAll(".sml-choice").forEach(btn => {
+      const i = parseInt(btn.dataset.index);
+      if (i === correct_index)                btn.classList.add("correct");
+      else if (i === selectedIndex && !correct) btn.classList.add("wrong");
+    });
+    const ctx = document.getElementById("sml-exercise-ctx");
+    if (ctx) ctx.style.visibility = "visible";
+    const fb = document.getElementById("sml-feedback");
+    fb.innerHTML = `<strong>${correct ? "✓ Rätt." : "✗ Inte riktigt."}</strong> ${explanation}`;
+    fb.classList.add("show");
+    document.getElementById("sml-next-btn").classList.add("show");
+  }
+
+  function updateScore() {
+    const el = document.getElementById("sml-score");
+    if (el) el.textContent = `${trainScore} / ${trainTotal}`;
+  }
+
+  // ── INIT ──────────────────────────────────────────────
+  async function init() {
+    const token = new URLSearchParams(window.location.search).get("token");
+    if (token) { await verifyToken(); return; }
+    // Kontrollera befintlig session
+    const data = await apiFetch("GET", "/api/usage");
+    if (data && data.ok) showApp();
+    // apiFetch hanterar 401 → showLogin automatiskt
+  }
+
+  init();
+</script>
+</body>
+</html>

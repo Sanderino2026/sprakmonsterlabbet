@@ -1,0 +1,15 @@
+{
+  "name": "sprakmonsterlabbet",
+  "version": "1.0.0",
+  "description": "Språkmonsterlabbet API – Cloudflare Workers",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.71.0"
+  }
+}

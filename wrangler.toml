@@ -1,0 +1,21 @@
+name = "sprakmonsterlabbet"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+# KV för magic link-tokens (skapa med: npx wrangler kv namespace create "AUTH_TOKENS")
+[[kv_namespaces]]
+binding = "KV"
+id = "a507970ece464c57be2f38b537041f70"
+
+# Hemligheter sätts via: npx wrangler secret put NAMN
+# RESEND_API_KEY
+# AIRTABLE_API_KEY
+# AIRTABLE_BASE_ID
+# SESSION_SECRET
+# ANTHROPIC_API_KEY
+
+[assets]
+directory = "./icons"
+
+[triggers]
+crons = ["0 3 1 * *"]

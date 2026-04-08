@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kommunikationsrapport — Språkmönsterlabbet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'DM Sans', sans-serif;
+    --color-primary: #c8b89a;
+    --color-gold: #c8b89a;
+    --color-text: #f0ede6;
+    --color-text-light: rgba(240,237,230,0.5);
+    --color-text-subtle: rgba(240,237,230,0.35);
+    --color-border: rgba(240,237,230,0.08);
+    --color-bg: #0c0c0b;
+    --color-bg-subtle: rgba(240,237,230,0.05);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: var(--font-body);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* PROGRESS BAR                            */
+  /* ═══════════════════════════════════════ */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--color-border);
+    z-index: 200;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--color-primary);
+    width: 0%;
+    transition: width 0.4s ease;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* FIXED HEADER                            */
+  /* ═══════════════════════════════════════ */
+  .app-header {
+    position: fixed;
+    top: 2px;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 150;
+  }
+  .app-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .app-header-brand {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-gold);
+  }
+  .app-header-sep {
+    color: var(--color-border);
+    font-size: 14px;
+  }
+  .app-header-name {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-text);
+  }
+  .btn-pdf {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--color-primary);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+  .btn-pdf:hover { background: #f0ede6; color: #0c0c0b; }
+
+  /* ═══════════════════════════════════════ */
+  /* LAYOUT: SIDEBAR + MAIN                  */
+  /* ═══════════════════════════════════════ */
+  .app-layout {
+    display: flex;
+    padding-top: 58px;
+    min-height: 100vh;
+  }
+  .app-sidebar {
+    position: fixed;
+    top: 58px;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    border-right: 1px solid var(--color-border);
+    background: var(--color-bg);
+    padding: 32px 0;
+    overflow-y: auto;
+    z-index: 100;
+  }
+  .app-main {
+    flex: 1;
+    margin-left: 220px;
+    min-height: calc(100vh - 58px);
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* SIDEBAR NAV                             */
+  /* ═══════════════════════════════════════ */
+  .sidebar-nav {
+    list-style: none;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-text-subtle);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar-item:hover {
+    color: #f0ede6;
+    background: var(--color-bg-subtle);
+  }
+  .sidebar-item.active {
+    color: #f0ede6;
+    border-left-color: #c8b89a;
+    font-weight: 500;
+    background: rgba(200,184,154,0.1);
+  }
+  .sidebar-item.done {
+    color: rgba(240,237,230,0.5);
+  }
+  .sidebar-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-border);
+    flex-shrink: 0;
+  }
+  .sidebar-item.active .sidebar-dot {
+    background: var(--color-primary);
+  }
+  .sidebar-item.done .sidebar-dot {
+    background: var(--color-gold);
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* SECTION PANELS                          */
+  /* ═══════════════════════════════════════ */
+  .section-panel {
+    display: none;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 64px 48px 120px;
+  }
+  .section-panel.active {
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* BOTTOM NAV                              */
+  /* ═══════════════════════════════════════ */
+  .nav-footer {
+    position: fixed;
+    bottom: 0;
+    left: 220px;
+    right: 0;
+    height: 56px;
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    z-index: 100;
+  }
+  .nav-btn {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-subtle);
+    background: transparent;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    padding: 12px 28px;
+    border-radius: 2px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .nav-btn:hover { border-color: #c8b89a; color: #c8b89a; }
+  .nav-btn:disabled { opacity: 0; cursor: default; pointer-events: none; }
+  .nav-btn-next {
+    color: #0c0c0b;
+    background: #f0ede6;
+    border-color: #f0ede6;
+    font-weight: 500;
+  }
+  .nav-btn-next:hover { background: #fff; border-color: #fff; color: #0c0c0b; }
+
+  /* ═══════════════════════════════════════ */
+  /* REVEAL BUTTON                           */
+  /* ═══════════════════════════════════════ */
+  .btn-reveal {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-primary);
+    background: none;
+    border: 1px solid var(--color-primary);
+    padding: 10px 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    margin-top: 32px;
+    transition: background 0.2s, color 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .btn-reveal:hover {
+    background: #c8b89a;
+    color: #0c0c0b;
+  }
+
+  /* Block B hidden by default in online mode */
+  .block-resultat-wrap {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .block-resultat-wrap.revealed {
+    display: block;
+    opacity: 1;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* LOADING                                 */
+  /* ═══════════════════════════════════════ */
+  .loading {
+    text-align: center;
+    padding: 120px 24px;
+  }
+  .loading-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-size: 14px;
+    color: var(--color-text-light);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ERROR */
+  .error-msg {
+    text-align: center;
+    padding: 120px 24px;
+    font-size: 18px;
+    color: var(--color-text-light);
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* CONTENT STYLES                          */
+  /* ═══════════════════════════════════════ */
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    color: var(--color-text);
+    margin-bottom: 8px;
+  }
+  .section-divider {
+    width: 40px;
+    height: 1px;
+    background: var(--color-border);
+    margin-top: 12px;
+    margin-bottom: 32px;
+  }
+  .section-subtitle {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-text-subtle);
+    margin-top: 32px;
+    margin-bottom: 12px;
+  }
+  .section-panel p {
+    margin-bottom: 24px;
+    color: var(--color-text);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* BLOCK A — Om mönstret */
+  .block-om {
+    border-left: 1px solid var(--color-border);
+    padding-left: 24px;
+    margin-bottom: 40px;
+  }
+  .block-om p {
+    color: rgba(240,237,230,0.65);
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+  .block-om p:last-child { margin-bottom: 0; }
+
+  /* BLOCK B — Ditt resultat */
+  .block-resultat {
+    border-left: 1px solid var(--color-primary);
+    padding-left: 24px;
+  }
+  .block-resultat p {
+    font-weight: 300;
+    margin-bottom: 16px;
+  }
+  .block-resultat p:last-child { margin-bottom: 0; }
+
+  /* Block labels */
+  .block-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(240,237,230,0.35);
+    margin-bottom: 16px;
+  }
+  .block-label-accent {
+    color: var(--color-primary);
+  }
+
+  /* Pattern reveal subtitle */
+  .pattern-reveal {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-primary);
+    margin-top: 48px;
+    margin-bottom: 16px;
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* VISUALIZATIONS                          */
+  /* ═══════════════════════════════════════ */
+  .viz-container {
+    display: flex;
+    justify-content: center;
+    margin: 48px 0;
+  }
+  .viz-card {
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 32px 40px;
+    margin: 40px 0;
+    background: var(--color-bg-subtle);
+  }
+  .viz-card--compact {
+    padding: 24px 40px;
+    margin: 32px 0;
+  }
+
+  /* Scale */
+  .scale-viz { margin: 0; }
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-text-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0;
+  }
+  .scale-track {
+    position: relative;
+    height: 2px;
+    background: rgba(240,237,230,0.15);
+    border-radius: 1px;
+    margin: 20px 0 8px;
+  }
+  .scale-fill {
+    position: absolute; top: 0; left: 0;
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 1px;
+  }
+  .scale-thumb {
+    position: absolute; top: 50%;
+    width: 14px; height: 14px;
+    background: #0c0c0b;
+    border: 1.5px solid #c8b89a;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .scale-value {
+    text-align: center;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-primary);
+    margin-top: 0;
+  }
+  .strength-badge { font-family: var(--font-body); font-size: 12px; font-weight: 500; }
+  .strength-tydlig { color: var(--color-gold); }
+  .strength-trolig { color: var(--color-primary); }
+  .strength-mojlig { color: var(--color-text-subtle); }
+
+  /* Channel chips */
+  .channel-chips {
+    display: flex; gap: 48px; justify-content: center; margin: 0;
+  }
+  .channel-chip {
+    display: flex; flex-direction: column; align-items: center; gap: 0;
+    font-family: var(--font-body); font-size: 12px; font-weight: 400;
+    text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.15s;
+  }
+  .channel-chip.active { color: var(--color-primary); }
+  .channel-chip.inactive { color: rgba(240,237,230,0.25); }
+  .channel-icon { font-size: 24px; line-height: 1; margin-bottom: 8px; }
+
+  /* Change segments */
+  .change-segments { display: flex; gap: 4px; margin: 0; align-items: flex-start; }
+  .change-seg { flex: 1; text-align: center; }
+  .change-seg-bar { height: 4px; border-radius: 2px; margin-bottom: 0; }
+  .change-seg.active .change-seg-bar { background: var(--color-primary); }
+  .change-seg.inactive .change-seg-bar { background: var(--color-border); }
+  .change-seg-label { font-family: var(--font-body); font-size: 11px; font-weight: 400; display: none; }
+  .change-seg.active .change-seg-label { display: block; color: var(--color-primary); margin-top: 10px; }
+  .change-seg.inactive .change-seg-label { color: rgba(240,237,230,0.25); }
+
+  /* Indicator row */
+  .indicator-row { display: flex; align-items: center; gap: 0; }
+  .indicator-pill {
+    display: inline-block; font-family: var(--font-body); font-size: 11px; font-weight: 400;
+    letter-spacing: 0.05em; padding: 3px 10px; border: 1px solid var(--color-primary);
+    border-radius: 2px; color: var(--color-primary);
+  }
+  .indicator-sep { color: rgba(240,237,230,0.25); margin: 0 12px; font-size: 12px; }
+  .indicator-desc { font-family: var(--font-body); font-size: 12px; font-weight: 400; color: var(--color-text-subtle); }
+
+  /* ═══════════════════════════════════════ */
+  /* PROFILE CARD                            */
+  /* ═══════════════════════════════════════ */
+  .profile-card { padding: 0; }
+  .profile-card-title {
+    font-family: var(--font-display); font-size: 36px; font-weight: 300;
+    letter-spacing: 0.02em; line-height: 1.2; color: var(--color-text); margin-bottom: 8px;
+  }
+  .profile-card-title::after {
+    content: ''; display: block; width: 40px; height: 1px;
+    background: var(--color-border); margin-top: 12px; margin-bottom: 32px;
+  }
+  .profile-card-meta { font-family: var(--font-body); font-size: 13px; color: var(--color-text-subtle); margin-bottom: 32px; }
+  .profile-card-context { text-align: center; font-family: var(--font-body); font-size: 12px; color: var(--color-text-subtle); margin-top: 8px; margin-bottom: 32px; }
+  .pattern-row { display: flex; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--color-border); }
+  .pattern-row:first-child { border-top: 1px solid var(--color-border); }
+  .pattern-col-name { width: 40%; font-family: var(--font-body); font-size: 13px; font-weight: 500; color: var(--color-text); }
+  .pattern-col-signal { width: 30%; }
+  .pattern-signal-pill {
+    display: inline-block; font-family: var(--font-body); font-size: 11px; font-weight: 400;
+    letter-spacing: 0.05em; padding: 3px 10px; border-radius: 2px; background: transparent;
+    border: 1px solid var(--color-primary); color: var(--color-primary);
+  }
+  .pattern-col-strength { width: 30%; font-family: var(--font-body); font-size: 11px; font-weight: 500; text-align: right; }
+  .strength-tydlig-text { color: var(--color-gold); }
+  .strength-trolig-text { color: var(--color-primary); }
+  .strength-mojlig-text { color: var(--color-text-subtle); }
+  .profile-card-kombination { margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--color-border); text-align: center; }
+  .profile-card-kombination-label { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 16px; }
+  .profile-card-kombination-text { font-family: var(--font-body); font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.75; color: var(--color-text); max-width: 600px; margin: 0 auto; }
+  .profile-card-footer { text-align: center; font-family: var(--font-body); font-size: 11px; color: rgba(240,237,230,0.25); margin-top: 56px; }
+
+  /* ═══════════════════════════════════════ */
+  /* FEEDBACK                                */
+  /* ═══════════════════════════════════════ */
+  .feedback-section { padding: 48px 0; }
+  .feedback-title {
+    font-family: var(--font-display); font-size: 28px; font-weight: 300;
+    letter-spacing: 0.02em; line-height: 1.2; color: var(--color-text); margin-bottom: 8px;
+  }
+  .feedback-title::after {
+    content: ''; display: block; width: 40px; height: 1px;
+    background: var(--color-border); margin-top: 12px; margin-bottom: 32px;
+  }
+  .feedback-intro { font-size: 13px; font-weight: 300; color: var(--color-text-light); line-height: 1.75; margin-bottom: 40px; }
+  .fb-group { margin-bottom: 28px; }
+  .fb-question { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 10px; }
+  .fb-stars { display: flex; gap: 8px; }
+  .fb-star { font-size: 28px; cursor: pointer; color: rgba(240,237,230,0.2); transition: color 0.1s; user-select: none; line-height: 1; }
+  .fb-star.active { color: var(--color-gold); }
+  .fb-star:hover { color: var(--color-gold); }
+  .fb-textarea {
+    width: 100%; min-height: 72px; font-family: var(--font-body); font-size: 14px; font-weight: 300;
+    line-height: 1.6; border: 1px solid var(--color-border); border-radius: 0; padding: 12px 14px; resize: none; transition: border-color 0.15s;
+    background: transparent; color: var(--color-text);
+  }
+  .fb-textarea:focus { outline: none; border-color: #c8b89a; }
+  .fb-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+  .fb-pill {
+    font-family: var(--font-body); font-size: 11px; font-weight: 400; letter-spacing: 0.05em;
+    padding: 8px 16px; border: 1px solid var(--color-border); border-radius: 0;
+    background: transparent; color: var(--color-text); cursor: pointer; transition: all 0.15s;
+  }
+  .fb-pill.selected { background: #c8b89a; color: #0c0c0b; border-color: #c8b89a; }
+  .fb-divider { height: 1px; background: var(--color-border); margin: 8px 0 28px; }
+  .fb-submit {
+    display: block; width: auto; margin: 0 auto; font-family: var(--font-body); font-size: 11px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.1em; background: #f0ede6; color: #0c0c0b;
+    border: none; padding: 14px 32px; border-radius: 0; cursor: pointer; transition: background 0.15s;
+  }
+  .fb-submit:hover { background: #fff; }
+  .fb-submit:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: default; }
+  .fb-spinner { text-align: center; padding: 16px 0; display: none; }
+  .fb-spinner.visible { display: block; }
+  .fb-spinner-dot { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  .fb-spinner-text { font-size: 13px; color: var(--color-text-light); vertical-align: middle; }
+  .fb-error { text-align: center; color: #d44; font-size: 13px; margin-top: 12px; display: none; }
+  .fb-tack { text-align: center; }
+  .fb-tack-img { display: block; width: 100px; height: 100px; margin: 0 auto 24px; }
+  .fb-tack-title { font-family: var(--font-display); font-size: 36px; font-weight: 300; letter-spacing: 0.02em; color: var(--color-text); margin-bottom: 12px; }
+  .fb-tack-text { font-size: 14px; font-weight: 300; color: var(--color-text-light); }
+
+  /* ═══════════════════════════════════════ */
+  /* MOBILE                                  */
+  /* ═══════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .app-sidebar { display: none; }
+    .app-main { margin-left: 0; }
+    .nav-footer { left: 0; }
+    .section-panel { padding: 48px 20px 120px; }
+    .section-title { font-size: 28px; }
+    .block-om, .block-resultat { padding-left: 16px; }
+    .change-seg-label { font-size: 9px; }
+    .btn-pdf { padding: 6px 12px; font-size: 10px; }
+    .channel-chips { flex-wrap: wrap; gap: 32px; }
+    .viz-card { padding: 24px 20px; margin: 32px 0; }
+    .viz-card--compact { padding: 20px 20px; }
+    .profile-card-title { font-size: 28px; }
+    .pattern-col-name { font-size: 12px; }
+    .app-header-name { display: none; }
+  }
+
+  /* ═══════════════════════════════════════ */
+  /* PRINT MODE                              */
+  /* ═══════════════════════════════════════ */
+  @media print {
+    .progress-bar { display: none !important; }
+    .app-header { display: none !important; }
+    .app-sidebar { display: none !important; }
+    .nav-footer { display: none !important; }
+    .btn-reveal { display: none !important; }
+    .feedback-section { display: none !important; }
+
+    .app-main { margin-left: 0 !important; }
+    .app-layout { padding-top: 0 !important; }
+
+    .section-panel {
+      display: block !important;
+      padding: 0 32px;
+      max-width: 100%;
+      break-before: page;
+    }
+    .section-panel:first-child { break-before: auto; }
+
+    .block-resultat-wrap {
+      display: block !important;
+      opacity: 1 !important;
+    }
+
+    .block-om, .block-resultat { break-inside: avoid; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"><div class="progress-bar-fill" id="progressFill"></div></div>
+
+<div class="app-header" id="appHeader" style="display:none;">
+  <div class="app-header-left">
+    <span class="app-header-brand">SPRÅKMÖNSTERLABBET</span>
+    <span class="app-header-sep">|</span>
+    <span class="app-header-name" id="headerName"></span>
+  </div>
+  <button class="btn-pdf" onclick="window.print()">Ladda ner PDF</button>
+</div>
+
+<div class="app-layout" id="appLayout" style="display:none;">
+  <nav class="app-sidebar" id="appSidebar">
+    <ul class="sidebar-nav" id="sidebarNav"></ul>
+  </nav>
+  <div class="app-main" id="appMain">
+    <!-- Section panels injected here -->
+  </div>
+</div>
+
+<div class="nav-footer" id="navFooter" style="display:none;">
+  <button class="nav-btn" id="navPrev" onclick="navigateSection(-1)">&larr; Föregående</button>
+  <button class="nav-btn nav-btn-next" id="navNext" onclick="navigateSection(1)">Nästa &rarr;</button>
+</div>
+
+<!-- Loading state (shown before layout) -->
+<div id="loadingWrap" style="max-width:680px;margin:0 auto;padding:120px 24px;">
+  <div class="loading" id="loadingState">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">H&auml;mtar din rapport...</div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var API = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('token');
+  var mainEl = document.getElementById('appMain');
+  var loadingWrap = document.getElementById('loadingWrap');
+
+  if (!token) {
+    loadingWrap.innerHTML = '<div class="error-msg">Ogiltig l\u00e4nk.</div>';
+    return;
+  }
+
+  fetch(API + '/api/report?token=' + encodeURIComponent(token))
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.data.error || 'Rapport ej hittad');
+      if (r.data.rapport) {
+        renderStructuredReport(r.data);
+      } else {
+        renderLegacyReport(r.data);
+      }
+    })
+    .catch(function(err) {
+      loadingWrap.innerHTML = '<div class="error-msg">' + err.message + '</div>';
+    });
+
+  // ═══════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════
+
+  var reportProfileId = null;
+  var currentSection = 0;
+  var totalSections = 0;
+  var revealedSections = {};
+
+  var SIDEBAR_ITEMS = [
+    'Introduktion',
+    'F\u00f6rst\u00e5else',
+    'Motivation',
+    'Beslut',
+    'Kommunikation',
+    'F\u00f6r\u00e4ndring',
+    'Handling',
+    'Detaljniv\u00e5',
+    'Din profil'
+  ];
+
+  // ═══════════════════════════════════════
+  // NAVIGATION
+  // ═══════════════════════════════════════
+
+  function showSection(idx) {
+    if (idx < 0 || idx >= totalSections) return;
+    var panels = mainEl.querySelectorAll('.section-panel');
+    for (var i = 0; i < panels.length; i++) {
+      panels[i].classList.remove('active');
+    }
+    panels[idx].classList.add('active');
+    currentSection = idx;
+    updateSidebar();
+    updateProgress();
+    updateNavButtons();
+    window.scrollTo(0, 0);
+  }
+
+  window.navigateSection = function(dir) {
+    showSection(currentSection + dir);
+  };
+
+  function updateSidebar() {
+    var items = document.querySelectorAll('#sidebarNav .sidebar-item');
+    for (var i = 0; i < items.length; i++) {
+      items[i].classList.remove('active', 'done');
+      if (i === currentSection) {
+        items[i].classList.add('active');
+      } else if (i < currentSection || revealedSections[i]) {
+        items[i].classList.add('done');
+      }
+    }
+  }
+
+  function updateProgress() {
+    var pct = totalSections > 0 ? ((currentSection + 1) / totalSections * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function updateNavButtons() {
+    document.getElementById('navPrev').disabled = (currentSection === 0);
+    document.getElementById('navNext').disabled = (currentSection === totalSections - 1);
+    document.getElementById('navNext').textContent = (currentSection === totalSections - 1) ? '' : 'N\u00e4sta \u2192';
+  }
+
+  function buildSidebar() {
+    var nav = document.getElementById('sidebarNav');
+    var html = '';
+    for (var i = 0; i < SIDEBAR_ITEMS.length; i++) {
+      html += '<li class="sidebar-item' + (i === 0 ? ' active' : '') + '" data-idx="' + i + '">';
+      html += '<span class="sidebar-dot"></span>';
+      html += SIDEBAR_ITEMS[i];
+      html += '</li>';
+    }
+    nav.innerHTML = html;
+    var lis = nav.querySelectorAll('.sidebar-item');
+    for (var j = 0; j < lis.length; j++) {
+      lis[j].addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        showSection(idx);
+      });
+    }
+  }
+
+  window.revealResult = function(sectionIdx) {
+    var panel = mainEl.querySelectorAll('.section-panel')[sectionIdx];
+    if (!panel) return;
+    var wrap = panel.querySelector('.block-resultat-wrap');
+    var btn = panel.querySelector('.btn-reveal');
+    if (wrap) {
+      wrap.style.display = 'block';
+      // Force reflow for animation
+      void wrap.offsetWidth;
+      wrap.classList.add('revealed');
+      wrap.style.animation = 'fadeIn 0.5s ease forwards';
+    }
+    if (btn) btn.style.display = 'none';
+    revealedSections[sectionIdx] = true;
+    updateSidebar();
+  };
+
+  // ═══════════════════════════════════════
+  // STRUCTURED RENDERING (two-mode)
+  // ═══════════════════════════════════════
+
+  function renderStructuredReport(data) {
+    var name = data.name || 'Respondent';
+    var date = data.generated_at ? new Date(data.generated_at).toLocaleDateString('sv-SE') : '';
+    var rj = data.result_json || {};
+    var situation = data.situation || 'Arbete';
+    var rapport = data.rapport;
+    var ped = rapport.pedagogik || {};
+    var analys = rapport.analys || {};
+    var utm = rapport.utmaningar || {};
+    reportProfileId = data.profile_id || null;
+
+    // Set header name
+    document.getElementById('headerName').textContent = name;
+
+    // Hide loading, show layout
+    loadingWrap.style.display = 'none';
+    document.getElementById('appHeader').style.display = 'flex';
+    document.getElementById('appLayout').style.display = 'flex';
+    document.getElementById('navFooter').style.display = 'flex';
+
+    buildSidebar();
+
+    var panels = '';
+
+    // ── SECTION 0: Introduktion ─────────────────
+    panels += '<div class="section-panel active">';
+    panels += '<div class="section-title">Introduktion</div>';
+    panels += '<div class="section-divider"></div>';
+    if (analys.intro) {
+      panels += textToHtml(analys.intro);
+    }
+    panels += '<p>Den h\u00e4r rapporten beskriver tendenser i din kommunikation i sammanhanget: <strong>' + esc(situation) + '</strong>.</p>';
+    panels += '<p>Vi alla har kommunikationsm\u00f6nster \u2014 filter vi anv\u00e4nder f\u00f6r att organisera och uttrycka information. De \u00e4r inte personlighetstyper. M\u00f6nster \u00e4r spektrumbaserade \u2014 de flesta befinner sig n\u00e5gonstans mitt emellan ytterligheterna.</p>';
+    if (analys.sammanfattning) {
+      panels += '<div style="border-left:1px solid var(--color-primary);padding-left:24px;margin-top:32px;">';
+      panels += '<p style="font-style:italic;">' + formatMarkdown(esc(analys.sammanfattning.replace(/\n/g, ' '))) + '</p>';
+      panels += '</div>';
+    }
+    panels += '</div>';
+
+    // ── SECTION 1: Förståelse ─────────────────
+    panels += buildPatternPanel(1, 'D\u00e4rf\u00f6r pratar vi f\u00f6rbi varandra', ped.f\u00f6rst\u00e5else, analys.f\u00f6rst\u00e5else, rj, 'f\u00f6rst\u00e5else', utm, situation, function() {
+      return buildScaleViz(rj, 'f\u00f6rst\u00e5else');
+    });
+
+    // ── SECTION 2: Motivation ───────────────
+    panels += buildPatternPanel(2, 'Det som f\u00e5r dig att r\u00f6ra dig \u2014 eller stanna', ped.motivationsriktning, analys.motivationsriktning, rj, 'motivationsriktning', utm, situation, function() {
+      return buildScaleViz(rj, 'motivationsriktning');
+    });
+
+    // ── SECTION 3: Beslut ───────────────────
+    panels += buildPatternPanel(3, 'Var kommer beslutet ifr\u00e5n?', ped.beslutsram, analys.beslutsram, rj, 'beslutsram', utm, situation, function() {
+      return buildScaleViz(rj, 'beslutsram');
+    });
+
+    // ── SECTION 4: Kommunikation (sinneskanal) ──
+    panels += buildSinneskanalPanel(4, ped.sinneskanal, analys.sinneskanal, rj, utm);
+
+    // ── SECTION 5: Förändring ───────────────
+    panels += buildFörändringsPanel(5, ped, analys, rj, utm);
+
+    // ── SECTION 6: Handling ─────────────────
+    panels += buildHandlingsstilPanel(6, ped, analys, rj, utm);
+
+    // ── SECTION 7: Detaljnivå ───────────────
+    panels += buildDetaljnivåPanel(7, ped, analys, rj, utm);
+
+    // ── SECTION 8: Din profil ────────────
+    panels += '<div class="section-panel">';
+    panels += '<div class="profile-card">';
+    panels += '<div class="profile-card-title">Din profil</div>';
+    panels += '<div class="profile-card-meta">' + esc(name) + (date ? ' \u00b7 ' + esc(date) : '') + '</div>';
+    panels += buildSpiderSvg(rj);
+    panels += '<div class="profile-card-context">Sammanhang: ' + esc(situation) + '</div>';
+
+    var patterns = [
+      { name: 'Motivationsriktning', key: 'motivationsriktning' },
+      { name: 'Beslutsram', key: 'beslutsram' },
+      { name: 'F\u00f6rst\u00e5else', key: 'f\u00f6rst\u00e5else' },
+      { name: 'Sinneskanal', key: 'sinneskanal' },
+      { name: 'F\u00f6r\u00e4ndringsrelation', key: 'f\u00f6r\u00e4ndringsrelation' },
+      { name: 'Handlingsstil', key: 'handlingsstil' },
+      { name: 'Detaljniv\u00e5', key: 'detaljniv\u00e5' }
+    ];
+    for (var i = 0; i < patterns.length; i++) {
+      var p = patterns[i];
+      var pd = rj[p.key];
+      if (!pd) continue;
+      var signal = pd.signal || '';
+      var styrka = pd.styrka || '';
+      var isHandling = p.key === 'handlingsstil';
+      var rightText = isHandling ? (pd.indikation || '') : styrka;
+      var rightClass = '';
+      if (!isHandling) {
+        if (styrka === 'Tydlig') rightClass = 'strength-tydlig-text';
+        else if (styrka === 'Trolig') rightClass = 'strength-trolig-text';
+        else rightClass = 'strength-mojlig-text';
+      }
+      panels += '<div class="pattern-row">';
+      panels += '<div class="pattern-col-name">' + esc(p.name) + '</div>';
+      panels += '<div class="pattern-col-signal">';
+      if (signal) panels += '<span class="pattern-signal-pill">' + esc(signal) + '</span>';
+      panels += '</div>';
+      panels += '<div class="pattern-col-strength' + (rightClass ? ' ' + rightClass : '') + '">' + esc(rightText) + '</div>';
+      panels += '</div>';
+    }
+
+    if (analys.sammanfattning) {
+      panels += '<div class="profile-card-kombination">';
+      panels += '<div class="profile-card-kombination-label">KOMMUNIKATIONSPROFIL</div>';
+      panels += '<div class="profile-card-kombination-text">' + formatMarkdown(esc(analys.sammanfattning.replace(/\n/g, ' '))) + '</div>';
+      panels += '</div>';
+    }
+
+    // Helhetsbild
+    if (analys.helhetsbild) {
+      panels += '<div style="margin-top:48px;">';
+      if (typeof analys.helhetsbild === 'string') {
+        panels += '<div class="section-subtitle">HELHETSBILD</div>';
+        panels += textToHtml(analys.helhetsbild);
+      } else {
+        if (analys.helhetsbild.kombination) {
+          panels += '<div class="section-subtitle">HELHETSBILD</div>';
+          panels += textToHtml(analys.helhetsbild.kombination);
+        }
+        if (analys.helhetsbild.i_konflikt) {
+          panels += '<div class="section-subtitle">I KONFLIKT</div>';
+          panels += textToHtml(analys.helhetsbild.i_konflikt);
+        }
+        if (analys.helhetsbild.i_förhandling) {
+          panels += '<div class="section-subtitle">I FÖRHANDLING</div>';
+          panels += textToHtml(analys.helhetsbild.i_förhandling);
+        }
+        if (analys.helhetsbild.superkraft) {
+          panels += '<div class="section-subtitle">DIN KOMMUNIKATIVA SUPERKRAFT</div>';
+          panels += textToHtml(analys.helhetsbild.superkraft);
+        }
+      }
+      panels += '</div>';
+    }
+
+    // Nästa steg
+    if (analys.n\u00e4sta_steg) {
+      panels += '<div style="margin-top:32px;">';
+      panels += '<div class="section-subtitle">N\u00e4sta steg</div>';
+      panels += textToHtml(analys.n\u00e4sta_steg);
+      panels += '</div>';
+    }
+
+    panels += '<div class="profile-card-footer">holmberg &amp; friends \u00b7 sprakmonsterlabbet.holmbergfriends.com</div>';
+    panels += '</div>'; // profile-card
+
+    // Feedback inline
+    panels += buildFeedbackSection();
+
+    panels += '</div>'; // section-panel
+
+    mainEl.innerHTML = panels;
+    totalSections = mainEl.querySelectorAll('.section-panel').length;
+    updateProgress();
+    updateNavButtons();
+
+    // Init feedback
+    initFeedback();
+  }
+
+  // ── Pattern panel builder (scale-based patterns) ──
+  function buildPatternPanel(sectionIdx, title, ped, analysData, rj, rjKey, utm, situation, vizFn) {
+    var signal = rj[rjKey] && rj[rjKey].signal ? rj[rjKey].signal : '';
+    var html = '<div class="section-panel">';
+    html += '<div class="section-title">' + esc(title) + '</div>';
+    html += '<div class="section-divider"></div>';
+
+    // Block A — pedagogik
+    if (ped && ped.text) {
+      html += '<div class="block-om">';
+      html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+      html += textToHtml(ped.text);
+      html += '</div>';
+    }
+
+    // Reveal button
+    html += '<button class="btn-reveal" onclick="revealResult(' + sectionIdx + ')">Visa mitt m\u00f6nster \u2192</button>';
+
+    // Block B — hidden until reveal
+    html += '<div class="block-resultat-wrap">';
+    if (signal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(signal) + '</div>';
+    }
+    html += '<div class="block-resultat">';
+
+    if (analysData) {
+      if (analysData.vad_signalerar) {
+        html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
+        html += textToHtml(analysData.vad_signalerar);
+      }
+      if (vizFn) html += vizFn();
+      if (analysData.återkoppling) {
+        html += '<div class="section-subtitle">ÅTERKOPPLING OCH FEEDBACK</div>';
+        html += textToHtml(analysData.återkoppling);
+      }
+      if (analysData.med_samma_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER SAMMA MÖNSTER</div>';
+        html += textToHtml(analysData.med_samma_mönster);
+      }
+      if (analysData.med_motsatt_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER MOTSATT MÖNSTER</div>';
+        html += textToHtml(analysData.med_motsatt_mönster);
+      }
+      if (analysData.risker) {
+        html += '<div class="section-subtitle">RISKER OCH BLINDA FLÄCKAR</div>';
+        html += textToHtml(analysData.risker);
+      }
+      if (analysData.i_konflikt) {
+        html += '<div class="section-subtitle">I KONFLIKT</div>';
+        html += textToHtml(analysData.i_konflikt);
+      }
+      if (analysData.i_förhandling) {
+        html += '<div class="section-subtitle">I FÖRHANDLING</div>';
+        html += textToHtml(analysData.i_förhandling);
+      }
+      if (analysData.tips) {
+        html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
+        html += textToHtml(analysData.tips);
+      }
+    }
+
+    if (signal && utm[signal]) {
+      html += '<p><strong>Din utmaning:</strong> ' + esc(utm[signal]) + '</p>';
+    }
+
+    html += '</div>'; // block-resultat
+    html += '</div>'; // block-resultat-wrap
+    html += '</div>'; // section-panel
+    return html;
+  }
+
+  // ── Sinneskanal panel ──
+  function buildSinneskanalPanel(sectionIdx, ped, analysData, rj, utm) {
+    var signal = rj.sinneskanal && rj.sinneskanal.signal ? rj.sinneskanal.signal : '';
+    var html = '<div class="section-panel">';
+    html += '<div class="section-title">Hur du tar in och hur du uttrycker dig till v\u00e4rlden</div>';
+    html += '<div class="section-divider"></div>';
+
+    if (ped && ped.text) {
+      html += '<div class="block-om">';
+      html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+      html += textToHtml(ped.text);
+      html += '</div>';
+    }
+
+    html += '<button class="btn-reveal" onclick="revealResult(' + sectionIdx + ')">Visa mitt m\u00f6nster \u2192</button>';
+
+    html += '<div class="block-resultat-wrap">';
+    if (signal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(signal) + '</div>';
+    }
+    html += '<div class="block-resultat">';
+    html += buildChannelViz(rj);
+
+    if (analysData) {
+      if (analysData.vad_signalerar) {
+        html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
+        html += textToHtml(analysData.vad_signalerar);
+      }
+      if (analysData.med_syn) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER SYNORIENTERADE</div>';
+        html += textToHtml(analysData.med_syn);
+      }
+      if (analysData.med_hörsel) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER HÖRSELORIENTERADE</div>';
+        html += textToHtml(analysData.med_hörsel);
+      }
+      if (analysData.med_känsel) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER KÄNSLORIENTERADE</div>';
+        html += textToHtml(analysData.med_känsel);
+      }
+      if (analysData.i_konflikt) {
+        html += '<div class="section-subtitle">I KONFLIKT</div>';
+        html += textToHtml(analysData.i_konflikt);
+      }
+      if (analysData.tips) {
+        html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
+        html += textToHtml(analysData.tips);
+      }
+    }
+
+    if (signal && utm[signal]) {
+      html += '<p><strong>Din utmaning:</strong> ' + esc(utm[signal]) + '</p>';
+    }
+
+    html += '</div></div>'; // block-resultat + block-resultat-wrap
+    html += '</div>'; // section-panel
+    return html;
+  }
+
+  // ── Förändringsrelation ──
+  function buildFörändringsPanel(sectionIdx, ped, analys, rj, utm) {
+    var fSignal = rj.f\u00f6r\u00e4ndringsrelation && rj.f\u00f6r\u00e4ndringsrelation.signal ? rj.f\u00f6r\u00e4ndringsrelation.signal : '';
+
+    var html = '<div class="section-panel">';
+    html += '<div class="section-title">En motivationsfaktor som p\u00e5verkar dina beslut</div>';
+    html += '<div class="section-divider"></div>';
+
+    if (ped.f\u00f6r\u00e4ndringsrelation && ped.f\u00f6r\u00e4ndringsrelation.text) {
+      html += '<div class="block-om">';
+      html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+      html += textToHtml(ped.f\u00f6r\u00e4ndringsrelation.text);
+      html += '</div>';
+    }
+
+    html += '<button class="btn-reveal" onclick="revealResult(' + sectionIdx + ')">Visa mitt m\u00f6nster \u2192</button>';
+
+    html += '<div class="block-resultat-wrap">';
+    if (fSignal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(fSignal) + '</div>';
+    }
+    html += '<div class="block-resultat">';
+    html += buildChangeViz(rj);
+    if (analys.förändringsrelation) {
+      if (analys.förändringsrelation.vad_signalerar) {
+        html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
+        html += textToHtml(analys.förändringsrelation.vad_signalerar);
+      }
+      if (analys.förändringsrelation.med_samma_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER SAMMA MÖNSTER</div>';
+        html += textToHtml(analys.förändringsrelation.med_samma_mönster);
+      }
+      if (analys.förändringsrelation.med_motsatt_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER MOTSATT MÖNSTER</div>';
+        html += textToHtml(analys.förändringsrelation.med_motsatt_mönster);
+      }
+      if (analys.förändringsrelation.risker) {
+        html += '<div class="section-subtitle">RISKER OCH BLINDA FLÄCKAR</div>';
+        html += textToHtml(analys.förändringsrelation.risker);
+      }
+      if (analys.förändringsrelation.i_konflikt) {
+        html += '<div class="section-subtitle">I KONFLIKT</div>';
+        html += textToHtml(analys.förändringsrelation.i_konflikt);
+      }
+      if (analys.förändringsrelation.tips) {
+        html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
+        html += textToHtml(analys.förändringsrelation.tips);
+      }
+    }
+    if (fSignal && utm[fSignal]) {
+      html += '<p><strong>Din utmaning:</strong> ' + esc(utm[fSignal]) + '</p>';
+    }
+    html += '</div>'; // block-resultat
+    html += '</div>'; // block-resultat-wrap
+    html += '</div>'; // section-panel
+    return html;
+  }
+
+  // ── Handlingsstil ──
+  function buildHandlingsstilPanel(sectionIdx, ped, analys, rj, utm) {
+    var hSignal = rj.handlingsstil && rj.handlingsstil.signal ? rj.handlingsstil.signal : '';
+
+    var html = '<div class="section-panel">';
+    html += '<div class="section-title">Hur vi f\u00f6rh\u00e5ller oss till eget och andras tempo</div>';
+    html += '<div class="section-divider"></div>';
+
+    if (ped.handlingsstil && ped.handlingsstil.text) {
+      html += '<div class="block-om">';
+      html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+      html += textToHtml(ped.handlingsstil.text);
+      html += '</div>';
+    }
+
+    html += '<button class="btn-reveal" onclick="revealResult(' + sectionIdx + ')">Visa mitt m\u00f6nster \u2192</button>';
+
+    html += '<div class="block-resultat-wrap">';
+    if (hSignal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(hSignal) + '</div>';
+    }
+    html += '<div class="block-resultat">';
+    if (hSignal) html += buildActionIndicator(rj);
+    if (analys.handlingsstil) {
+      if (analys.handlingsstil.vad_signalerar) {
+        html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
+        html += textToHtml(analys.handlingsstil.vad_signalerar);
+      }
+      if (analys.handlingsstil.i_konflikt) {
+        html += '<div class="section-subtitle">I KONFLIKT</div>';
+        html += textToHtml(analys.handlingsstil.i_konflikt);
+      }
+      if (analys.handlingsstil.med_motsatt_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER MOTSATT MÖNSTER</div>';
+        html += textToHtml(analys.handlingsstil.med_motsatt_mönster);
+      }
+      if (analys.handlingsstil.tips) {
+        html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
+        html += textToHtml(analys.handlingsstil.tips);
+      }
+    }
+    if (hSignal && utm[hSignal]) {
+      html += '<p><strong>Din utmaning:</strong> ' + esc(utm[hSignal]) + '</p>';
+    }
+    html += '</div>'; // block-resultat
+    html += '</div>'; // block-resultat-wrap
+    html += '</div>'; // section-panel
+    return html;
+  }
+
+  // ── Detaljnivå ──
+  function buildDetaljnivåPanel(sectionIdx, ped, analys, rj, utm) {
+    var dSignal = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.signal ? rj.detaljniv\u00e5.signal : '';
+
+    var html = '<div class="section-panel">';
+    html += '<div class="section-title">De stora dragen, eller specifika detaljer</div>';
+    html += '<div class="section-divider"></div>';
+
+    if (ped.detaljniv\u00e5 && ped.detaljniv\u00e5.text) {
+      html += '<div class="block-om">';
+      html += '<div class="block-label">OM M\u00d6NSTRET</div>';
+      html += textToHtml(ped.detaljniv\u00e5.text);
+      html += '</div>';
+    }
+
+    html += '<button class="btn-reveal" onclick="revealResult(' + sectionIdx + ')">Visa mitt m\u00f6nster \u2192</button>';
+
+    html += '<div class="block-resultat-wrap">';
+    if (dSignal) {
+      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(dSignal) + '</div>';
+    }
+    html += '<div class="block-resultat">';
+    if (dSignal) html += buildDetailIndicator(rj);
+    if (analys.detaljnivå) {
+      if (analys.detaljnivå.vad_signalerar) {
+        html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
+        html += textToHtml(analys.detaljnivå.vad_signalerar);
+      }
+      if (analys.detaljnivå.i_konflikt) {
+        html += '<div class="section-subtitle">I KONFLIKT</div>';
+        html += textToHtml(analys.detaljnivå.i_konflikt);
+      }
+      if (analys.detaljnivå.med_motsatt_mönster) {
+        html += '<div class="section-subtitle">NÄR DU MÖTER MOTSATT MÖNSTER</div>';
+        html += textToHtml(analys.detaljnivå.med_motsatt_mönster);
+      }
+      if (analys.detaljnivå.tips) {
+        html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
+        html += textToHtml(analys.detaljnivå.tips);
+      }
+    }
+    if (dSignal && utm[dSignal]) {
+      html += '<p><strong>Din utmaning:</strong> ' + esc(utm[dSignal]) + '</p>';
+    }
+    html += '</div>'; // block-resultat
+    html += '</div>'; // block-resultat-wrap
+    html += '</div>'; // section-panel
+    return html;
+  }
+
+  // ═══════════════════════════════════════
+  // LEGACY RENDERING (old plain-text format)
+  // ═══════════════════════════════════════
+
+  function renderLegacyReport(data) {
+    var name = data.name || 'Respondent';
+    var date = data.generated_at ? new Date(data.generated_at).toLocaleDateString('sv-SE') : '';
+    var text = data.report_text || '';
+
+    document.getElementById('headerName').textContent = name;
+    loadingWrap.style.display = 'none';
+    document.getElementById('appHeader').style.display = 'flex';
+    document.getElementById('appLayout').style.display = 'flex';
+
+    // Hide sidebar and nav for legacy
+    document.getElementById('appSidebar').style.display = 'none';
+    document.getElementById('navFooter').style.display = 'none';
+    mainEl.style.marginLeft = '0';
+
+    var html = '<div class="section-panel active" style="padding-top:80px;">';
+    html += '<div class="section-title">' + esc(name) + '</div>';
+    html += '<div class="section-divider"></div>';
+
+    var sections = text.split(/\[AVSNITT\s+\d+\s*[\u2014—]\s*/i);
+    for (var i = 1; i < sections.length; i++) {
+      var sectionText = sections[i];
+      var titleEnd = sectionText.indexOf(']');
+      var title = titleEnd > -1 ? sectionText.substring(0, titleEnd).trim() : '';
+      var body = titleEnd > -1 ? sectionText.substring(titleEnd + 1).trim() : sectionText.trim();
+      if (title.toUpperCase() === 'OMSLAG') continue;
+      if (title) {
+        html += '<div style="margin-top:56px;"><div class="section-title" style="font-size:24px;">' + esc(title) + '</div>';
+        html += '<div class="section-divider"></div></div>';
+      }
+      html += processText(body);
+    }
+    if (sections.length <= 1) {
+      html += processText(text);
+    }
+    html += '<div style="text-align:center;padding:32px 0;margin-top:56px;font-size:11px;color:rgba(240,237,230,0.25);">holmberg &amp; friends</div>';
+    html += '</div>';
+    mainEl.innerHTML = html;
+    totalSections = 1;
+  }
+
+  // ═══════════════════════════════════════
+  // SHARED UTILITIES
+  // ═══════════════════════════════════════
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function formatMarkdown(s) {
+    s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return s;
+  }
+
+  function textToHtml(text) {
+    if (!text) return '';
+    var parts = text.split(/\n\n+/);
+    var html = '';
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i].trim();
+      if (!p) continue;
+      html += '<p>' + formatMarkdown(esc(p.replace(/\n/g, ' '))) + '</p>';
+    }
+    return html;
+  }
+
+  function processText(text) {
+    var parts = text.split(/\n\n+/);
+    var html = '';
+    for (var i = 0; i < parts.length; i++) {
+      var p = parts[i].trim();
+      if (!p) continue;
+      if (/^\d+[a-z]\.\s/.test(p)) {
+        var subParts = p.split(/\n/);
+        var subTitle = subParts[0].replace(/^\d+[a-z]\.\s*/, '');
+        html += '<div class="section-subtitle">' + formatMarkdown(esc(subTitle)) + '</div>';
+        if (subParts.length > 1) {
+          html += '<p>' + formatMarkdown(esc(subParts.slice(1).join(' ').trim())) + '</p>';
+        }
+      } else {
+        html += '<p>' + formatMarkdown(esc(p.replace(/\n/g, ' '))) + '</p>';
+      }
+    }
+    return html;
+  }
+
+  // ═══════════════════════════════════════
+  // VISUALIZATIONS
+  // ═══════════════════════════════════════
+
+  function buildSpiderSvg(rj) {
+    var cx = 180, cy = 180, maxR = 150;
+    var axes = [
+      { label: 'Till', key: 'motivationsriktning', angle: -90 },
+      { label: 'Intern', key: 'beslutsram', angle: -30 },
+      { label: 'Alternativ', key: 'f\u00f6rst\u00e5else', angle: 30 },
+      { label: 'Ifr\u00e5n', key: '_mot_inv', angle: 90 },
+      { label: 'Extern', key: '_bes_inv', angle: 150 },
+      { label: 'Procedur', key: '_f\u00f6r_inv', angle: 210 }
+    ];
+
+    function getVal(key) {
+      if (key === '_mot_inv') return 10 - (rj.motivationsriktning && rj.motivationsriktning.skala || 5);
+      if (key === '_bes_inv') return 10 - (rj.beslutsram && rj.beslutsram.skala || 5);
+      if (key === '_f\u00f6r_inv') return 10 - (rj.f\u00f6rst\u00e5else && rj.f\u00f6rst\u00e5else.skala || 5);
+      return rj[key] && rj[key].skala || 5;
+    }
+
+    var svg = '<div class="viz-container"><svg width="420" height="420" viewBox="-30 -30 420 420" style="overflow:visible;">';
+
+    for (var ring = 1; ring <= 3; ring++) {
+      var r = (ring / 3) * maxR;
+      var ringPoints = [];
+      for (var a = 0; a < 6; a++) {
+        var angle = (axes[a].angle * Math.PI) / 180;
+        ringPoints.push((cx + r * Math.cos(angle)).toFixed(1) + ',' + (cy + r * Math.sin(angle)).toFixed(1));
+      }
+      svg += '<polygon points="' + ringPoints.join(' ') + '" fill="none" stroke="rgba(240,237,230,0.12)" stroke-width="0.5"/>';
+    }
+
+    for (var i = 0; i < 6; i++) {
+      var angle = (axes[i].angle * Math.PI) / 180;
+      var x2 = cx + maxR * Math.cos(angle);
+      var y2 = cy + maxR * Math.sin(angle);
+      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="rgba(240,237,230,0.12)" stroke-width="0.5"/>';
+    }
+
+    var dataPoints = [];
+    for (var j = 0; j < 6; j++) {
+      var val = getVal(axes[j].key);
+      var dist = (val / 10) * maxR;
+      var ang = (axes[j].angle * Math.PI) / 180;
+      dataPoints.push({ x: cx + dist * Math.cos(ang), y: cy + dist * Math.sin(ang) });
+    }
+    var polyStr = dataPoints.map(function(p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
+    svg += '<polygon points="' + polyStr + '" fill="#c8b89a" fill-opacity="0.12" stroke="#c8b89a" stroke-width="1"/>';
+
+    for (var k = 0; k < dataPoints.length; k++) {
+      svg += '<circle cx="' + dataPoints[k].x.toFixed(1) + '" cy="' + dataPoints[k].y.toFixed(1) + '" r="4" fill="#c8b89a"/>';
+    }
+
+    for (var l = 0; l < 6; l++) {
+      var lblAngle = (axes[l].angle * Math.PI) / 180;
+      var lblR = maxR + 22;
+      var lx = cx + lblR * Math.cos(lblAngle);
+      var ly = cy + lblR * Math.sin(lblAngle);
+      var anchor = 'middle';
+      if (axes[l].angle >= 150 || axes[l].angle <= -150) anchor = 'end';
+      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="' + anchor + '" font-family="\'Playfair Display\', serif" font-size="14" font-weight="400" fill="rgba(240,237,230,0.5)">' + axes[l].label + '</text>';
+    }
+
+    svg += '</svg></div>';
+    return svg;
+  }
+
+  function buildScaleViz(rj, patternKey) {
+    var mapping = {
+      motivationsriktning: { left: 'Ifr\u00e5n', right: 'Till', data: rj.motivationsriktning },
+      beslutsram: { left: 'Extern', right: 'Intern', data: rj.beslutsram },
+      'f\u00f6rst\u00e5else': { left: 'Procedur', right: 'Alternativ', data: rj.f\u00f6rst\u00e5else }
+    };
+    var m = mapping[patternKey];
+    if (!m) return '';
+
+    var scale = m.data && m.data.skala || 5;
+    var pct = ((scale - 1) / 9 * 100).toFixed(1);
+    var strength = m.data && m.data.styrka || '';
+
+    var badge = '';
+    if (strength === 'Tydlig') badge = '<span class="strength-badge strength-tydlig">Tydlig</span>';
+    else if (strength === 'Trolig') badge = '<span class="strength-badge strength-trolig">Trolig</span>';
+    else if (strength === 'M\u00f6jlig') badge = '<span class="strength-badge strength-mojlig">M\u00f6jlig</span>';
+
+    var html = '<div class="viz-card"><div class="scale-viz">';
+    html += '<div class="scale-labels"><span>' + esc(m.left) + '</span><span>' + esc(m.right) + '</span></div>';
+    html += '<div class="scale-track">';
+    html += '<div class="scale-fill" style="width:' + pct + '%"></div>';
+    html += '<div class="scale-thumb" style="left:' + pct + '%"></div>';
+    html += '</div>';
+    html += '<div class="scale-value">' + scale + ' / 10 \u00b7 ' + badge + '</div>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function buildChannelViz(rj) {
+    var signal = rj.sinneskanal && rj.sinneskanal.signal || '';
+    var channels = [
+      { name: 'Syn', icon: '\ud83d\udc41' },
+      { name: 'H\u00f6rsel', icon: '\ud83d\udc42' },
+      { name: 'K\u00e4nsel', icon: '\u270b' }
+    ];
+    var html = '<div class="viz-card"><div class="channel-chips">';
+    for (var i = 0; i < channels.length; i++) {
+      var isActive = channels[i].name === signal;
+      html += '<span class="channel-chip ' + (isActive ? 'active' : 'inactive') + '">';
+      html += '<span class="channel-icon">' + channels[i].icon + '</span>';
+      html += channels[i].name;
+      html += '</span>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function buildChangeViz(rj) {
+    var signal = rj.f\u00f6r\u00e4ndringsrelation && rj.f\u00f6r\u00e4ndringsrelation.signal || '';
+    var segments = ['Likhet', 'Likhet med undantag', 'Skillnad med undantag', 'Skillnad'];
+    var html = '<div class="viz-card"><div class="change-segments">';
+    for (var i = 0; i < segments.length; i++) {
+      var isActive = segments[i] === signal;
+      html += '<div class="change-seg ' + (isActive ? 'active' : 'inactive') + '">';
+      html += '<div class="change-seg-bar"></div>';
+      html += '<div class="change-seg-label">' + segments[i] + '</div>';
+      html += '</div>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function buildActionIndicator(rj) {
+    var signal = rj.handlingsstil && rj.handlingsstil.signal || 'Neutral';
+    var avgTime = rj.handlingsstil && rj.handlingsstil.genomsnittlig_svarstid_sekunder;
+    var meta = avgTime ? 'Svarstid: ' + avgTime + 's' : '';
+    var html = '<div class="viz-card viz-card--compact"><div class="indicator-row">';
+    html += '<span class="indicator-pill">' + esc(signal) + '</span>';
+    if (meta) {
+      html += '<span class="indicator-sep">\u00b7</span>';
+      html += '<span class="indicator-desc">' + esc(meta) + '</span>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  function buildDetailIndicator(rj) {
+    var signal = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.signal || '';
+    var obs = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.observation || '';
+    var html = '<div class="viz-card viz-card--compact"><div class="indicator-row">';
+    html += '<span class="indicator-pill">' + esc(signal) + '</span>';
+    if (obs) {
+      html += '<span class="indicator-sep">\u00b7</span>';
+      html += '<span class="indicator-desc">' + esc(obs) + '</span>';
+    }
+    html += '</div></div>';
+    return html;
+  }
+
+  // ═══════════════════════════════════════
+  // FEEDBACK
+  // ═══════════════════════════════════════
+
+  function buildFeedbackSection() {
+    var html = '<div class="feedback-section" id="feedbackSection">';
+    html += '<div id="fbForm">';
+    html += '<div class="feedback-title">Hur upplevde du din rapport?</div>';
+    html += '<div class="feedback-intro">Det tar under en minut. Din feedback hj\u00e4lper oss g\u00f6ra Spr\u00e5km\u00f6nsterlabbet b\u00e4ttre.</div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">Tr\u00e4ffs\u00e4kerhet</div>';
+    html += '<div class="fb-stars" id="fbStars">';
+    for (var i = 1; i <= 5; i++) {
+      html += '<span class="fb-star" data-val="' + i + '">&#9733;</span>';
+    }
+    html += '</div></div>';
+
+    html += '<div class="fb-divider"></div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">Mest anv\u00e4ndbart</div>';
+    html += '<textarea class="fb-textarea" id="fbMest" placeholder="Beskriv fritt..."></textarea>';
+    html += '</div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">Saknades eller otydligt</div>';
+    html += '<textarea class="fb-textarea" id="fbSaknades" placeholder="Beskriv fritt..."></textarea>';
+    html += '</div>';
+
+    html += '<div class="fb-divider"></div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">Skulle du anv\u00e4nda insikterna?</div>';
+    html += '<div class="fb-pills" id="fbSkulle">';
+    html += '<button class="fb-pill" data-val="Ja">Ja</button>';
+    html += '<button class="fb-pill" data-val="Kanske">Kanske</button>';
+    html += '<button class="fb-pill" data-val="Nej">Nej</button>';
+    html += '</div></div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">\u00d6vriga tankar</div>';
+    html += '<textarea class="fb-textarea" id="fbOvriga" placeholder="Skriv vad du vill..."></textarea>';
+    html += '</div>';
+
+    html += '<div class="fb-divider"></div>';
+
+    html += '<div class="fb-group">';
+    html += '<div class="fb-question">Betalningsvilja</div>';
+    html += '<div class="fb-pills" id="fbBetal">';
+    html += '<button class="fb-pill" data-val="Ingenting">Ingenting</button>';
+    html += '<button class="fb-pill" data-val="49 kr eng\u00e5ng">49 kr eng\u00e5ng</button>';
+    html += '<button class="fb-pill" data-val="99\u2013149 kr/m\u00e5nad">99\u2013149 kr/m\u00e5nad</button>';
+    html += '<button class="fb-pill" data-val="249 kr/m\u00e5nad">249 kr/m\u00e5nad</button>';
+    html += '</div></div>';
+
+    html += '<button class="fb-submit" id="fbSubmit">Skicka feedback</button>';
+    html += '<div class="fb-spinner" id="fbSpinner"><span class="fb-spinner-dot"></span><span class="fb-spinner-text">Sparar...</span></div>';
+    html += '<div class="fb-error" id="fbError"></div>';
+    html += '</div>';
+
+    html += '<div id="fbTack" style="display:none;" class="fb-tack">';
+    html += '<img class="fb-tack-img" src="/images/glad.png" alt="Tack">';
+    html += '<div class="fb-tack-title">Tack!</div>';
+    html += '<div class="fb-tack-text">Din feedback \u00e4r v\u00e4rdefull och hj\u00e4lper oss utveckla Spr\u00e5km\u00f6nsterlabbet.</div>';
+    html += '</div>';
+
+    html += '</div>';
+    return html;
+  }
+
+  function initFeedback() {
+    var section = document.getElementById('feedbackSection');
+    if (!section) return;
+
+    var fbStarRating = 0;
+    var fbSkulleVal = '';
+    var fbBetalVal = '';
+
+    var stars = document.querySelectorAll('#fbStars .fb-star');
+    for (var i = 0; i < stars.length; i++) {
+      stars[i].addEventListener('click', function() {
+        fbStarRating = parseInt(this.getAttribute('data-val'));
+        for (var s = 0; s < stars.length; s++) {
+          var v = parseInt(stars[s].getAttribute('data-val'));
+          stars[s].className = 'fb-star' + (v <= fbStarRating ? ' active' : '');
+        }
+      });
+    }
+
+    var skulleBtns = document.querySelectorAll('#fbSkulle .fb-pill');
+    for (var j = 0; j < skulleBtns.length; j++) {
+      skulleBtns[j].addEventListener('click', function() {
+        fbSkulleVal = this.getAttribute('data-val');
+        for (var k = 0; k < skulleBtns.length; k++) skulleBtns[k].className = 'fb-pill';
+        this.className = 'fb-pill selected';
+      });
+    }
+
+    var betalBtns = document.querySelectorAll('#fbBetal .fb-pill');
+    for (var b = 0; b < betalBtns.length; b++) {
+      betalBtns[b].addEventListener('click', function() {
+        fbBetalVal = this.getAttribute('data-val');
+        for (var k = 0; k < betalBtns.length; k++) betalBtns[k].className = 'fb-pill';
+        this.className = 'fb-pill selected';
+      });
+    }
+
+    document.getElementById('fbSubmit').addEventListener('click', function() {
+      if (fbStarRating === 0) {
+        var errEl = document.getElementById('fbError');
+        errEl.textContent = 'V\u00e4lj ett betyg (stj\u00e4rnor) f\u00f6r tr\u00e4ffs\u00e4kerhet.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      var btn = document.getElementById('fbSubmit');
+      var spinner = document.getElementById('fbSpinner');
+      var errEl = document.getElementById('fbError');
+      btn.style.display = 'none';
+      spinner.className = 'fb-spinner visible';
+      errEl.style.display = 'none';
+
+      var payload = {
+        profile_id: reportProfileId || '',
+        traffsakker: fbStarRating,
+        mest_anvandbart: document.getElementById('fbMest').value,
+        saknades: document.getElementById('fbSaknades').value,
+        skulle_anvanda: fbSkulleVal,
+        ovriga_tankar: document.getElementById('fbOvriga').value,
+        betalningsvilja: fbBetalVal
+      };
+
+      fetch(API + '/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function(res) { return res.json(); })
+        .then(function() {
+          document.getElementById('fbForm').style.display = 'none';
+          document.getElementById('fbTack').style.display = 'block';
+        })
+        .catch(function() {
+          btn.style.display = 'block';
+          spinner.className = 'fb-spinner';
+          errEl.textContent = 'N\u00e5got gick fel. F\u00f6rs\u00f6k igen.';
+          errEl.style.display = 'block';
+        });
+    });
+  }
+
+})();
+</script>
+</body>
+</html>

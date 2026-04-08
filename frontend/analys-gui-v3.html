@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Språkmönsterlabbet — ANALYS</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0D0D0D;
+    --dark: #1C1C1C;
+    --mid: #5A5A5A;
+    --muted: #999999;
+    --border: #E2E2E2;
+    --border-light: #F0F0F0;
+    --bg: #FAFAFA;
+    --white: #FFFFFF;
+    --accent: #FF9F46;
+    --accent-hover: #e8892e;
+    --accent-light: #FFF5EC;
+    --green: #2A7A4F;
+    --green-light: #F0FAF5;
+    --red: #C8440A;
+    --red-light: #FBF1EC;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: var(--white);
+    color: var(--dark);
+    font-size: 16px;
+    line-height: 1.3;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 48px;
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-title {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    color: var(--black);
+  }
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .nav-sessions {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--black);
+  }
+  .btn-text {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--mid);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* PHASE NAV */
+  .phase-nav {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    padding: 0 48px;
+    gap: 0;
+  }
+  .phase-group {
+    display: flex;
+    align-items: stretch;
+    position: relative;
+  }
+  .phase-group + .phase-group::before {
+    content: '';
+    width: 1px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+  .phase-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px 0 12px;
+    display: none; /* hidden in demo strip */
+  }
+  .demo-tab {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--muted);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: color 0.15s;
+    margin-bottom: -1px;
+    white-space: nowrap;
+  }
+  .demo-tab.active {
+    color: var(--black);
+    border-bottom-color: var(--black);
+  }
+  .phase-divider {
+    width: 1px;
+    background: var(--border);
+    margin: 8px 6px;
+  }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* SHARED */
+  .wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 72px 24px 96px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 52px;
+    font-weight: 300;
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    margin-bottom: 24px;
+  }
+  h1 em { font-style: italic; }
+  .intro-text {
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.65;
+    margin-bottom: 56px;
+    max-width: 540px;
+  }
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 48px;
+  }
+  .btn-primary {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: var(--white);
+    border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--mid);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* INTRO */
+  .levels {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .level {
+    background: var(--white);
+    padding: 28px 24px;
+  }
+  .level-num {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .level h3 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--black);
+    margin-bottom: 10px;
+  }
+  .level p {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+  .course-section { margin-bottom: 48px; }
+  .course-section h2 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+  .course-section p {
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+  .quote-block {
+    border-left: 2px solid var(--border);
+    padding: 4px 0 4px 20px;
+    margin: 24px 0;
+  }
+  .quote-block p {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 19px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--dark);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  /* QUIZ */
+  .quiz-block {
+    border: 1px solid var(--border);
+    padding: 32px;
+    margin-top: 16px;
+  }
+  .quiz-block h3 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .quiz-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .quiz-q { margin-bottom: 28px; }
+  .quiz-q p {
+    font-size: 15px;
+    color: var(--dark);
+    margin-bottom: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--dark);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    transition: border-color 0.15s, background 0.15s;
+    text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--black); }
+  .quiz-option.correct {
+    border-color: var(--green);
+    background: var(--green-light);
+    color: #1A5A35;
+  }
+  .quiz-option.wrong {
+    border-color: var(--red);
+    background: var(--red-light);
+    color: var(--red);
+  }
+  .opt-dot {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ANALYS */
+  .input-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  textarea {
+    width: 100%;
+    min-height: 180px;
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 18px;
+    font-weight: 300;
+    line-height: 1.65;
+    color: var(--dark);
+    border: 1px solid var(--border);
+    padding: 20px;
+    resize: vertical;
+    outline: none;
+    background: var(--white);
+    transition: border-color 0.15s;
+    letter-spacing: -0.01em;
+  }
+  textarea:focus { border-color: var(--black); }
+  textarea::placeholder { color: var(--border); font-style: italic; }
+  .input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+  }
+  .input-hint { font-size: 12px; color: var(--muted); }
+
+  /* RESULTAT */
+  .result-meta {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 48px;
+  }
+  .pattern-row {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+  }
+  .pattern-row:last-of-type {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 48px;
+  }
+  .pattern-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 16px;
+  }
+  .pattern-title {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 28px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--black);
+  }
+  .pattern-signal {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .pattern-body-text {
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .evidence-block {
+    border-left: 2px solid var(--border-light);
+    padding-left: 16px;
+    margin-top: 16px;
+  }
+  .evidence-item {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: 300;
+    color: var(--mid);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .practical-note {
+    background: var(--bg);
+    border: 1px solid var(--border-light);
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .practical-note-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .practical-note p {
+    font-size: 14px;
+    color: var(--dark);
+    line-height: 1.6;
+  }
+  .kurs-block {
+    border: 1px solid var(--border);
+    padding: 40px 40px 40px 40px;
+    margin-top: 48px;
+    background: var(--bg);
+    position: relative;
+  }
+  .kurs-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+  }
+  .kurs-block h2 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 32px;
+    font-weight: 300;
+    letter-spacing: -0.03em;
+    color: var(--black);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .kurs-block p {
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.65;
+    margin-bottom: 24px;
+    max-width: 480px;
+  }
+
+  /* UPGRADE */
+  .price-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .price-box {
+    background: var(--white);
+    padding: 32px 24px;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+  .price-box:hover { background: var(--bg); }
+  .price-box.featured { background: var(--black); }
+  .price-box.featured:hover { background: #2A2A2A; }
+  .price-tag {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 36px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    color: var(--black);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .price-box.featured .price-tag { color: var(--white); }
+  .price-period {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  .price-box.featured .price-period { color: rgba(255,255,255,0.5); }
+  .price-desc {
+    font-size: 13px;
+    color: var(--mid);
+    line-height: 1.6;
+  }
+  .price-box.featured .price-desc { color: rgba(255,255,255,0.65); }
+  .featured-label {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+  .discount-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 48px;
+    font-style: italic;
+    font-family: 'Crimson Pro', Georgia, serif;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo a {
+    display: block;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+  .footer-logo a:hover { opacity: 0.5; }
+  .footer-logo img {
+    height: 32px;
+    width: auto;
+    display: block;
+  }
+  .footer-credit {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+    text-align: right;
+    max-width: 520px;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-title">Språkmönsterlabbet — Analys</div>
+  <div class="nav-right">
+    <span class="nav-sessions">3 analyser kvar utan kostnad</span>
+    <button class="btn-text">Logga in</button>
+  </div>
+</nav>
+
+<!-- PHASE NAV -->
+<div class="phase-nav">
+  <div class="phase-group">
+    <button class="demo-tab active" onclick="show('intro')">① Introduktion</button>
+    <button class="demo-tab" onclick="show('quiz')">② Förståelsefrågor</button>
+  </div>
+  <div class="phase-divider"></div>
+  <div class="phase-group">
+    <button class="demo-tab" onclick="show('analys')">③ Analys</button>
+    <button class="demo-tab" onclick="show('resultat')">④ Resultat</button>
+  </div>
+  <div class="phase-divider"></div>
+  <div class="phase-group">
+    <button class="demo-tab" onclick="show('upgrade')">⑤ Välj prenumeration</button>
+  </div>
+</div>
+
+<!-- ① INTRO -->
+<div id="page-intro" class="page active">
+  <div class="wrap">
+    <p class="eyebrow">Språkmönsterlabbet — Analys</p>
+    <h1>Vad menar du —<br><em>egentligen?</em></h1>
+    <p class="intro-text">Innan du gör din första analys är det viktigt att du förstår vad ett språkmönster är för något — ta två minuter och läs det här för att kunna göra analysen.</p>
+    <div class="divider"></div>
+    <div class="course-section">
+      <h2>Tre saker vi ofta blandar ihop</h2>
+      <p>När vi tolkar vad någon säger tenderar vi att blanda samman tre helt olika saker. Det är anledningen till att kommunikation kan vara svårt — och varför samma mening kan uppfattas så olika av olika personer.</p>
+      <div class="quote-block">
+        <p>"När vi tar emot kommunikation från någon uppfattar vi den ofta som en del av deras identitet och personlighet. Det är en av anledningarna till att kommunikation kan vara utmanande."</p>
+      </div>
+    </div>
+    <div class="levels">
+      <div class="level">
+        <div class="level-num">01</div>
+        <h3>Identitet</h3>
+        <p>Vem vi upplever att vi är i stunden. Inte ett fast tillstånd — utan en upplevelse.</p>
+      </div>
+      <div class="level">
+        <div class="level-num">02</div>
+        <h3>Beteende</h3>
+        <p>Allt vi gör i vardagen. Beteendet uppstår ur identitetsupplevelsen — men det är inte samma sak.</p>
+      </div>
+      <div class="level">
+        <div class="level-num">03</div>
+        <h3>Kommunikation</h3>
+        <p>De tolkningar som uppstår — hos oss och hos andra. Kommunikation kräver inte ens avsikt.</p>
+      </div>
+    </div>
+    <div class="course-section">
+      <h2>Var finns språkmönstren?</h2>
+      <p>Språkmönster är en underkategori till kommunikation — inte till identitet. Det betyder att en text kan signalera ett mönster utan att det säger något om vem personen är.</p>
+      <p>Analysen handlar om <em>hur</em> språket organiseras. Inte om vem som skriver det.</p>
+      <div class="quote-block">
+        <p>"Vi har mönster — vi är inte våra mönster, vi är så mycket mer."</p>
+        <p style="font-family: Helvetica Neue, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-top: 12px; font-style: normal;">Alexander Holmberg</p>
+      </div>
+    </div>
+    <button class="btn-primary" onclick="show('quiz')">Gå vidare till frågorna →</button>
+  </div>
+</div>
+
+<!-- ② QUIZ -->
+<div id="page-quiz" class="page">
+  <div class="wrap">
+    <p class="eyebrow">Förståelsefrågor</p>
+    <h1>Innan du<br><em>analyserar</em></h1>
+    <div class="quiz-block">
+      <h3>Två frågor</h3>
+      <p class="quiz-sub">Svara på frågorna nedan. Får du något rätt? Det här är mer för att se att du och vi har samma förståelse för vad språkmönster är. Att det handlar om kommunikation. Inte vem vi är.</p>
+      <div class="quiz-q">
+        <p>En kollega skriver: <em>"Jag vill alltid ha koll på vad som förväntas av mig."</em> Vad analyserar Språkmönsterlabbet i den meningen?</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOpt(this,false)"><div class="opt-dot"></div>Vad kollegan har för personlighet</button>
+          <button class="quiz-option" onclick="selectOpt(this,true)"><div class="opt-dot"></div>Hur språket organiserar motivation och förväntan</button>
+          <button class="quiz-option" onclick="selectOpt(this,false)"><div class="opt-dot"></div>Om kollegan trivs på jobbet</button>
+        </div>
+      </div>
+      <div class="quiz-q">
+        <p>Du läser ett mail fullt av <em>"undvika misstag"</em> och <em>"se till att inget går fel"</em>. Det här är ett exempel på:</p>
+        <div class="quiz-options">
+          <button class="quiz-option" onclick="selectOpt(this,false)"><div class="opt-dot"></div>Att avsändaren är ängslig som person</button>
+          <button class="quiz-option" onclick="selectOpt(this,true)"><div class="opt-dot"></div>Ett kommunikationsmönster i texten — inte en egenskap hos personen</button>
+          <button class="quiz-option" onclick="selectOpt(this,false)"><div class="opt-dot"></div>Dålig kommunikation</button>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="show('analys')">Gå vidare till analysen →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ③ ANALYS -->
+<div id="page-analys" class="page">
+  <div class="wrap">
+    <p class="eyebrow">Gör din analys</p>
+    <h1>Vilka mönster<br><em>finns i texten?</em></h1>
+    <p class="intro-text">Klistra in eller skriv en text du vill analysera — ett mail du fått, något en kund sagt, en mening som skavde eller som du vill fördjupa dig i. Analysen identifierar vilka kommunikationsmönster och vilken motivation som finns i texten.</p>
+    <div class="input-label">Din text</div>
+    <textarea placeholder="Klistra in texten här..." maxlength="1500" oninput="updateCount(this)">Vi behöver ta det steg för steg. Börja med att kontakta leverantören, sedan boka mötet, och sedan kan vi gå vidare med beslutet när vi vet mer.</textarea>
+    <div class="input-footer">
+      <span class="input-hint">Minst 30 tecken för en meningsfull analys — max 1500 tecken. <span id="char-count" style="color: var(--muted);">0/1500</span></span>
+      <button class="btn-primary" onclick="show('resultat')">Analysera →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ④ RESULTAT -->
+<div id="page-resultat" class="page">
+  <div class="wrap">
+    <p class="eyebrow">Resultat</p>
+    <h1>Två mönster<br><em>identifierade</em></h1>
+    <p class="result-meta">Baserat på texten du klistrade in. Analysen gäller språket — inte personen.</p>
+    <div class="pattern-row">
+      <div class="pattern-head">
+        <span class="pattern-title">Procedur</span>
+        <span class="pattern-signal">Tydlig signal</span>
+      </div>
+      <p class="pattern-body-text">Texten organiseras som en sekvens med ett steg i taget i bestämd ordning. Det finns ett behov av att följa en process innan beslut tas — och rörelsen framåt är beroende av att varje steg är genomfört.</p>
+      <div class="evidence-block">
+        <div class="evidence-item">"ta det steg för steg"</div>
+        <div class="evidence-item">"sedan boka mötet, och sedan kan vi gå vidare"</div>
+        <div class="evidence-item">"när vi vet mer" — beslut väntar på att processen är klar</div>
+      </div>
+      <div class="practical-note">
+        <div class="practical-note-label">I praktiken</div>
+        <p>Den här personen vill inte hoppa till slutet. Om du försöker skynda på processen tappar du förtroendet. Följ deras ordning — så följer de dig.</p>
+      </div>
+    </div>
+    <div class="pattern-row">
+      <div class="pattern-head">
+        <span class="pattern-title">Ifrån</span>
+        <span class="pattern-signal">Trolig signal</span>
+      </div>
+      <p class="pattern-body-text">Beslutet skjuts upp tills osäkerheten är borta. Rörelsen går mot att undvika det okända snarare än mot ett tydligt mål — inget mål nämns, bara ett flöde av åtgärder.</p>
+      <div class="evidence-block">
+        <div class="evidence-item">"när vi vet mer" — man rör sig bort från osäkerhet</div>
+        <div class="evidence-item">inget mål formuleras, bara åtgärder</div>
+      </div>
+      <div class="practical-note">
+        <div class="practical-note-label">I praktiken</div>
+        <p>Säg inte "tänk på möjligheterna". Säg "då slipper vi överraskningar". Det är det som landar.</p>
+      </div>
+    </div>
+    <div class="kurs-block">
+      <p class="eyebrow">Coachande Ledarskap</p>
+      <h2>Vill du förstå det<br>här på djupet?</h2>
+      <p>I utbildningen Coachande Ledarskap lär du dig läsa och använda kommunikationsmönster i riktiga samtal — inte bara i text. Du tränar dig att ställa rätt frågor och anpassa ditt budskap efter hur den andra personen faktiskt tar emot information.</p>
+      <button class="btn-primary">Läs om utbildningen →</button>
+    </div>
+    <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--border-light); display:flex; align-items:center; justify-content:space-between;">
+      <button class="btn-secondary" onclick="show('analys')">← Analysera en ny text</button>
+      <span style="font-size:13px; color:var(--muted);">2 analyser kvar utan kostnad</span>
+    </div>
+  </div>
+</div>
+
+<!-- ⑤ VÄLJ PRENUMERATION -->
+<div id="page-upgrade" class="page">
+  <div class="wrap">
+    <p class="eyebrow">Välj prenumeration</p>
+    <h1>Du har använt dina<br><em>tre fria analyser</em></h1>
+    <p class="intro-text">Välj det som passar dig — en analys när du behöver den, eller obegränsad tillgång för dig som arbetar med kommunikation professionellt.</p>
+    <div class="price-grid">
+      <div class="price-box">
+        <div class="price-tag">50 kr</div>
+        <div class="price-period">per analys</div>
+        <p class="price-desc">Betala per gång. Ingen prenumeration, ingen bindningstid.</p>
+      </div>
+      <div class="price-box featured">
+        <div class="featured-label">Populärast</div>
+        <div class="price-tag">500 kr</div>
+        <div class="price-period">per månad</div>
+        <p class="price-desc">Obegränsat antal analyser. Avsluta när du vill.</p>
+      </div>
+      <div class="price-box">
+        <div class="price-tag">4 800 kr</div>
+        <div class="price-period">per år</div>
+        <p class="price-desc">Samma som månadsabonnemanget — med 20% rabatt.</p>
+      </div>
+    </div>
+    <p class="discount-note">Årsabonnemanget motsvarar åtta månaders pris.</p>
+    <div class="kurs-block">
+      <p class="eyebrow">Coachande Ledarskap</p>
+      <h2>Vill du lära dig göra den<br>här typen av analyser <em>själv?</em></h2>
+      <p>Lär dig språkmönster på den omtalade utbildningen "Coachande Ledarskap" med Holmberg & Vänner. Coachande Ledarskap ger dig verktygen att läsa kommunikationsmönster i levande samtal — och använda den kunskapen i ledarskap, coaching och samarbete.</p>
+      <button class="btn-primary">Läs om utbildningen →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <a href="https://www.holmbergfriends.com" target="_blank">
+      <img src="data:image/png;base64,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" alt="Holmberg & Vänner">
+    </a>
+  </div>
+  <div class="footer-credit">
+    Modellen för språkmönster är ursprungligen utvecklad av Shelle Rose Charvet.<br>Vidareutvecklad och förfinad av Alexander Holmberg.
+  </div>
+</footer>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    const order = ['intro','quiz','analys','resultat','upgrade'];
+    document.querySelectorAll('.demo-tab')[order.indexOf(id)].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function updateCount(el) {
+    const n = el.value.length;
+    const counter = document.getElementById('char-count');
+    counter.textContent = n + '/1500';
+    counter.style.color = n > 1400 ? '#C8440A' : 'var(--muted)';
+  }
+  function selectOpt(btn, correct) {
+    const group = btn.closest('.quiz-options');
+    group.querySelectorAll('.quiz-option').forEach(b => b.classList.remove('correct','wrong'));
+    btn.classList.add(correct ? 'correct' : 'wrong');
+  }
+</script>
+</body>
+</html>

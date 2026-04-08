@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Språkmönsterprofil</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0D0D0D;
+    --dark: #1C1C1C;
+    --mid: #5A5A5A;
+    --muted: #999999;
+    --border: #E2E2E2;
+    --border-light: #F0F0F0;
+    --bg: #FAFAFA;
+    --white: #FFFFFF;
+    --accent: #534AB7;
+    --accent-hover: #443d9a;
+    --accent-light: #EEEDFA;
+    --green: #2E7D32;
+    --green-light: #E8F5E9;
+    --red: #C62828;
+    --red-light: #FFEBEE;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #0c0c0b;
+    color: #f0ede6;
+    font-size: 16px;
+    line-height: 1.3;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* FADE IN */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .page.active .wrap { animation: fadeIn 0.4s ease both; }
+
+  /* NAV */
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 48px;
+    background: #0c0c0b;
+    border-bottom: 0.5px solid rgba(240,237,230,0.1);
+  }
+  .nav-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(240,237,230,0.5);
+    letter-spacing: 0.04em;
+  }
+  .nav-step {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: #c8b89a;
+    letter-spacing: 0.06em;
+  }
+
+  /* DOT PROGRESS */
+  .dot-progress {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 0;
+    background: #0c0c0b;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(240,237,230,0.2);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active {
+    background: #c8b89a;
+    transform: scale(1.25);
+  }
+  .dot.done {
+    background: #c8b89a;
+    opacity: 0.5;
+  }
+
+  /* PROGRESS BAR (for question steps) */
+  .progress-bar {
+    height: 3px;
+    background: rgba(240,237,230,0.08);
+  }
+  .progress-fill {
+    height: 100%;
+    background: #c8b89a;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* SHARED */
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 72px 24px 96px;
+  }
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: #f0ede6;
+    margin-bottom: 20px;
+  }
+  h1 em { font-style: italic; color: #c8b89a; }
+  .intro-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: rgba(240,237,230,0.6);
+    margin-bottom: 40px;
+    max-width: 520px;
+  }
+
+  /* EYEBROW */
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c8b89a;
+    margin-bottom: 16px;
+  }
+
+  /* SPRAK + SPEECH BUBBLE */
+  .sprak-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .sprak-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .speech-bubble {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-size: 15px;
+    color: var(--mid);
+    line-height: 1.6;
+    position: relative;
+  }
+  .speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 20px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid var(--border);
+  }
+  .speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 20px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 8px solid var(--bg);
+  }
+
+  /* BUTTONS */
+  .btn-primary {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: #f0ede6;
+    color: #0c0c0b;
+    border: none;
+    border-radius: 0;
+    padding: 16px 36px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { background: #fff; }
+  .btn-primary:disabled {
+    background: rgba(240,237,230,0.15);
+    color: rgba(240,237,230,0.3);
+    cursor: not-allowed;
+  }
+  .btn-primary:disabled:hover { background: rgba(240,237,230,0.15); }
+
+  /* CHECKBOXES */
+  .cb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .cb-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cb-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    accent-color: #c8b89a;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .cb-item span {
+    font-size: 15px;
+    color: rgba(240,237,230,0.8);
+    line-height: 1.5;
+  }
+
+  /* QUIZ */
+  .quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .quiz-opt {
+    border: 0.5px solid rgba(240,237,230,0.15);
+    border-radius: 0;
+    padding: 16px 20px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: rgba(240,237,230,0.8);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    background: rgba(240,237,230,0.04);
+  }
+  .quiz-opt:hover { border-color: rgba(240,237,230,0.3); background: rgba(240,237,230,0.08); }
+  .quiz-opt.correct {
+    border-color: #c8b89a;
+    background: rgba(200,184,154,0.1);
+    color: #c8b89a;
+    cursor: default;
+  }
+  .quiz-opt.wrong {
+    border-color: rgba(240,100,80,0.5);
+    background: rgba(240,100,80,0.08);
+    color: rgba(240,100,80,0.8);
+    cursor: default;
+  }
+  .quiz-opt.disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
+  .quiz-feedback {
+    display: none;
+    margin-bottom: 24px;
+  }
+  .quiz-feedback.visible { display: block; }
+
+  /* SITUATION CARDS */
+  .sit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .sit-card {
+    border: 0.5px solid rgba(240,237,230,0.15);
+    border-radius: 0;
+    padding: 20px 16px;
+    text-align: center;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    color: rgba(240,237,230,0.7);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .sit-card:hover { border-color: rgba(240,237,230,0.3); background: rgba(240,237,230,0.08); }
+  .sit-card.selected { border-color: #c8b89a; background: rgba(200,184,154,0.1); color: #c8b89a; font-weight: 500; }
+  .sit-other-input {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: #f0ede6;
+    border: 0.5px solid rgba(240,237,230,0.2);
+    padding: 12px 14px;
+    background: rgba(240,237,230,0.05);
+    outline: none;
+    margin-bottom: 24px;
+    display: none;
+    transition: border-color 0.15s;
+  }
+  .sit-other-input:focus { border-color: rgba(240,237,230,0.5); }
+  .sit-other-input.visible { display: block; }
+
+  /* FORM FIELDS */
+  .field-group { margin-bottom: 24px; }
+  .field-group label {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(240,237,230,0.7);
+    margin-bottom: 8px;
+  }
+  .field-group input,
+  .field-group textarea {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 300;
+    color: #f0ede6;
+    border: 0.5px solid rgba(240,237,230,0.2);
+    border-radius: 0;
+    padding: 14px 16px;
+    background: rgba(240,237,230,0.05);
+    transition: border-color 0.15s, background 0.15s;
+    outline: none;
+  }
+  .field-group input::placeholder,
+  .field-group textarea::placeholder {
+    color: rgba(240,237,230,0.25);
+  }
+  .field-group input:focus,
+  .field-group textarea:focus {
+    border-color: rgba(240,237,230,0.5);
+    background: rgba(240,237,230,0.08);
+  }
+  .field-group textarea {
+    resize: vertical;
+    min-height: 120px;
+    line-height: 1.6;
+  }
+  .consent-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: rgba(240,237,230,0.35);
+    line-height: 1.5;
+    margin-top: 16px;
+    margin-bottom: 32px;
+  }
+  .char-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: rgba(240,237,230,0.3);
+    margin-top: 6px;
+    text-align: right;
+    transition: color 0.15s;
+  }
+  .char-hint.ok { color: #c8b89a; }
+
+  /* QUESTION */
+  .q-number {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #c8b89a;
+    margin-bottom: 16px;
+  }
+  .q-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: #f0ede6;
+    margin-bottom: 32px;
+  }
+
+  /* CHIPS */
+  .chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .chip {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(240,237,230,0.7);
+    background: rgba(240,237,230,0.04);
+    border: 0.5px solid rgba(240,237,230,0.15);
+    border-radius: 0;
+    padding: 12px 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chip:hover { background: rgba(240,237,230,0.08); border-color: rgba(240,237,230,0.3); }
+  .chip.selected {
+    background: rgba(200,184,154,0.15);
+    color: #c8b89a;
+    border-color: #c8b89a;
+  }
+  .chip.dimmed {
+    color: rgba(240,237,230,0.25);
+    border-color: rgba(240,237,230,0.08);
+    opacity: 0.5;
+    cursor: default;
+  }
+  .chip.dimmed:hover { background: rgba(240,237,230,0.04); }
+  .chips-count {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: rgba(240,237,230,0.4);
+    margin-bottom: 28px;
+  }
+
+  /* SPINNER */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* INFO BLOCKS */
+  .info-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 40px;
+  }
+  .info-block {
+    border-left: 2px solid #c8b89a;
+    padding-left: 20px;
+    margin-bottom: 24px;
+  }
+  .info-block:last-child { margin-bottom: 0; }
+  .info-block-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #c8b89a;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .info-block-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(240,237,230,0.6);
+    line-height: 1.6;
+  }
+
+  /* SUBTITLE */
+  .subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: rgba(240,237,230,0.4);
+    font-style: italic;
+    margin-top: -12px;
+    margin-bottom: 24px;
+  }
+
+  /* FOOTER */
+  .site-footer {
+    text-align: center;
+    padding: 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: rgba(240,237,230,0.25);
+    border-top: 0.5px solid rgba(240,237,230,0.08);
+  }
+
+  /* STEP 15 */
+  #step15 h1 { font-size: 56px; }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .wrap { padding: 48px 20px 72px; }
+    h1 { font-size: 32px; }
+    #step15 h1 { font-size: 40px; }
+    .q-text { font-size: 26px; }
+    .chip { padding: 8px 16px; font-size: 13px; }
+    .sit-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav style="display:none;">
+  <div class="nav-title">Språkmönsterprofil</div>
+  <div class="nav-step" id="navStep"></div>
+</nav>
+<div class="dot-progress" id="dotProgress" style="display:none;"></div>
+<div class="progress-bar" style="display:none;"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- STEG 0 — HERO -->
+<div class="page active" id="step0">
+<style>
+  #step0 { background: #0c0c0b; }
+  #step0 .wrap { max-width: none; padding: 0; }
+  #step0 .s0-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 48px;
+    border-bottom: 0.5px solid rgba(240,237,230,0.12);
+  }
+  #step0 .s0-nav-left {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
+    color: rgba(240,237,230,0.35); letter-spacing: 0.02em;
+  }
+  #step0 .s0-nav-right a {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+    color: rgba(240,237,230,0.5); text-decoration: none;
+  }
+  #step0 .s0-nav-right a:hover { color: rgba(240,237,230,0.8); }
+  #step0 .s0-hero {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 57px - 72px);
+  }
+  #step0 .s0-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 80px 64px 80px 48px;
+  }
+  #step0 .s0-eyebrow {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: rgba(240,237,230,0.3); margin-bottom: 24px;
+  }
+  #step0 .s0-h1 {
+    font-family: 'Playfair Display', Georgia, serif; font-size: 72px;
+    font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
+    color: #f0ede6; margin-bottom: 28px;
+  }
+  #step0 .s0-h1 em {
+    font-style: italic; color: #c8b89a;
+  }
+  #step0 .s0-body {
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 300;
+    line-height: 1.7; color: rgba(240,237,230,0.55); max-width: 440px;
+    margin-bottom: 40px;
+  }
+  #step0 .s0-cta-row { display: flex; flex-direction: column; gap: 12px; }
+  #step0 .s0-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    background: #f0ede6; color: #0c0c0b; border: none;
+    padding: 16px 36px; cursor: pointer; transition: background 0.15s;
+    display: inline-block; width: fit-content;
+  }
+  #step0 .s0-btn:hover { background: #fff; }
+  #step0 .s0-sub {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300;
+    color: rgba(240,237,230,0.35);
+  }
+  #step0 .s0-price {
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
+    color: #c8b89a;
+  }
+  #step0 .s0-right {
+    position: relative; overflow: hidden;
+  }
+  #step0 #introCanvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+  }
+  #step0 .s0-stats {
+    position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+    display: grid; grid-template-columns: 1fr 1fr;
+  }
+  #step0 .s0-stat {
+    background: rgba(12,12,11,0.85); padding: 36px 32px;
+    border-top: 0.5px solid rgba(240,237,230,0.08);
+  }
+  #step0 .s0-stat:nth-child(odd) {
+    border-right: 0.5px solid rgba(240,237,230,0.08);
+  }
+  #step0 .s0-stat-num {
+    font-family: 'Playfair Display', Georgia, serif; font-size: 44px;
+    font-weight: 900; color: #f0ede6; line-height: 1; margin-bottom: 6px;
+  }
+  #step0 .s0-stat-label {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
+    color: rgba(240,237,230,0.4); letter-spacing: 0.04em;
+  }
+  #step0 .s0-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 48px;
+    border-top: 0.5px solid rgba(240,237,230,0.08);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    color: rgba(240,237,230,0.25);
+  }
+  #step0 .s0-footer a {
+    color: rgba(240,237,230,0.35); text-decoration: none;
+  }
+  #step0 .s0-footer a:hover { color: rgba(240,237,230,0.6); }
+  #step0 .s0-footer-links { display: flex; gap: 24px; }
+
+  @media (max-width: 860px) {
+    #step0 .s0-hero { grid-template-columns: 1fr; }
+    #step0 .s0-left { padding: 56px 24px 48px; }
+    #step0 .s0-h1 { font-size: 44px; }
+    #step0 .s0-right { min-height: 360px; }
+    #step0 .s0-nav { padding: 14px 24px; }
+    #step0 .s0-footer { padding: 16px 24px; flex-direction: column; gap: 8px; }
+    #step0 .s0-stat { padding: 24px 20px; }
+    #step0 .s0-stat-num { font-size: 32px; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="s0-nav">
+    <div class="s0-nav-left">coachholmberg.com &times; holmberg &amp; friends</div>
+    <div class="s0-nav-right"><a href="#">Om verktyget</a></div>
+  </div>
+
+  <div class="s0-hero">
+    <div class="s0-left">
+      <div class="s0-eyebrow">Kommunikationsprofil</div>
+      <h1 class="s0-h1">Förstå hur du <em>tänker</em> och talar</h1>
+      <p class="s0-body">Sju språkmönster styr hur du kommunicerar — utan att du vet om det. På tio minuter kartlägger vi ditt mönster och ger dig verktygen att leda och lyssna mer effektivt.</p>
+      <div class="s0-cta-row">
+        <button class="s0-btn" id="btnStep0">KOM IGÅNG</button>
+        <span class="s0-sub">Tar 5–6 minuter · Gratis förhandsvisning</span>
+        <span class="s0-price">Full rapport 499 kr (t.o.m. mars)</span>
+      </div>
+    </div>
+    <div class="s0-right">
+      <canvas id="introCanvas"></canvas>
+      <div class="s0-stats">
+        <div class="s0-stat"><div class="s0-stat-num">7</div><div class="s0-stat-label">Mönster kartläggs</div></div>
+        <div class="s0-stat"><div class="s0-stat-num">5 min</div><div class="s0-stat-label">Genomförtid</div></div>
+        <div class="s0-stat"><div class="s0-stat-num">1 st</div><div class="s0-stat-label">Gratis mönster</div></div>
+        <div class="s0-stat"><div class="s0-stat-num">499 kr</div><div class="s0-stat-label">Full rapport</div><div style="font-size:11px;color:rgba(240,237,230,0.35);margin-top:4px;">799 kr från april</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="s0-footer">
+    <div class="s0-footer-links">
+      <a href="https://coachholmberg.com">coachholmberg.com</a>
+      <a href="https://holmbergfriends.com">holmbergfriends.com</a>
+      <a href="#">Integritetspolicy</a>
+    </div>
+    <div>&copy; 2026 holmberg &amp; friends</div>
+  </div>
+</div>
+</div>
+
+<script>
+(function() {
+  var canvas = document.getElementById('introCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var nodes = [];
+  var N = 55;
+  var maxDist = 140;
+  var w, h;
+
+  function resize() {
+    var rect = canvas.parentElement.getBoundingClientRect();
+    w = rect.width; h = rect.height;
+    canvas.width = w * devicePixelRatio;
+    canvas.height = h * devicePixelRatio;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  }
+
+  function init() {
+    resize();
+    nodes = [];
+    for (var i = 0; i < N; i++) {
+      var big = i < Math.floor(N * 0.2);
+      nodes.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        r: big ? 3 + Math.random() * 4 : 1.2 + Math.random() * 1.5,
+        big: big,
+        phase: Math.random() * Math.PI * 2,
+        sinAmpX: 0.15 + Math.random() * 0.3,
+        sinAmpY: 0.15 + Math.random() * 0.3,
+        sinFreqX: 0.3 + Math.random() * 0.5,
+        sinFreqY: 0.3 + Math.random() * 0.5,
+      });
+    }
+  }
+
+  function draw(t) {
+    ctx.clearRect(0, 0, w, h);
+    var ts = t / 1000;
+
+    for (var i = 0; i < N; i++) {
+      var n = nodes[i];
+      n.x += n.vx + Math.sin(ts * n.sinFreqX + n.phase) * n.sinAmpX;
+      n.y += n.vy + Math.cos(ts * n.sinFreqY + n.phase) * n.sinAmpY;
+      if (n.x < -20) n.x = w + 20;
+      if (n.x > w + 20) n.x = -20;
+      if (n.y < -20) n.y = h + 20;
+      if (n.y > h + 20) n.y = -20;
+    }
+
+    for (var i = 0; i < N; i++) {
+      for (var j = i + 1; j < N; j++) {
+        var dx = nodes[i].x - nodes[j].x;
+        var dy = nodes[i].y - nodes[j].y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < maxDist) {
+          var alpha = Math.pow(1 - dist / maxDist, 1.5) * 0.45;
+          ctx.beginPath();
+          ctx.moveTo(nodes[i].x, nodes[i].y);
+          ctx.lineTo(nodes[j].x, nodes[j].y);
+          ctx.strokeStyle = 'rgba(200,184,154,' + alpha + ')';
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
+      }
+    }
+
+    for (var i = 0; i < N; i++) {
+      var n = nodes[i];
+      var pulse = 0.75 + Math.sin(ts * 1.8 + n.phase) * 0.25;
+      var r = n.r * pulse;
+
+      if (n.big) {
+        var grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 3);
+        grad.addColorStop(0, 'rgba(240,237,230,0.9)');
+        grad.addColorStop(0.4, 'rgba(200,184,154,0.3)');
+        grad.addColorStop(1, 'rgba(200,184,154,0)');
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, r * 3, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = n.big ? 'rgba(240,237,230,0.9)' : 'rgba(200,184,154,0.55)';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  init();
+  requestAnimationFrame(draw);
+  window.addEventListener('resize', function() { resize(); });
+})();
+</script>
+
+<!-- STEG 1 — TRE SAKER VI BLANDAR IHOP -->
+<div class="page" id="step1">
+  <div class="wrap">
+    <div class="eyebrow">INTRODUKTION 1 AV 3</div>
+    <h1>Tre saker vi blandar ihop</h1>
+    <p class="intro-text">
+      När vi tar emot kommunikation från någon uppfattar vi den ofta som
+      en del av deras identitet och personlighet. Det är en av anledningarna
+      till att kommunikation kan vara utmanande.
+    </p>
+    <div class="info-blocks">
+      <div class="info-block">
+        <div class="info-block-title">01 · IDENTITET</div>
+        <div class="info-block-text">Vem vi upplever att vi är — just nu. Inte ett fast tillstånd, utan en levande upplevelse som alltid är i rörelse. Det är identiteten som avgör vad vi tillåter oss att tänka, känna och göra.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">02 · BETEENDE</div>
+        <div class="info-block-text">Allt vi gör. Beteendet speglar identitetsupplevelsen — men är inte samma sak som den. Och eftersom de påverkar varandra kan ett förändrat beteende också förändra hur vi upplever oss själva.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">03 · KOMMUNIKATION</div>
+        <div class="info-block-text">De tolkningar som uppstår — hos oss och hos andra. Kommunikation pågår alltid, även utan avsikt. Även tanken är kommunikation — med oss själva. Det betyder att språket vi använder, inåt och utåt, formar verkligheten vi lever i.</div>
+      </div>
+    </div>
+    <button class="btn-primary" id="btnStep1">Nästa →</button>
+  </div>
+</div>
+
+<!-- STEG 2 — VAR FINNS SPRÅKMÖNSTREN? -->
+<div class="page" id="step2">
+  <div class="wrap">
+    <div class="eyebrow">INTRODUKTION 2 AV 3</div>
+    <h1>Var finns språkmönstren?</h1>
+    <p class="intro-text">
+      Språkmönster är en underkategori till kommunikation — inte till identitet.
+      Det betyder att en text kan signalera ett mönster utan att det säger något
+      om vem personen är.
+    </p>
+    <blockquote style="border-left: 2px solid #c8b89a; padding-left: 20px; margin: 32px 0;">
+      <p class="intro-text" style="margin-bottom: 0;">Vi har mönster — vi är inte våra mönster, vi är så mycket mer.</p>
+      <p style="font-size: 13px; color: rgba(240,237,230,0.4); margin-top: 8px;">— Alexander Holmberg</p>
+    </blockquote>
+    <p class="intro-text">
+      Analysen handlar om hur språket organiseras. Inte om vem som skriver det.
+    </p>
+    <button class="btn-primary" id="btnStep2">Nästa →</button>
+  </div>
+</div>
+
+<!-- STEG 3 — INNAN DU BÖRJAR -->
+<div class="page" id="step3">
+  <div class="wrap">
+    <div class="eyebrow">INTRODUKTION 3 AV 3</div>
+    <h1>Innan du börjar</h1>
+    <p class="intro-text">
+      Svara på frågorna nedan — det handlar inte om rätt eller fel, utan om att
+      vi delar samma förståelse för vad språkmönster är: kommunikation, inte
+      personlighet.
+    </p>
+    <button class="btn-primary" id="btnStep3">Det förstår jag →</button>
+  </div>
+</div>
+
+<!-- STEG 2 — DU ÄR INTE DIN PROFIL -->
+<div class="page" id="step4">
+  <div class="wrap">
+    <div class="eyebrow">VIKTIGT ATT VETA</div>
+    <h1>Du är inte dina mönster</h1>
+    <p style="font-size: 15px; font-weight: 300; color: rgba(240,237,230,0.6); margin-bottom: 32px; line-height: 1.7;">
+      Motivationsriktning handlar om vad som driver dig: söker du mot mål och
+      möjligheter (Till), eller bort från problem och risker (Ifrån)?<br><br>
+      Förståelsemönster handlar om hur du bearbetar information: föredrar du
+      öppna alternativ och valmöjligheter (Alternativ), eller tydliga steg och
+      processer (Procedur)?<br><br>
+      Dessa är mönster i hur du kommunicerar — inte en beskrivning av vem du är.
+    </p>
+    <p class="intro-text">
+      Innan vi går vidare, bekräfta att du förstår följande:
+    </p>
+    <div class="cb-list">
+      <label class="cb-item">
+        <input type="checkbox" class="consent-cb">
+        <span>Jag förstår att profilen beskriver mönster i min kommunikation — inte vem jag är som person.</span>
+      </label>
+      <label class="cb-item">
+        <input type="checkbox" class="consent-cb">
+        <span>Jag förstår att samma person kan ha helt olika mönster i olika situationer och sammanhang.</span>
+      </label>
+      <label class="cb-item">
+        <input type="checkbox" class="consent-cb">
+        <span>Jag förstår att inga kommunikationsmönster är bättre eller sämre än andra.</span>
+      </label>
+    </div>
+    <button class="btn-primary" id="btnStep4" disabled>Gå vidare</button>
+  </div>
+</div>
+
+<!-- STEG 3 — KUNSKAPSFRÅGA -->
+<div class="page" id="step5">
+  <div class="wrap">
+    <div class="eyebrow">KUNSKAPSFRÅGA</div>
+    <h1>Snabb koll</h1>
+    <div class="quiz-options" id="quizOptions">
+      <div class="quiz-opt" data-answer="wrong1">Din personlighetstyp</div>
+      <div class="quiz-opt" data-answer="correct">Dina språkliga kommunikationsmönster</div>
+      <div class="quiz-opt" data-answer="wrong2">Hur bra du är på att kommunicera</div>
+    </div>
+    <div class="quiz-feedback" id="quizFeedbackCorrect">
+      <p class="intro-text" style="color: #c8b89a;">Precis! Vi kartlägger mönster i hur du kommunicerar — inte vem du är.</p>
+    </div>
+    <div class="quiz-feedback" id="quizFeedbackWrong">
+      <p class="intro-text" style="color: var(--red);">Inte riktigt! Vi mäter inte personlighet eller skicklighet — utan de språkliga mönster du använder. Prova igen!</p>
+    </div>
+    <button class="btn-primary" id="btnStep5" disabled style="display:none;">Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 4 — SITUATION -->
+<div class="page" id="step6">
+  <div class="wrap">
+    <div class="eyebrow">DIN KONTEXT</div>
+    <h1>Berätta kort om din situation</h1>
+    <p class="intro-text" style="color:var(--muted);font-size:14px;">Vad är det som gör att du vill förstå din kommunikation just nu?</p>
+    <div class="field-group">
+      <textarea id="situationText" style="min-height:80px;" placeholder="T.ex. ska börja nytt jobb, vill förstå hur jag kommunicerar i min ledningsgrupp, förbereder en viktig förhandling, vill bli en bättre lyssnare..."></textarea>
+    </div>
+    <button class="btn-primary" id="btnStep6">Nästa →</button>
+  </div>
+</div>
+
+<!-- STEG 5 — NAMN OCH E-POST -->
+<div class="page" id="step7">
+  <div class="wrap">
+    <div class="eyebrow">DINA UPPGIFTER</div>
+    <h1>Vad heter du och hur når vi dig?</h1>
+    <div class="field-group">
+      <label for="firstName">Förnamn</label>
+      <input type="text" id="firstName" placeholder="Ditt förnamn" autocomplete="given-name">
+    </div>
+    <div class="field-group">
+      <label for="email">E-postadress</label>
+      <input type="email" id="email" placeholder="namn@exempel.se" autocomplete="email">
+    </div>
+    <p class="consent-text">Din e-postadress används för att leverera din rapport. Vi delar inte din information med tredje part.</p>
+    <button class="btn-primary" id="btnStep7" disabled>Starta frågorna</button>
+  </div>
+</div>
+
+<!-- STEG — INNAN DU BÖRJAR -->
+<div class="page" id="step8">
+  <div class="wrap">
+    <div class="eyebrow">DU ÄR REDO</div>
+    <h1>Innan du börjar</h1>
+    <p class="subtitle">Så här fungerar frågorna</p>
+    <div class="info-blocks">
+      <div class="info-block">
+        <div class="info-block-title">Språkmönstersorterande frågor</div>
+        <div class="info-block-text">Varje fråga är noggrant formulerad för att synliggöra ett specifikt kommunikationsmönster. Det är inte vad du svarar som analyseras — det är hur du svarar.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">Svara spontant</div>
+        <div class="info-block-text">Din första tanke är den mest autentiska. Övertänkta svar ger en mindre träffsäker profil. Skriv det som kommer naturligt — inte det du tror att du borde svara.</div>
+      </div>
+      <div class="info-block">
+        <div class="info-block-title">Inga bättre eller sämre mönster</div>
+        <div class="info-block-text">Alla kommunikationsmönster är lika värdefulla i rätt sammanhang. Det finns inget rätt svar. Det finns bara ditt svar.</div>
+      </div>
+    </div>
+    <button class="btn-primary" id="btnStep8">Jag förstår — starta frågorna →</button>
+  </div>
+</div>
+
+<!-- STEG 6 — FRÅGA 1 -->
+<div class="page" id="step9">
+  <div class="wrap">
+    <div class="q-number">MOTIVATIONSRIKTNING · FRÅGA 1 AV 5</div>
+    <div class="q-text">Vad är viktigt för dig i ditt arbete?</div>
+    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Ju mer du beskriver, desto mer träffsäker blir analysen.<br>Skriv gärna 3–5 meningar.</p>
+    <div class="field-group">
+      <textarea id="a1" placeholder="Skriv fritt..."></textarea>
+      <div class="char-hint" id="ch1">0 / 80 tecken</div>
+    </div>
+    <button class="btn-primary btn-next" data-q="1" disabled>Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 7 — FRÅGA 2 -->
+<div class="page" id="step10">
+  <div class="wrap">
+    <div class="q-number">BESLUTSRAM · FRÅGA 2 AV 5</div>
+    <div class="q-text">Hur vet du att du har gjort ett bra jobb?</div>
+    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Svara spontant utifrån din första känsla.<br>Det finns inget rätt svar.</p>
+    <div class="field-group">
+      <textarea id="a2" placeholder="Skriv fritt..."></textarea>
+      <div class="char-hint" id="ch2">0 / 40 tecken</div>
+    </div>
+    <button class="btn-primary btn-next" data-q="2" disabled>Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 8 — FRÅGA 3 -->
+<div class="page" id="step11">
+  <div class="wrap">
+    <div class="q-number">SINNESKANAL · FRÅGA 3 AV 5</div>
+    <div class="q-text">Hur vet du att någon annan har gjort ett bra jobb?</div>
+    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv konkret — vad ser, hör eller märker du?</p>
+    <div class="field-group">
+      <textarea id="a3" placeholder="Skriv fritt..."></textarea>
+      <div class="char-hint" id="ch3">0 / 40 tecken</div>
+    </div>
+    <button class="btn-primary btn-next" data-q="3" disabled>Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 9 — FRÅGA 4 -->
+<div class="page" id="step12">
+  <div class="wrap">
+    <div class="q-number">FÖRSTÅELSE · FRÅGA 4 AV 5</div>
+    <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
+    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Tänk på vad som faktiskt fick dig att tacka ja —<br>inte vad som låter bra.</p>
+    <div class="field-group">
+      <textarea id="a4" placeholder="Skriv fritt..."></textarea>
+      <div class="char-hint" id="ch4">0 / 80 tecken</div>
+    </div>
+    <button class="btn-primary btn-next" data-q="4" disabled>Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 10 — FRÅGA 5 -->
+<div class="page" id="step13">
+  <div class="wrap">
+    <div class="q-number">FÖRÄNDRINGSRELATION · FRÅGA 5 AV 5</div>
+    <div class="q-text">Vad är relationen mellan ditt nuvarande arbete och ditt förra?</div>
+    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv likheter, skillnader eller hur de hänger ihop —<br>det finns inget rätt svar här.</p>
+    <div class="field-group">
+      <textarea id="a5" placeholder="Skriv fritt..."></textarea>
+      <div class="char-hint" id="ch5">0 / 40 tecken</div>
+    </div>
+    <button class="btn-primary btn-next" data-q="5" disabled>Nästa</button>
+  </div>
+</div>
+
+<!-- STEG 11 — ORDKLICK -->
+<div class="page" id="step14">
+  <div class="wrap">
+    <div class="eyebrow">ORDVAL · SISTA STEGET</div>
+    <h1>Ett sista steg</h1>
+    <p class="intro-text">Välj de 5 ord som känns mest relevanta för dig i din valda situation just nu.</p>
+    <div class="chips-grid" id="chipsGrid"></div>
+    <div class="chips-count" id="chipsCount">0 av 5 valda</div>
+    <button class="btn-primary" id="btnSubmit" disabled>Skicka</button>
+  </div>
+</div>
+
+<!-- STEG 12 — TACK -->
+<div class="page" id="step15">
+  <div class="wrap">
+    <div class="eyebrow">KLART</div>
+    <h1 id="thankTitle">Tack!</h1>
+    <p class="intro-text">Vi har tagit emot dina svar och skickat en bekräftelse till din e-post. Du hör från oss inom 2 arbetsdagar.</p>
+  </div>
+</div>
+
+<footer class="site-footer">Ett verktyg från holmberg &amp; friends</footer>
+
+<script>
+(function() {
+  var API = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
+  var TOTAL = 16; // step 0–15
+  var ONBOARDING_STEPS = 9; // steps 0–8
+
+  // Gift token — om länken innehåller ?gift_token=xxx sparas det för submit
+  var urlParams = new URLSearchParams(window.location.search);
+  var giftToken = urlParams.get('gift_token') || sessionStorage.getItem('sml_gift_token') || '';
+  if (giftToken) {
+    sessionStorage.setItem('sml_gift_token', giftToken);
+  }
+
+  var current = 0;
+  var times = {};
+  var qStart = null;
+  var selectedWords = [];
+  var selectedSituation = '';
+
+  var WORDS = [
+    'Möjligheter','Tydlighet','Resultat','Trygghet',
+    'Frihet','Feedback','Struktur','Framsteg',
+    'Undvika misstag','Egen övertygelse','Variation','Bekräftelse'
+  ];
+
+  // Fisher-Yates shuffle
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  // Build dot progress indicators
+  var dotContainer = document.getElementById('dotProgress');
+  for (var d = 0; d < ONBOARDING_STEPS; d++) {
+    var dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.setAttribute('data-dot', d);
+    dotContainer.appendChild(dot);
+  }
+
+  function updateDots(step) {
+    var dots = dotContainer.querySelectorAll('.dot');
+    for (var i = 0; i < dots.length; i++) {
+      dots[i].className = 'dot';
+      if (i < step) dots[i].classList.add('done');
+      if (i === step) dots[i].classList.add('active');
+    }
+  }
+
+  function show(step) {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+    document.getElementById('step' + step).classList.add('active');
+    current = step;
+
+    // Dölja global nav, dots och progress-bar på step0 (hero)
+    var globalNav = document.querySelector('nav');
+    var progressBar = document.querySelector('.progress-bar');
+    if (step === 0) {
+      if (globalNav) globalNav.style.display = 'none';
+      dotContainer.style.display = 'none';
+      if (progressBar) progressBar.style.display = 'none';
+    } else {
+      if (globalNav) globalNav.style.display = '';
+      if (progressBar) progressBar.style.display = '';
+    }
+
+    // Dot progress for onboarding (steps 1–7)
+    if (step > 0 && step < ONBOARDING_STEPS) {
+      dotContainer.style.display = 'flex';
+      updateDots(step);
+      document.getElementById('progressFill').style.width = '0%';
+    } else if (step >= ONBOARDING_STEPS) {
+      dotContainer.style.display = 'none';
+    }
+
+    // Progress bar for question steps (9–14)
+    if (step >= 9 && step <= 14) {
+      var qProgress = ((step - 9) / 6) * 100;
+      document.getElementById('progressFill').style.width = qProgress + '%';
+    }
+    if (step === 15) {
+      document.getElementById('progressFill').style.width = '100%';
+    }
+
+    // Nav step text
+    var nav = document.getElementById('navStep');
+    var navLabels = { 9: 'Motivation', 10: 'Beslut', 11: 'Sinneskanal', 12: 'Förståelse', 13: 'Förändring', 14: 'Ordval' };
+    nav.textContent = navLabels[step] || '';
+
+    // Start timer for question steps (9–13)
+    if (step >= 9 && step <= 13) {
+      qStart = Date.now();
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  // --- Step 0: Welcome ---
+  document.getElementById('btnStep0').addEventListener('click', function() {
+    show(1);
+  });
+
+  // --- Step 1 (1a): Identity ---
+  document.getElementById('btnStep1').addEventListener('click', function() {
+    show(2);
+  });
+
+  // --- Step 2 (1b): Behavior ---
+  document.getElementById('btnStep2').addEventListener('click', function() {
+    show(3);
+  });
+
+  // --- Step 3 (1c): Communication ---
+  document.getElementById('btnStep3').addEventListener('click', function() {
+    show(4);
+  });
+
+  // --- Step 4: Checkboxes ---
+  var checkboxes = document.querySelectorAll('.consent-cb');
+  var btnStep4 = document.getElementById('btnStep4');
+
+  function checkConsent() {
+    var allChecked = true;
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (!checkboxes[i].checked) { allChecked = false; break; }
+    }
+    btnStep4.disabled = !allChecked;
+  }
+  for (var c = 0; c < checkboxes.length; c++) {
+    checkboxes[c].addEventListener('change', checkConsent);
+  }
+  btnStep4.addEventListener('click', function() {
+    if (!btnStep4.disabled) show(5);
+  });
+
+  // --- Step 5: Quiz ---
+  var quizAnswered = false;
+  var quizOpts = document.querySelectorAll('#quizOptions .quiz-opt');
+
+  for (var qi = 0; qi < quizOpts.length; qi++) {
+    (function(opt) {
+      opt.addEventListener('click', function() {
+        if (quizAnswered) return;
+        var answer = opt.getAttribute('data-answer');
+
+        if (answer === 'correct') {
+          quizAnswered = true;
+          opt.classList.add('correct');
+          for (var j = 0; j < quizOpts.length; j++) {
+            if (quizOpts[j] !== opt) quizOpts[j].classList.add('disabled');
+          }
+          document.getElementById('quizFeedbackCorrect').classList.add('visible');
+          document.getElementById('quizFeedbackWrong').classList.remove('visible');
+          var btnQ = document.getElementById('btnStep5');
+          btnQ.disabled = false;
+          btnQ.style.display = '';
+        } else {
+          opt.classList.add('wrong');
+          document.getElementById('quizFeedbackWrong').classList.add('visible');
+          document.getElementById('quizFeedbackCorrect').classList.remove('visible');
+          setTimeout(function() { opt.classList.remove('wrong'); }, 1500);
+        }
+      });
+    })(quizOpts[qi]);
+  }
+
+  document.getElementById('btnStep5').addEventListener('click', function() {
+    show(6);
+  });
+
+  // --- Step 6: Situation (fritext) ---
+  var btnStep6 = document.getElementById('btnStep6');
+  var situationTextEl = document.getElementById('situationText');
+
+  btnStep6.addEventListener('click', function() {
+    selectedSituation = situationTextEl.value.trim();
+    show(7);
+  });
+
+  // --- Step 7: Name + email ---
+  var nameEl = document.getElementById('firstName');
+  var emailEl = document.getElementById('email');
+  var btnStep7 = document.getElementById('btnStep7');
+
+  function checkStep7() {
+    var nameOk = nameEl.value.trim().length > 0;
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
+    btnStep7.disabled = !(nameOk && emailOk);
+  }
+  nameEl.addEventListener('input', checkStep7);
+  emailEl.addEventListener('input', checkStep7);
+
+  btnStep7.addEventListener('click', function() {
+    if (!btnStep7.disabled) show(8);
+  });
+
+  // --- Step 8: Before questions ---
+  document.getElementById('btnStep8').addEventListener('click', function() {
+    show(9);
+  });
+
+  // --- Steps 9–13: Question validation + next ---
+  var minChars = { 1: 80, 2: 40, 3: 40, 4: 80, 5: 40 };
+  for (var q = 1; q <= 5; q++) {
+    (function(num) {
+      var ta = document.getElementById('a' + num);
+      var hint = document.getElementById('ch' + num);
+      var btn = document.querySelector('.btn-next[data-q="' + num + '"]');
+      var req = minChars[num];
+
+      ta.addEventListener('input', function() {
+        var len = ta.value.trim().length;
+        hint.textContent = len + ' / ' + req + ' tecken';
+        hint.classList.toggle('ok', len >= req);
+        btn.disabled = len < req;
+      });
+
+      btn.addEventListener('click', function() {
+        if (btn.disabled) return;
+        if (qStart) {
+          times['q' + num] = Date.now() - qStart;
+        }
+        if (num < 5) {
+          show(num + 9);
+        } else {
+          show(14);
+        }
+      });
+    })(q);
+  }
+
+  // --- Step 14: Word chips ---
+  var grid = document.getElementById('chipsGrid');
+  var shuffled = shuffle(WORDS.slice());
+
+  for (var w = 0; w < shuffled.length; w++) {
+    (function(word) {
+      var chip = document.createElement('button');
+      chip.className = 'chip';
+      chip.type = 'button';
+      chip.textContent = word;
+
+      chip.addEventListener('click', function() {
+        if (chip.classList.contains('dimmed')) return;
+
+        var idx = selectedWords.indexOf(word);
+        if (idx > -1) {
+          selectedWords.splice(idx, 1);
+          chip.classList.remove('selected');
+        } else if (selectedWords.length < 5) {
+          selectedWords.push(word);
+          chip.classList.add('selected');
+        }
+
+        var all = grid.querySelectorAll('.chip');
+        for (var cc = 0; cc < all.length; cc++) {
+          if (selectedWords.length >= 5) {
+            if (!all[cc].classList.contains('selected')) all[cc].classList.add('dimmed');
+          } else {
+            all[cc].classList.remove('dimmed');
+          }
+        }
+
+        document.getElementById('chipsCount').textContent = selectedWords.length + ' av 5 valda';
+        document.getElementById('btnSubmit').disabled = selectedWords.length !== 5;
+      });
+
+      grid.appendChild(chip);
+    })(shuffled[w]);
+  }
+
+  // --- Submit ---
+  var btnSubmit = document.getElementById('btnSubmit');
+  btnSubmit.addEventListener('click', function() {
+    if (btnSubmit.disabled) return;
+    btnSubmit.disabled = true;
+    btnSubmit.innerHTML = '<span class="spinner"></span> Sparar dina svar...';
+
+    var payload = {
+      first_name: nameEl.value.trim(),
+      email: emailEl.value.trim(),
+      context: selectedSituation || 'Arbete',
+      situation: selectedSituation || 'Arbete',
+      answers: {
+        q1: document.getElementById('a1').value.trim(),
+        q2: document.getElementById('a2').value.trim(),
+        q3: document.getElementById('a3').value.trim(),
+        q4: document.getElementById('a4').value.trim(),
+        q5: document.getElementById('a5').value.trim()
+      },
+      word_clicks: selectedWords.slice(),
+      response_times_ms: times
+    };
+
+    if (giftToken) {
+      payload.gift_token = giftToken;
+    }
+
+    fetch(API + '/api/profile/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(r) {
+      if (!r.ok) throw new Error(r.data.error || 'Okänt fel');
+      document.getElementById('thankTitle').textContent = 'Tack, ' + payload.first_name + '!';
+      show(15);
+    })
+    .catch(function(err) {
+      alert('Något gick fel: ' + err.message);
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = 'Skicka';
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Integritetspolicy — holmberg & friends</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0c0c0b;
+  color: #f0ede6;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.7;
+}
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 48px;
+  border-bottom: 0.5px solid rgba(240,237,230,0.1);
+}
+.nav-brand {
+  font-size: 12px;
+  color: rgba(240,237,230,0.4);
+  letter-spacing: 0.06em;
+}
+.nav-back {
+  font-size: 13px;
+  color: rgba(240,237,230,0.5);
+  text-decoration: none;
+}
+.nav-back:hover { color: #f0ede6; }
+.wrap {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #c8b89a;
+  margin-bottom: 24px;
+}
+h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #f0ede6;
+  margin-bottom: 16px;
+}
+.updated {
+  font-size: 13px;
+  color: rgba(240,237,230,0.35);
+  margin-bottom: 64px;
+}
+h2 {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c8b89a;
+  margin: 48px 0 16px;
+}
+p {
+  font-size: 15px;
+  color: rgba(240,237,230,0.65);
+  margin-bottom: 16px;
+}
+ul {
+  list-style: none;
+  margin-bottom: 16px;
+}
+ul li {
+  font-size: 15px;
+  color: rgba(240,237,230,0.65);
+  padding: 6px 0;
+  padding-left: 16px;
+  position: relative;
+}
+ul li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: #c8b89a;
+}
+a { color: #c8b89a; text-decoration: none; }
+a:hover { text-decoration: underline; }
+.divider {
+  border: none;
+  border-top: 0.5px solid rgba(240,237,230,0.08);
+  margin: 48px 0;
+}
+footer {
+  padding: 24px 48px;
+  border-top: 0.5px solid rgba(240,237,230,0.08);
+  font-size: 12px;
+  color: rgba(240,237,230,0.25);
+  display: flex;
+  justify-content: space-between;
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">holmberg & friends</div>
+  <a href="/profil" class="nav-back">← Tillbaka</a>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow">Integritetspolicy</div>
+  <h1>Så hanterar vi dina uppgifter</h1>
+  <p class="updated">Senast uppdaterad: mars 2026</p>
+
+  <p>holmberg & friends AB värnar om din personliga integritet. Den här policyn beskriver vilka uppgifter vi samlar in, varför vi gör det och hur länge vi sparar dem. Policyn gäller för Språkmönsterlabbet, Utvecklingsverkstaden (deltagarportalen) och bokningsflödet.</p>
+
+  <h2>Personuppgiftsansvarig</h2>
+  <p>holmberg & friends AB<br>
+  E-post: <a href="mailto:friends@holmbergfriends.com">friends@holmbergfriends.com</a><br>
+  Webb: <a href="https://www.holmbergfriends.com">holmbergfriends.com</a></p>
+
+  <hr class="divider">
+
+  <h2>Språkmönsterlabbet</h2>
+  <p>När du genomför en språkmönsterprofil samlar vi in:</p>
+  <ul>
+    <li>Förnamn och e-postadress</li>
+    <li>Dina svar på profilfrågorna och ordvalet</li>
+    <li>Svarstider (används för att beräkna handlingsstil)</li>
+    <li>Betalningsinformation hanteras av Stripe — vi lagrar inga kortuppgifter</li>
+  </ul>
+  <p>Vi använder dessa uppgifter för att generera din kommunikationsrapport och skicka den till dig via e-post. Rättslig grund: fullgörande av avtal (GDPR art. 6.1.b).</p>
+  <p>Vi kan komma att skicka relevant information om ledarskap och kommunikation om du har samtyckt till det. Du kan när som helst avsluta genom att klicka på avsägningslänken i mailet. Rättslig grund: samtycke (GDPR art. 6.1.a).</p>
+
+  <h2>Deltagarportalen (Utvecklingsverkstaden)</h2>
+  <p>Som deltagare i en utbildning hos holmberg & friends skapar vi ett konto åt dig i portalen. Vi lagrar:</p>
+  <ul>
+    <li>Namn och e-postadress (via Clerk för inloggning)</li>
+    <li>Dina förväntningar och självskattningar inför utbildningen</li>
+    <li>Mål och åtaganden du skapar i portalen</li>
+    <li>Konversationer med AI-coachen</li>
+    <li>Inlägg i community-flödet</li>
+  </ul>
+  <p>Rättslig grund: berättigat intresse (GDPR art. 6.1.f) — portalen är en integrerad del av utbildningen du deltar i.</p>
+
+  <h2>Bokningsdata</h2>
+  <p>När du bokar en utbildning lagrar vi:</p>
+  <ul>
+    <li>Namn, e-postadress och företag</li>
+    <li>Matpreferenser och praktiska uppgifter inför utbildningen</li>
+    <li>Bokningshistorik</li>
+  </ul>
+  <p>Rättslig grund: fullgörande av avtal (GDPR art. 6.1.b).</p>
+
+  <hr class="divider">
+
+  <h2>Tredjepartstjänster</h2>
+  <p>Vi använder följande tjänster som behandlar personuppgifter för vår räkning:</p>
+  <ul>
+    <li>Airtable — lagring av deltagardata och bokningar (USA, EU-standardavtal)</li>
+    <li>Clerk — inloggning och autentisering (USA, EU-standardavtal)</li>
+    <li>Resend — e-postutskick (EU)</li>
+    <li>Stripe — betalningar (EU, PCI DSS-certifierat)</li>
+    <li>Anthropic Claude API — AI-coachen och rapportgenerering (USA, EU-standardavtal)</li>
+    <li>Cloudflare — hosting och infrastruktur (EU-region)</li>
+  </ul>
+
+  <h2>Lagringstid</h2>
+  <ul>
+    <li>Språkmönsterprofiler: 24 månader efter genomförd profil</li>
+    <li>Portaldata: så länge du är aktiv deltagare, därefter 12 månader</li>
+    <li>Bokningsdata: 7 år (bokföringslagen)</li>
+  </ul>
+
+  <h2>Dina rättigheter</h2>
+  <p>Du har rätt att begära ut, rätta eller radera dina uppgifter. Du kan också begära begränsning av behandlingen eller invända mot den. Kontakta oss på <a href="mailto:friends@holmbergfriends.com">friends@holmbergfriends.com</a> så hanterar vi din begäran inom 30 dagar.</p>
+  <p>Du har också rätt att lämna klagomål till Integritetsskyddsmyndigheten (IMY): <a href="https://www.imy.se" target="_blank">imy.se</a></p>
+
+  <hr class="divider">
+
+  <p>Har du frågor om hur vi hanterar dina uppgifter? Hör av dig till <a href="mailto:friends@holmbergfriends.com">friends@holmbergfriends.com</a></p>
+</div>
+
+<footer>
+  <span>© 2026 holmberg & friends AB</span>
+  <span>integritetspolicy</span>
+</footer>
+
+</body>
+</html>
