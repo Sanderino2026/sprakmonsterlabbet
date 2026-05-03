@@ -51,10 +51,9 @@ export default {
       if (pagesRes.ok) return new Response(pagesRes.body, pagesRes);
     }
 
-    // Root → index.html från Pages
+    // Root → redirect till /profil
     if (path === '/' || path === '') {
-      const pagesRes = await fetch('https://sprakmonsterlabbet.pages.dev/');
-      return new Response(pagesRes.body, pagesRes);
+      return Response.redirect('https://sprakmonsterlabbet.holmbergfriends.com/profil', 302);
     }
 
     const reply = (data, status = 200, cookie = null) => {
