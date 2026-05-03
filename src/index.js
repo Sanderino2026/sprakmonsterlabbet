@@ -43,6 +43,20 @@ export default {
     const path = url.pathname;
     const method = request.method;
 
+    // Servera frontend för icke-API paths
+    if (!path.startsWith('/api/') && path !== '/') {
+      // Hämta från Pages-frontenden
+      const pagesUrl = 'https://sprakmonsterlabbet.pages.dev' + path;
+      const pagesRes = await fetch(pagesUrl);
+      if (pagesRes.ok) return new Response(pagesRes.body, pagesRes);
+    }
+
+    // Root → index.html från Pages
+    if (path === '/' || path === '') {
+      const pagesRes = await fetch('https://sprakmonsterlabbet.pages.dev/');
+      return new Response(pagesRes.body, pagesRes);
+    }
+
     const reply = (data, status = 200, cookie = null) => {
       const headers = {
         'Content-Type': 'application/json',
