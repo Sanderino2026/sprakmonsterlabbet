@@ -19,3 +19,8 @@ directory = "./icons"
 
 [triggers]
 crons = ["0 3 1 * *"]
+
+[[d1_databases]]
+binding = "DEEP_THOUGHT"
+database_name = "deep-thought"
+database_id = "300177bd-badb-4cbc-8b16-35cd3bccba17"
