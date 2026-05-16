@@ -1,77 +1,62 @@
-const AIRTABLE_API = 'https://api.airtable.com/v0';
+// ── D1-baserad datalagring (ersätter Airtable) ──────────────────────
+// Alla funktioner behåller samma signaturer som förut så att
+// anropande kod (index.js, auth.js, etc.) inte behöver ändras.
 
-function headers(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
+function generateId() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// ── Användare ────────────────────────────────────────────────────────
+
 export async function findUserByEmail(email, env) {
-  const formula = encodeURIComponent(`LOWER({Email})=LOWER("${email.replace(/"/g, '')}")`);
-  const url = `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users?filterByFormula=${formula}&maxRecords=1`;
-  const res = await fetch(url, { headers: headers(env) });
-  const data = await res.json();
-
-  if (!data.records || data.records.length === 0) return null;
-
-  const r = data.records[0];
-  return {
-    id: r.id,
-    email: r.fields['Email'],
-    name: r.fields['Name'],
-    access_type: r.fields['Access Type'],
-    status: r.fields['Status'],
-    used_sessions: r.fields['Used Sessions'] ?? 0,
-    standalone_analyses: r.fields['Standalone Analyses'] ?? 0,
-    remaining_analyses: r.fields['Remaining Analyses'] ?? 0,
-  };
+  const row = await env.SML_DB.prepare(
+    'SELECT * FROM anvandare WHERE LOWER(epost) = LOWER(?)'
+  ).bind(email).first();
+  if (!row) return null;
+  return mapUser(row);
 }
 
 export async function findUserByRecordId(recordId, env) {
-  const res = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    headers: headers(env),
-  });
-  if (!res.ok) return null;
-  const r = await res.json().catch(() => null);
-  if (!r?.fields) return null;
+  const row = await env.SML_DB.prepare(
+    'SELECT * FROM anvandare WHERE id = ?'
+  ).bind(recordId).first();
+  if (!row) return null;
+  return mapUser(row);
+}
+
+function mapUser(row) {
   return {
-    id: r.id,
-    email: r.fields['Email'] ?? null,
-    access_type: r.fields['Access Type'] ?? null,
-    remaining_analyses: r.fields['Remaining Analyses'] ?? 0,
+    id: row.id,
+    email: row.epost,
+    name: row.namn,
+    access_type: row.access_type ?? 'guest',
+    status: row.status ?? 'active',
+    used_sessions: 0,
+    standalone_analyses: 0,
+    remaining_analyses: row.analyser_kvar ?? 0,
   };
 }
 
 export async function createGuestRecord(env) {
-  const res = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'Access Type': 'guest',
-        'Status': 'active',
-        'Remaining Analyses': 3,
-      },
-    }),
-  });
-  const data = await res.json().catch(() => null);
-  return data?.id ?? null;
+  const id = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO anvandare (id, epost, access_type, status, analyser_kvar) VALUES (?, ?, ?, ?, ?)'
+  ).bind(id, `guest_${id}@tmp`, 'guest', 'active', 3).run();
+  return id;
 }
 
 export async function decrementAnalysis(recordId, env) {
-  const getRes = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    headers: headers(env),
-  });
-  if (!getRes.ok) {
-    throw new Error(`[decrementAnalysis] GET misslyckades: ${getRes.status}`);
-  }
-  const data = await getRes.json().catch(() => null);
-  const current = data?.fields?.['Remaining Analyses'] ?? 0;
+  const row = await env.SML_DB.prepare(
+    'SELECT analyser_kvar FROM anvandare WHERE id = ?'
+  ).bind(recordId).first();
+  const current = row?.analyser_kvar ?? 0;
   const next = Math.max(0, current - 1);
   console.log(`[decrementAnalysis] recordId: ${recordId} | current: ${current} | next: ${next}`);
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { 'Remaining Analyses': next } }),
-  });
+  await env.SML_DB.prepare(
+    'UPDATE anvandare SET analyser_kvar = ? WHERE id = ?'
+  ).bind(next, recordId).run();
   return next;
 }
 
@@ -86,110 +71,136 @@ export async function getUserAnalysesStatus(email, env) {
 }
 
 export async function decrementRemainingAnalyses(recordId, current, env) {
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { 'Remaining Analyses': Math.max(0, current - 1) } }),
-  });
+  await env.SML_DB.prepare(
+    'UPDATE anvandare SET analyser_kvar = ? WHERE id = ?'
+  ).bind(Math.max(0, current - 1), recordId).run();
 }
-
 
 export async function updateLastLogin(recordId, env) {
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { 'Last Login At': new Date().toISOString() } }),
-  });
+  await env.SML_DB.prepare(
+    'UPDATE anvandare SET last_login_at = ? WHERE id = ?'
+  ).bind(new Date().toISOString(), recordId).run();
 }
 
+// ── Sessions ─────────────────────────────────────────────────────────
+
 export async function createSession(userId, moduleType, env) {
+  const id = generateId();
   const sessionKey = crypto.randomUUID();
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Sessions`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'User': [userId],
-        'Module Type': moduleType,
-        'Source': 'web',
-        'Session Key': sessionKey,
-      },
-    }),
-  });
+  const giltigTill = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  await env.SML_DB.prepare(
+    'INSERT INTO session (id, anvandare_id, token, giltig_till) VALUES (?, ?, ?, ?)'
+  ).bind(id, userId, sessionKey, giltigTill).run();
   return sessionKey;
 }
 
+// ── Profiler ─────────────────────────────────────────────────────────
+
 export async function saveProfile(userId, answers, result, env) {
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'User': [userId],
-        'Answers JSON': JSON.stringify(answers),
-        'Result JSON': JSON.stringify(result),
-        'Communication Style': result.communication_style ?? '',
-        'Development Hint': result.development_hint ?? '',
-      },
-    }),
-  });
+  const id = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO profil (id, anvandare_id, svar_json, profil_json, communication_style, development_hint) VALUES (?, ?, ?, ?, ?, ?)'
+  ).bind(
+    id,
+    userId,
+    JSON.stringify(answers),
+    JSON.stringify(result),
+    result.communication_style ?? '',
+    result.development_hint ?? ''
+  ).run();
 }
 
-// Hämta slumpmässig aktiv kuraterad övning
+export async function saveProfileResponse(env, data) {
+  const { first_name, email, context, situation, answers, word_clicks, response_times_ms } = data;
+
+  let userId;
+  const existing = await findUserByEmail(email, env);
+
+  if (existing) {
+    userId = existing.id;
+  } else {
+    userId = generateId();
+    await env.SML_DB.prepare(
+      'INSERT INTO anvandare (id, epost, namn, access_type, status) VALUES (?, ?, ?, ?, ?)'
+    ).bind(userId, email, first_name, 'guest', 'active').run();
+  }
+
+  const profileId = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO profil (id, anvandare_id, svar_json) VALUES (?, ?, ?)'
+  ).bind(
+    profileId,
+    userId,
+    JSON.stringify({
+      answers,
+      word_clicks,
+      response_times_ms,
+      context: context || 'Arbete',
+      situation: situation || context || 'Arbete',
+      submitted_at: new Date().toISOString(),
+    })
+  ).run();
+
+  return profileId;
+}
+
+// ── Analyser ─────────────────────────────────────────────────────────
+
+export async function saveAnalysis(userId, inputText, result, env) {
+  const id = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO analys (id, anvandare_id, input_text, resultat_json, summary) VALUES (?, ?, ?, ?, ?)'
+  ).bind(id, userId, inputText, JSON.stringify(result), result.summary ?? '').run();
+  return id;
+}
+
+export async function rateAnalysis(analysisRecordId, rating, env) {
+  await env.SML_DB.prepare(
+    'UPDATE analys SET accuracy_rating = ? WHERE id = ?'
+  ).bind(rating, analysisRecordId).run();
+}
+
+// ── Övningar (exercises) ─────────────────────────────────────────────
+
 export async function getRandomExercise(env) {
-  const formula = encodeURIComponent(`AND({Status}="active",{Source Type}="curated")`);
-  const url = `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Exercises?filterByFormula=${formula}&maxRecords=100`;
-  const res = await fetch(url, { headers: headers(env) });
-  const data = await res.json();
-
-  if (!data.records || data.records.length === 0) return null;
-
-  const r = data.records[Math.floor(Math.random() * data.records.length)];
-  return mapExercise(r);
+  const row = await env.SML_DB.prepare(
+    "SELECT * FROM exercise WHERE status = 'active' AND source_type = 'curated' ORDER BY RANDOM() LIMIT 1"
+  ).first();
+  if (!row) return null;
+  return mapExercise(row);
 }
 
-// Hämta specifik övning med Airtable record ID
 export async function getExerciseById(recordId, env) {
-  const res = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Exercises/${recordId}`, {
-    headers: headers(env),
-  });
-  if (!res.ok) return null;
-  const r = await res.json();
-  return mapExercise(r);
+  const row = await env.SML_DB.prepare(
+    'SELECT * FROM exercise WHERE id = ?'
+  ).bind(recordId).first();
+  if (!row) return null;
+  return mapExercise(row);
 }
 
 function mapExercise(r) {
-  const f = r.fields;
   return {
     exercise_id: r.id,
-    source_type: f['Source Type'] ?? 'curated',
-    category: f['Category'] ?? null,
-    pattern_category: f['Pattern Category'] ?? null,
-    pattern_signal: f['Pattern Signal'] ?? null,
-    text: f['Text'] ?? '',
-    question: f['Question'] ?? '',
-    options: [f['Option 1'], f['Option 2'], f['Option 3'], f['Option 4']].filter(Boolean),
-    // correct_index och explanation används bara internt (returneras inte i GET-svaret)
-    correct_index: f['Correct Index'] ?? 0,
-    explanation: f['Explanation'] ?? '',
+    source_type: r.source_type ?? 'curated',
+    category: r.category ?? null,
+    pattern_category: r.pattern_category ?? null,
+    pattern_signal: r.pattern_signal ?? null,
+    text: r.text_content ?? '',
+    question: r.question ?? '',
+    options: [r.option_1, r.option_2, r.option_3, r.option_4].filter(Boolean),
+    correct_index: r.correct_index ?? 0,
+    explanation: r.explanation ?? '',
   };
 }
 
-// Spara övningsförsök — använder faktiska Airtable-fältnamn (avviker från spec)
 export async function saveExerciseAttempt(userId, exerciseId, selectedIndex, isCorrect, env) {
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Exercise Attempts`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'User': [userId],
-        'Exercise': [exerciseId],
-        'Selected Option Index': selectedIndex,
-        'Correct': isCorrect,
-      },
-    }),
-  });
+  const id = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO exercise_attempt (id, anvandare_id, exercise_id, selected_index, correct) VALUES (?, ?, ?, ?, ?)'
+  ).bind(id, userId, exerciseId, selectedIndex, isCorrect ? 1 : 0).run();
 }
+
+// ── Betalning ────────────────────────────────────────────────────────
 
 const PRICE_CONFIG = {
   'price_1T9j6zQc0eK2st18E4ezJAo0': { accessType: 'paid_once',    remainingDelta: 3  },
@@ -208,31 +219,19 @@ export async function updateUserAfterPayment(email, priceId, env) {
 
   const user = await findUserByEmail(email, env);
 
-  const fields = { 'Access Type': config.accessType };
-  if (config.remainingSet !== undefined) {
-    fields['Remaining Analyses'] = config.remainingSet;
-  } else {
-    fields['Remaining Analyses'] = (user?.remaining_analyses ?? 0) + config.remainingDelta;
-  }
+  const newRemaining = config.remainingSet !== undefined
+    ? config.remainingSet
+    : (user?.remaining_analyses ?? 0) + config.remainingDelta;
 
   if (user) {
-    await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${user.id}`, {
-      method: 'PATCH',
-      headers: { ...headers(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields }),
-    });
+    await env.SML_DB.prepare(
+      'UPDATE anvandare SET access_type = ?, analyser_kvar = ? WHERE id = ?'
+    ).bind(config.accessType, newRemaining, user.id).run();
   } else {
-    await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users`, {
-      method: 'POST',
-      headers: { ...headers(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: {
-          'Email': email,
-          'Status': 'active',
-          ...fields,
-        },
-      }),
-    });
+    const id = generateId();
+    await env.SML_DB.prepare(
+      'INSERT INTO anvandare (id, epost, access_type, status, analyser_kvar) VALUES (?, ?, ?, ?, ?)'
+    ).bind(id, email, config.accessType, 'active', newRemaining).run();
   }
 }
 
@@ -246,82 +245,41 @@ export async function updateGuestAfterPayment(recordId, priceId, env) {
   console.log('[updateGuestAfterPayment] Träffar case:', config.accessType);
 
   const current = await findUserByRecordId(recordId, env);
-  const fields = { 'Access Type': config.accessType };
-  if (config.remainingSet !== undefined) {
-    fields['Remaining Analyses'] = config.remainingSet;
-  } else {
-    fields['Remaining Analyses'] = (current?.remaining_analyses ?? 0) + config.remainingDelta;
-  }
+  const newRemaining = config.remainingSet !== undefined
+    ? config.remainingSet
+    : (current?.remaining_analyses ?? 0) + config.remainingDelta;
 
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields }),
-  });
+  await env.SML_DB.prepare(
+    'UPDATE anvandare SET access_type = ?, analyser_kvar = ? WHERE id = ?'
+  ).bind(config.accessType, newRemaining, recordId).run();
 }
+
+// ── Leads & feedback ─────────────────────────────────────────────────
 
 export async function findOrCreateLead(email, env) {
   const existing = await findUserByEmail(email, env);
   if (existing) return;
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'Email': email,
-        'Access Type': 'lead',
-        'Status': 'active',
-      },
-    }),
-  });
-}
-
-export async function resetMonthlyAnalyses(env) {
-  const formula = encodeURIComponent(`OR({Access Type}="paid_monthly",{Access Type}="paid_yearly")`);
-  let offset = null;
-  let updated = 0;
-
-  do {
-    const url = `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users?filterByFormula=${formula}&pageSize=100${offset ? `&offset=${offset}` : ''}`;
-    const res = await fetch(url, { headers: headers(env) });
-    const data = await res.json().catch(() => null);
-
-    if (!data?.records?.length) break;
-
-    for (const record of data.records) {
-      await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${record.id}`, {
-        method: 'PATCH',
-        headers: { ...headers(env), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: { 'Remaining Analyses': 20 } }),
-      });
-      updated++;
-    }
-
-    offset = data.offset ?? null;
-  } while (offset);
-
-  console.log(`[resetMonthlyAnalyses] Återställde ${updated} poster till 20 analyser`);
-  return { updated };
+  const id = generateId();
+  await env.SML_DB.prepare(
+    "INSERT INTO anvandare (id, epost, access_type, status) VALUES (?, ?, 'lead', 'active')"
+  ).bind(id, email).run();
 }
 
 export async function saveFeedback(data, env) {
-  const airtableRes = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Feedback`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'Email': data.email ?? '',
-        'Profile ID': data.profile_id ?? '',
-        'Träffsäker': data.traffsakker ?? null,
-        'Mest användbart': data.mest_anvandbart ?? '',
-        'Saknades eller otydligt': data.saknades ?? '',
-        'Skulle du använda det': data.skulle_anvanda ?? '',
-        'Övriga tankar': data.ovriga_tankar ?? '',
-        'Betalningsvilja': data.betalningsvilja ?? '',
-      },
-    }),
-  });
-  await airtableRes.json();
+  const id = generateId();
+  await env.SML_DB.prepare(
+    'INSERT INTO sml_feedback (id, epost, profile_id, traffsakker, mest_anvandbart, saknades, skulle_anvanda, ovriga_tankar, betalningsvilja) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  ).bind(
+    id,
+    data.email ?? '',
+    data.profile_id ?? '',
+    data.traffsakker ?? null,
+    data.mest_anvandbart ?? '',
+    data.saknades ?? '',
+    data.skulle_anvanda ?? '',
+    data.ovriga_tankar ?? '',
+    data.betalningsvilja ?? ''
+  ).run();
 }
 
 export async function setRemainingAnalyses(email, antal, env) {
@@ -330,138 +288,49 @@ export async function setRemainingAnalyses(email, antal, env) {
   if (user) {
     recordId = user.id;
   } else {
-    recordId = await createGuestRecord(env);
-    if (recordId) {
-      await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-        method: 'PATCH',
-        headers: { ...headers(env), 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fields: { 'Email': email } }),
-      });
-    }
+    recordId = generateId();
+    await env.SML_DB.prepare(
+      "INSERT INTO anvandare (id, epost, access_type, status) VALUES (?, ?, 'guest', 'active')"
+    ).bind(recordId, email).run();
   }
-  if (!recordId) return;
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${recordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { 'Remaining Analyses': antal } }),
-  });
-}
-
-export async function saveAnalysis(userId, inputText, result, env) {
-  const res = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Analyses`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'User': [userId],
-        'Input Text': inputText,
-        'Result JSON': JSON.stringify(result),
-        'Summary': result.summary ?? '',
-      },
-    }),
-  });
-  const data = await res.json().catch(() => null);
-  return data?.id ?? null;
-}
-
-export async function saveProfileResponse(env, data) {
-  const { first_name, email, context, situation, answers, word_clicks, response_times_ms } = data;
-
-  // 1. Sök om e-posten redan finns i Users
-  let userId;
-  const existing = await findUserByEmail(email, env);
-
-  if (existing) {
-    userId = existing.id;
-  } else {
-    // 2. Skapa ny användare med Access Type "respondent"
-    const createRes = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users`, {
-      method: 'POST',
-      headers: { ...headers(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: {
-          'Name': first_name,
-          'Email': email,
-          'Access Type': 'guest',
-          'Status': 'active',
-        },
-      }),
-    });
-    const created = await createRes.json().catch(() => null);
-    if (!created?.id) throw new Error('Kunde inte skapa användare i Airtable');
-    userId = created.id;
-  }
-
-  // 3. Spara i Profiles-tabellen
-  const profileRes = await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles`, {
-    method: 'POST',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      fields: {
-        'User': [userId],
-        'Answers JSON': JSON.stringify({
-          answers,
-          word_clicks,
-          response_times_ms,
-          context: context || 'Arbete',
-          situation: situation || context || 'Arbete',
-          submitted_at: new Date().toISOString(),
-        }),
-      },
-    }),
-  });
-  const profileData = await profileRes.json().catch(() => null);
-  if (!profileData?.id) throw new Error('Kunde inte spara profil i Airtable');
-
-  return profileData.id;
+  await env.SML_DB.prepare(
+    'UPDATE anvandare SET analyser_kvar = ? WHERE id = ?'
+  ).bind(antal, recordId).run();
 }
 
 export async function saveToLeadsTable(env, data) {
-  const LEADS_TABLE_URL = `${AIRTABLE_API}/${env.LEADS_BASE_ID}/tblSIQ6Z78Jpo366s`;
   const { email, name, source } = data;
-
   if (!email) return null;
 
   try {
-    // 1. Sök om email redan finns
-    const formula = encodeURIComponent(`LOWER({Email})=LOWER("${email.replace(/"/g, '')}")`);
-    const searchRes = await fetch(
-      `${LEADS_TABLE_URL}?filterByFormula=${formula}&maxRecords=1`,
-      { headers: headers(env) }
-    );
-    const searchData = await searchRes.json();
+    const existing = await env.SML_DB.prepare(
+      'SELECT id FROM sml_lead WHERE LOWER(epost) = LOWER(?)'
+    ).bind(email).first();
 
-    if (searchData.records && searchData.records.length > 0) {
+    if (existing) {
       console.log('[saveToLeadsTable] Lead finns redan:', email);
-      return searchData.records[0].id;
+      return existing.id;
     }
 
-    // 2. Skapa ny lead
-    const fields = {
-      'Email': email,
-      'Source': source || 'manual',
-      'Status': 'new',
-    };
-    if (name) fields['Name'] = name;
-
-    const createRes = await fetch(LEADS_TABLE_URL, {
-      method: 'POST',
-      headers: { ...headers(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields }),
-    });
-    const created = await createRes.json();
-    console.log('[saveToLeadsTable] Ny lead skapad:', email, '→', created?.id);
-    return created?.id ?? null;
+    const id = generateId();
+    await env.SML_DB.prepare(
+      'INSERT INTO sml_lead (id, epost, namn, kalla) VALUES (?, ?, ?, ?)'
+    ).bind(id, email, name ?? null, source ?? 'manual').run();
+    console.log('[saveToLeadsTable] Ny lead skapad:', email, '→', id);
+    return id;
   } catch (err) {
     console.error('[saveToLeadsTable] Fel:', err);
     return null;
   }
 }
 
-export async function rateAnalysis(analysisRecordId, rating, env) {
-  await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Analyses/${analysisRecordId}`, {
-    method: 'PATCH',
-    headers: { ...headers(env), 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fields: { 'Accuracy Rating': rating } }),
-  });
+// ── Cron: månatlig reset ─────────────────────────────────────────────
+
+export async function resetMonthlyAnalyses(env) {
+  const result = await env.SML_DB.prepare(
+    "UPDATE anvandare SET analyser_kvar = 20 WHERE access_type IN ('paid_monthly', 'paid_yearly')"
+  ).run();
+  const updated = result.meta?.changes ?? 0;
+  console.log(`[resetMonthlyAnalyses] Återställde ${updated} poster till 20 analyser`);
+  return { updated };
 }

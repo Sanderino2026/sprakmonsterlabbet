@@ -1,11 +1,5 @@
 import { saveFeedback, findOrCreateLead, setRemainingAnalyses } from './airtable.js';
 
-const AIRTABLE_API = 'https://api.airtable.com/v0';
-
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
-}
-
 export async function handleFeedback(request, env) {
   const body = await request.json().catch(() => null);
   if (!body) return { status: 400, body: { success: false, message: 'Ogiltig förfrågan.' } };
@@ -27,6 +21,9 @@ export async function handleFeedback(request, env) {
     await findOrCreateLead(email, env);
     await setRemainingAnalyses(email, 10, env);
 
+    if (env.MAIL_PAUSAT === 'true') {
+      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Tack för din feedback — här är dina 10 analyser');
+    } else {
     const resendRes = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -50,6 +47,7 @@ export async function handleFeedback(request, env) {
       })
     });
     console.log('Resend svar:', resendRes.status, await resendRes.text());
+    }
   }
 
   return { status: 200, body: { success: true, message: 'Tack för din feedback!' } };
@@ -64,41 +62,26 @@ export async function handleFeedbackReport(request, env) {
   }
 
   try {
-    const formula = encodeURIComponent(`{Report Token}="${token.replace(/"/g, '')}"`);
-    const searchRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles?filterByFormula=${formula}&maxRecords=1`,
-      { headers: airtableHeaders(env) }
-    );
+    const row = await env.SML_DB.prepare(
+      'SELECT * FROM profil WHERE rapport_token = ?'
+    ).bind(token).first();
 
-    if (!searchRes.ok) {
-      return { status: 500, body: { error: 'Kunde inte söka i Airtable' } };
-    }
-
-    const searchData = await searchRes.json();
-    if (!searchData.records || searchData.records.length === 0) {
+    if (!row) {
       return { status: 404, body: { error: 'Rapport ej hittad' } };
     }
 
-    const record = searchData.records[0];
-    const profileId = record.id;
-
     // Hämta namn via User-länk
     let name = 'Respondent';
-    const userIds = record.fields?.['User'];
-    if (userIds && userIds.length > 0) {
-      const userRes = await fetch(
-        `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${userIds[0]}`,
-        { headers: airtableHeaders(env) }
-      );
-      if (userRes.ok) {
-        const userData = await userRes.json();
-        name = userData.fields?.['Name'] || 'Respondent';
-      }
+    if (row.anvandare_id) {
+      const userRow = await env.SML_DB.prepare(
+        'SELECT namn FROM anvandare WHERE id = ?'
+      ).bind(row.anvandare_id).first();
+      if (userRow?.namn) name = userRow.namn;
     }
 
     return {
       status: 200,
-      body: { name, profile_id: profileId },
+      body: { name, profile_id: row.id },
     };
   } catch (err) {
     console.error('[handleFeedbackReport] Oväntat fel:', err);

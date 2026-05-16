@@ -1,8 +1,9 @@
-const AIRTABLE_API = 'https://api.airtable.com/v0';
 const RESEND_API = 'https://api.resend.com/emails';
 
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
+function generateId() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export async function handleGiftReport(env, metadata) {
@@ -10,33 +11,21 @@ export async function handleGiftReport(env, metadata) {
 
   // 1. Skapa en ny Profiles-rad för mottagaren
   const giftToken = crypto.randomUUID();
+  const id = generateId();
 
-  const createRes = await fetch(
-    `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles`,
-    {
-      method: 'POST',
-      headers: { ...airtableHeaders(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: {
-          'Answers JSON': JSON.stringify({
-            gift: true,
-            gifted_by_profile_id: profile_id,
-          }),
-          'Profile Type': 'gift_pending',
-          'Report Token': giftToken,
-        },
-      }),
-    }
-  );
+  await env.SML_DB.prepare(
+    'INSERT INTO profil (id, anvandare_id, svar_json, rapport_token) VALUES (?, ?, ?, ?)'
+  ).bind(
+    id,
+    '', // ingen användare ännu
+    JSON.stringify({
+      gift: true,
+      gifted_by_profile_id: profile_id,
+    }),
+    giftToken
+  ).run();
 
-  if (!createRes.ok) {
-    const err = await createRes.text().catch(() => '');
-    console.error('[handleGiftReport] Kunde inte skapa Profiles-rad:', createRes.status, err);
-    throw new Error('Kunde inte skapa present-profil');
-  }
-
-  const created = await createRes.json();
-  console.log('[handleGiftReport] Skapade present-profil:', created.id, '→ token:', giftToken);
+  console.log('[handleGiftReport] Skapade present-profil:', id, '→ token:', giftToken);
 
   // 2. Skicka presentmail via Resend
   const profileUrl = `https://sprakmonsterlabbet.holmbergfriends.com/profil.html?gift_token=${giftToken}`;
@@ -73,6 +62,11 @@ export async function handleGiftReport(env, metadata) {
 </table>
 </body>
 </html>`;
+
+  if (env.MAIL_PAUSAT === 'true') {
+    console.log('[MAIL PAUSAT] Skulle ha skickat till:', gift_to_email, '| Ämne:', `${gift_from_name} har gett dig en kommunikationsrapport`);
+    return;
+  }
 
   const resendRes = await fetch(RESEND_API, {
     method: 'POST',

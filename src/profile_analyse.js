@@ -1,26 +1,21 @@
 import { buildProfileAnalysisPrompt } from './prompts/profile_analysis_prompt.js';
 
-const AIRTABLE_API = 'https://api.airtable.com/v0';
 const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
-
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
-}
 
 export async function runProfileAnalysis(env, profileId) {
   try {
     // 1. Hämta Profiles-raden
-    const profileRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`,
-      { headers: airtableHeaders(env) }
-    );
-    if (!profileRes.ok) {
-      console.error('[runProfileAnalysis] Kunde inte hämta profil:', profileRes.status);
+    const profileRow = await env.SML_DB.prepare(
+      'SELECT * FROM profil WHERE id = ?'
+    ).bind(profileId).first();
+
+    if (!profileRow) {
+      console.error('[runProfileAnalysis] Kunde inte hämta profil:', profileId);
       return;
     }
-    const profileRecord = await profileRes.json();
-    const answersRaw = profileRecord.fields?.['Answers JSON'];
+
+    const answersRaw = profileRow.svar_json;
     if (!answersRaw) {
       console.error('[runProfileAnalysis] Answers JSON saknas på profil:', profileId);
       return;
@@ -87,28 +82,9 @@ export async function runProfileAnalysis(env, profileId) {
     const commStyle = parts.join(' · ');
 
     // 7. Spara Result JSON tillbaka på Profiles-raden
-    const patchRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`,
-      {
-        method: 'PATCH',
-        headers: { ...airtableHeaders(env), 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            'Result JSON': JSON.stringify(result),
-            'Communication Style': commStyle,
-            'Profile Type': 'individual',
-          },
-        }),
-      }
-    );
-
-    const patchBody = await patchRes.text();
-    console.error('[Airtable PATCH] status:', patchRes.status);
-    console.error('[Airtable PATCH] body:', patchBody);
-
-    if (!patchRes.ok) {
-      return;
-    }
+    await env.SML_DB.prepare(
+      'UPDATE profil SET profil_json = ?, communication_style = ? WHERE id = ?'
+    ).bind(JSON.stringify(result), commStyle, profileId).run();
 
     console.log('[runProfileAnalysis] Analys klar för profil:', profileId, '→', commStyle);
   } catch (err) {

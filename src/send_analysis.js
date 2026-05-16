@@ -12,6 +12,11 @@ export async function handleSendAnalysis(request, env) {
 
   const html = buildEmailHtml(analysResult);
 
+  if (env.MAIL_PAUSAT === 'true') {
+    console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkmönsteranalys');
+    return { status: 200, body: { ok: true, paused: true } };
+  }
+
   try {
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',

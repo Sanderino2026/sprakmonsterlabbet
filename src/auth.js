@@ -174,6 +174,10 @@ function formatAnalysResultHtml(result) {
 }
 
 async function sendMagicLink(email, name, link, analysResult, env) {
+  if (env.MAIL_PAUSAT === 'true') {
+    console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din inloggningslänk till Språkmonsterlabbet');
+    return;
+  }
   try {
     const analysHtml = formatAnalysResultHtml(analysResult);
     const res = await fetch('https://api.resend.com/emails', {

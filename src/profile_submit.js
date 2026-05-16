@@ -2,10 +2,10 @@ import { saveProfileResponse } from './airtable.js';
 import { runProfileAnalysis } from './profile_analyse.js';
 import { handleReportGenerate } from './report_generate.js';
 
-const AIRTABLE_API = 'https://api.airtable.com/v0';
-
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
+function generateId() {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
 export async function handleProfileSubmit(request, env, ctx) {
@@ -62,6 +62,9 @@ export async function handleProfileSubmit(request, env, ctx) {
 
     // Skicka bekräftelsemail
     try {
+      if (env.MAIL_PAUSAT === 'true') {
+        console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Dina svar är mottagna — din språkmönsterprofil');
+      } else {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -75,11 +78,12 @@ export async function handleProfileSubmit(request, env, ctx) {
           html: `<p>Hej ${first_name},</p><p>Tack för att du fyllt i din språkmönsterprofil. Vi analyserar dina svar och återkommer inom 2 arbetsdagar med din rapport.</p><p>/ holmberg & friends</p>`,
         }),
       });
+      }
     } catch (mailErr) {
       console.error('[handleProfileSubmit] Bekräftelsemail misslyckades:', mailErr);
     }
 
-    // Trigga Claude-analysen asynkront — körs i bakgrunden efter att svaret skickats
+    // Trigga Claude-analysen asynkront
     const backgroundWork = async () => {
       try {
         await runProfileAnalysis(env, profileId);
@@ -87,15 +91,16 @@ export async function handleProfileSubmit(request, env, ctx) {
 
         // Generera Report Token och spara på Profiles-raden
         const token = crypto.randomUUID();
-        await fetch(`${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`, {
-          method: 'PATCH',
-          headers: { ...airtableHeaders(env), 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fields: { 'Report Token': token } }),
-        });
+        await env.SML_DB.prepare(
+          'UPDATE profil SET rapport_token = ? WHERE id = ?'
+        ).bind(token, profileId).run();
         console.log('[handleProfileSubmit] Report Token sparat:', token);
 
         // Skicka mail med länk till gratisrapporten
         const rapportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/gratis-rapport.html?token=${token}`;
+        if (env.MAIL_PAUSAT === 'true') {
+          console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkmönsterprofil är klar');
+        } else {
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
@@ -110,6 +115,7 @@ export async function handleProfileSubmit(request, env, ctx) {
           }),
         });
         console.log('[handleProfileSubmit] Gratisrapport-mail skickat till:', email);
+        }
       } catch (err) {
         console.error('[handleProfileSubmit] Bakgrundsarbete misslyckades:', err);
       }
@@ -130,25 +136,16 @@ async function handleGiftSubmit(env, ctx, data) {
   const { gift_token, first_name, email, context, situation, answers, word_clicks, response_times_ms } = data;
 
   // 1. Hitta Profiles-raden via gift_token (Report Token)
-  const formula = encodeURIComponent(`{Report Token}="${gift_token.replace(/"/g, '')}"`);
-  const searchRes = await fetch(
-    `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles?filterByFormula=${formula}&maxRecords=1`,
-    { headers: airtableHeaders(env) }
-  );
+  const giftRow = await env.SML_DB.prepare(
+    'SELECT * FROM profil WHERE rapport_token = ?'
+  ).bind(gift_token).first();
 
-  if (!searchRes.ok) {
-    console.error('[handleGiftSubmit] Airtable-sökning misslyckades:', searchRes.status);
-    return { status: 500, body: { error: 'Kunde inte söka present-profil' } };
-  }
-
-  const searchData = await searchRes.json();
-  if (!searchData.records || searchData.records.length === 0) {
+  if (!giftRow) {
     console.error('[handleGiftSubmit] Ingen profil hittad för gift_token:', gift_token);
     return { status: 404, body: { error: 'Present-länk ej giltig' } };
   }
 
-  const giftRecord = searchData.records[0];
-  const giftProfileId = giftRecord.id;
+  const giftProfileId = giftRow.id;
 
   // 2. Skapa/hitta User för mottagaren (via saveProfileResponse som vanligt)
   const profileId = await saveProfileResponse(env, {
@@ -162,14 +159,20 @@ async function handleGiftSubmit(env, ctx, data) {
   });
 
   // 3. Hämta den nyskapade profilen för att få User-länken
-  const newProfileRes = await fetch(
-    `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`,
-    { headers: airtableHeaders(env) }
-  );
-  const newProfileData = await newProfileRes.json();
-  const userId = newProfileData.fields?.['User']?.[0];
+  const newProfileRow = await env.SML_DB.prepare(
+    'SELECT anvandare_id FROM profil WHERE id = ?'
+  ).bind(profileId).first();
+  const userId = newProfileRow?.anvandare_id;
 
-  // 4. Uppdatera present-profilen med svar, User-länk och ändra Profile Type
+  // 4. Uppdatera present-profilen med svar, User-länk
+  let giftedByProfileId = null;
+  if (giftRow.svar_json) {
+    try {
+      const parsed = JSON.parse(giftRow.svar_json);
+      giftedByProfileId = parsed.gifted_by_profile_id || null;
+    } catch { /* ignore */ }
+  }
+
   const answersJson = JSON.stringify({
     answers,
     word_clicks,
@@ -177,45 +180,27 @@ async function handleGiftSubmit(env, ctx, data) {
     context: context || 'Arbete',
     situation: situation || context || 'Arbete',
     gift: true,
-    gifted_by_profile_id: giftRecord.fields?.['Answers JSON']
-      ? (() => { try { return JSON.parse(giftRecord.fields['Answers JSON']).gifted_by_profile_id; } catch { return null; } })()
-      : null,
+    gifted_by_profile_id: giftedByProfileId,
     submitted_at: new Date().toISOString(),
   });
 
-  const updateFields = {
-    'Answers JSON': answersJson,
-    'Profile Type': 'individual',
-  };
-  if (userId) {
-    updateFields['User'] = [userId];
-  }
+  await env.SML_DB.prepare(
+    'UPDATE profil SET svar_json = ?, anvandare_id = ? WHERE id = ?'
+  ).bind(answersJson, userId || '', giftProfileId).run();
 
-  await fetch(
-    `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${giftProfileId}`,
-    {
-      method: 'PATCH',
-      headers: { ...airtableHeaders(env), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fields: updateFields }),
-    }
-  );
-
-  // 5. Ta bort den extra profilen som saveProfileResponse skapade (vi använder present-profilen)
+  // 5. Ta bort den extra profilen som saveProfileResponse skapade
   if (profileId !== giftProfileId) {
-    await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`,
-      { method: 'DELETE', headers: airtableHeaders(env) }
-    );
+    await env.SML_DB.prepare(
+      'DELETE FROM profil WHERE id = ?'
+    ).bind(profileId).run();
   }
 
   // 6. Trigga analys + rapportgenerering asynkront
   const giftFlow = async () => {
     try {
-      // Kör Claude-analysen
       await runProfileAnalysis(env, giftProfileId);
       console.log('[handleGiftSubmit] Analys klar för:', giftProfileId);
 
-      // Generera och skicka rapport (present-köparen har redan betalat)
       const fakeRequest = { json: async () => ({ profile_id: giftProfileId }) };
       const result = await handleReportGenerate(fakeRequest, env);
       console.log('[handleGiftSubmit] Rapport genererad:', result.status);

@@ -1,12 +1,7 @@
 import { pedagogik } from './report_content.js';
 
-const AIRTABLE_API = 'https://api.airtable.com/v0';
 const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
-
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
-}
 
 export async function handleGratisRapport(request, env) {
   const url = new URL(request.url);
@@ -18,53 +13,45 @@ export async function handleGratisRapport(request, env) {
 
   try {
     // 1. Sök Profiles-raden via Report Token
-    const formula = encodeURIComponent(`{Report Token}="${token.replace(/"/g, '')}"`);
-    const searchRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles?filterByFormula=${formula}&maxRecords=1`,
-      { headers: airtableHeaders(env) }
-    );
+    const row = await env.SML_DB.prepare(
+      'SELECT * FROM profil WHERE rapport_token = ?'
+    ).bind(token).first();
 
-    if (!searchRes.ok) {
-      return { status: 500, body: { error: 'Kunde inte söka i Airtable' } };
-    }
-
-    const searchData = await searchRes.json();
-    if (!searchData.records || searchData.records.length === 0) {
+    if (!row) {
       return { status: 404, body: { error: 'Rapport ej hittad' } };
     }
 
-    const record = searchData.records[0];
-    const reportTextRaw = record.fields?.['Report Text'];
-    const resultJsonRaw = record.fields?.['Result JSON'];
+    // Parsa profil_json
+    let resultJson = null;
+    let reportTextRaw = null;
+    if (row.profil_json) {
+      try {
+        const parsed = JSON.parse(row.profil_json);
+        if (parsed.report && parsed.result) {
+          resultJson = parsed.result;
+          reportTextRaw = JSON.stringify(parsed.report);
+        } else {
+          resultJson = parsed;
+        }
+      } catch { /* ignore */ }
+    }
 
     // Hämta namn via User-länk
     let name = 'Respondent';
-    const userIds = record.fields?.['User'];
-    if (userIds && userIds.length > 0) {
-      const userRes = await fetch(
-        `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${userIds[0]}`,
-        { headers: airtableHeaders(env) }
-      );
-      if (userRes.ok) {
-        const userData = await userRes.json();
-        name = userData.fields?.['Name'] || 'Respondent';
-      }
+    if (row.anvandare_id) {
+      const userRow = await env.SML_DB.prepare(
+        'SELECT namn FROM anvandare WHERE id = ?'
+      ).bind(row.anvandare_id).first();
+      if (userRow?.namn) name = userRow.namn;
     }
 
     // Hämta situation från Answers JSON
     let situation = 'Arbete';
-    const answersRaw = record.fields?.['Answers JSON'];
-    if (answersRaw) {
+    if (row.svar_json) {
       try {
-        const answersData = JSON.parse(answersRaw);
+        const answersData = JSON.parse(row.svar_json);
         situation = answersData.situation || answersData.context || 'Arbete';
       } catch { /* default */ }
-    }
-
-    // Parsa Result JSON för skala/signal/styrka
-    let resultJson = null;
-    if (resultJsonRaw) {
-      try { resultJson = JSON.parse(resultJsonRaw); } catch { /* ignore */ }
     }
 
     if (!resultJson || !resultJson.förståelse) {
@@ -107,7 +94,7 @@ export async function handleGratisRapport(request, env) {
       body: {
         name,
         situation,
-        profile_id: record.id,
+        profile_id: row.id,
         pedagogik_text: pedText,
         förståelse: {
           signal,

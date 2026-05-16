@@ -1,14 +1,9 @@
 import { buildReportPrompt } from './prompts/report_prompt.js';
 import { pedagogik, utmaningar } from './report_content.js';
 
-const AIRTABLE_API = 'https://api.airtable.com/v0';
 const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-20250514';
 const RESEND_API = 'https://api.resend.com/emails';
-
-function airtableHeaders(env) {
-  return { Authorization: `Bearer ${env.AIRTABLE_API_KEY}` };
-}
 
 export async function handleReportGenerate(request, env) {
   let body;
@@ -25,17 +20,16 @@ export async function handleReportGenerate(request, env) {
 
   try {
     // 1. Hämta Profiles-raden
-    const profileRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profile_id}`,
-      { headers: airtableHeaders(env) }
-    );
-    if (!profileRes.ok) {
+    const profileRow = await env.SML_DB.prepare(
+      'SELECT * FROM profil WHERE id = ?'
+    ).bind(profile_id).first();
+
+    if (!profileRow) {
       return { status: 404, body: { error: 'Profil ej hittad' } };
     }
-    const profileRecord = await profileRes.json();
 
     // 2. Parsa Result JSON
-    const resultRaw = profileRecord.fields?.['Result JSON'];
+    const resultRaw = profileRow.profil_json;
     if (!resultRaw) {
       return { status: 400, body: { error: 'Profilen saknar Result JSON — analysen kanske inte är klar ännu' } };
     }
@@ -47,32 +41,29 @@ export async function handleReportGenerate(request, env) {
     }
 
     // 3. Hämta respondentens namn och e-post via User-länken
-    const userIds = profileRecord.fields?.['User'];
-    if (!userIds || userIds.length === 0) {
+    const userId = profileRow.anvandare_id;
+    if (!userId) {
       return { status: 400, body: { error: 'Profilen saknar User-länk' } };
     }
-    const userId = userIds[0];
 
-    const userRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${userId}`,
-      { headers: airtableHeaders(env) }
-    );
-    if (!userRes.ok) {
+    const userRow = await env.SML_DB.prepare(
+      'SELECT * FROM anvandare WHERE id = ?'
+    ).bind(userId).first();
+
+    if (!userRow) {
       return { status: 500, body: { error: 'Kunde inte hämta användare' } };
     }
-    const userRecord = await userRes.json();
-    const name = userRecord.fields?.['Name'] || 'Respondent';
-    const email = userRecord.fields?.['Email'];
+    const name = userRow.namn || 'Respondent';
+    const email = userRow.epost;
     if (!email) {
       return { status: 400, body: { error: 'Användaren saknar e-postadress' } };
     }
 
     // 4. Hämta kontext från Answers JSON
     let kontext = 'Arbete';
-    const answersRaw = profileRecord.fields?.['Answers JSON'];
-    if (answersRaw) {
+    if (profileRow.svar_json) {
       try {
-        const answersData = JSON.parse(answersRaw);
+        const answersData = JSON.parse(profileRow.svar_json);
         kontext = answersData.situation || answersData.context || 'Arbete';
       } catch { /* default */ }
     }
@@ -150,26 +141,27 @@ export async function handleReportGenerate(request, env) {
     // 10. Generera unik rapport-token
     const token = crypto.randomUUID();
 
-    // 11. Spara på Profiles-raden i Airtable
-    const patchRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profile_id}`,
-      {
-        method: 'PATCH',
-        headers: { ...airtableHeaders(env), 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          fields: {
-            'Report Text': JSON.stringify(rapport),
-            'Report Token': token,
-            'Report Generated At': new Date().toISOString(),
-          },
-        }),
-      }
-    );
+    // 11. Spara på Profiles-raden i D1
+    await env.SML_DB.prepare(
+      'UPDATE profil SET profil_json = ?, rapport_token = ? WHERE id = ?'
+    ).bind(JSON.stringify({ ...resultJSON, _report: rapport }), token, profile_id).run();
 
-    if (!patchRes.ok) {
-      console.error('[handleReportGenerate] Airtable PATCH fel:', patchRes.status);
-      return { status: 500, body: { error: 'Kunde inte spara rapport i Airtable' } };
-    }
+    // Spara rapport separat som ett JSON-fält — vi lägger det i profil_json med en wrapper
+    // Egentligen: spara Report Text + Report Token
+    await env.SML_DB.prepare(
+      "UPDATE profil SET rapport_token = ? WHERE id = ?"
+    ).bind(token, profile_id).run();
+
+    // Vi behöver ett fält för report_text — låt oss använda en pragmatisk lösning:
+    // Lagra rapport-JSON i ett nytt prep-steg. Profil-tabellen har profil_json som redan
+    // innehåller Result JSON. Vi skapar en KV-liknande lösning genom att uppdatera svar_json
+    // med rapport-data bifogat. Bättre: lägg rapport i profil_json som ett wrappat objekt.
+    //
+    // Enklast: Vi sparar rapporten + result i profil_json som { result: ..., report: ... }
+    const combinedJson = JSON.stringify({ result: resultJSON, report: rapport });
+    await env.SML_DB.prepare(
+      'UPDATE profil SET profil_json = ?, rapport_token = ? WHERE id = ?'
+    ).bind(combinedJson, token, profile_id).run();
 
     // 12. Skicka e-post via Resend
     const reportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/rapport.html?token=${token}`;
@@ -207,6 +199,11 @@ export async function handleReportGenerate(request, env) {
 </body>
 </html>`;
 
+    if (env.MAIL_PAUSAT === 'true') {
+      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din kommunikationsrapport från Språkmönsterlabbet');
+      return { status: 200, body: { ok: true, paused: true } };
+    }
+
     const resendRes = await fetch(RESEND_API, {
       method: 'POST',
       headers: {
@@ -224,7 +221,6 @@ export async function handleReportGenerate(request, env) {
     if (!resendRes.ok) {
       const resendErr = await resendRes.text().catch(() => '');
       console.error('[handleReportGenerate] Resend fel:', resendRes.status, resendErr);
-      // Rapport sparad men e-post misslyckades — returnera ändå success
     }
 
     console.log('[handleReportGenerate] Rapport genererad för:', name, '→ token:', token);
@@ -248,20 +244,20 @@ export async function handleReportByProfile(request, env) {
   }
 
   try {
-    const res = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles/${profileId}`,
-      { headers: airtableHeaders(env) }
-    );
-    if (!res.ok) {
+    const row = await env.SML_DB.prepare(
+      'SELECT rapport_token, profil_json FROM profil WHERE id = ?'
+    ).bind(profileId).first();
+
+    if (!row) {
       return { status: 404, body: { error: 'Profil ej hittad' } };
     }
-    const record = await res.json();
-    const token = record.fields?.['Report Token'] || null;
-    const reportText = record.fields?.['Report Text'] || null;
+
+    const token = row.rapport_token || null;
+    const hasReport = !!(token && row.profil_json);
 
     return {
       status: 200,
-      body: { token, ready: !!(token && reportText) },
+      body: { token, ready: hasReport },
     };
   } catch (err) {
     console.error('[handleReportByProfile] Oväntat fel:', err);
@@ -278,78 +274,60 @@ export async function handleGetReport(request, env) {
   }
 
   try {
-    // Sök Profiles-raden via Report Token
-    const formula = encodeURIComponent(`{Report Token}="${token.replace(/"/g, '')}"`);
-    const searchRes = await fetch(
-      `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Profiles?filterByFormula=${formula}&maxRecords=1`,
-      { headers: airtableHeaders(env) }
-    );
+    const row = await env.SML_DB.prepare(
+      'SELECT * FROM profil WHERE rapport_token = ?'
+    ).bind(token).first();
 
-    if (!searchRes.ok) {
-      return { status: 500, body: { error: 'Kunde inte söka i Airtable' } };
-    }
-
-    const searchData = await searchRes.json();
-    if (!searchData.records || searchData.records.length === 0) {
+    if (!row) {
       return { status: 404, body: { error: 'Rapport ej hittad' } };
     }
 
-    const record = searchData.records[0];
-    const reportTextRaw = record.fields?.['Report Text'];
-    const resultJsonRaw = record.fields?.['Result JSON'];
-    const generatedAt = record.fields?.['Report Generated At'];
+    // Parsa profil_json (kan vara { result, report } eller bara result)
+    let resultJson = null;
+    let rapport = null;
+    if (row.profil_json) {
+      try {
+        const parsed = JSON.parse(row.profil_json);
+        if (parsed.report && parsed.result) {
+          rapport = parsed.report;
+          resultJson = parsed.result;
+        } else {
+          resultJson = parsed;
+        }
+      } catch { /* ignore */ }
+    }
 
-    if (!reportTextRaw) {
+    if (!rapport && !resultJson) {
       return { status: 404, body: { error: 'Rapport ej hittad' } };
     }
 
     // Hämta namn via User-länk
     let name = 'Respondent';
-    const userIds = record.fields?.['User'];
-    if (userIds && userIds.length > 0) {
-      const userRes = await fetch(
-        `${AIRTABLE_API}/${env.AIRTABLE_BASE_ID}/Users/${userIds[0]}`,
-        { headers: airtableHeaders(env) }
-      );
-      if (userRes.ok) {
-        const userData = await userRes.json();
-        name = userData.fields?.['Name'] || 'Respondent';
-      }
-    }
-
-    let resultJson = null;
-    if (resultJsonRaw) {
-      try { resultJson = JSON.parse(resultJsonRaw); } catch { /* ignore */ }
+    if (row.anvandare_id) {
+      const userRow = await env.SML_DB.prepare(
+        'SELECT namn FROM anvandare WHERE id = ?'
+      ).bind(row.anvandare_id).first();
+      if (userRow?.namn) name = userRow.namn;
     }
 
     // Hämta situation från Answers JSON
     let situation = 'Arbete';
-    const answersRaw = record.fields?.['Answers JSON'];
-    if (answersRaw) {
+    if (row.svar_json) {
       try {
-        const answersData = JSON.parse(answersRaw);
+        const answersData = JSON.parse(row.svar_json);
         situation = answersData.situation || answersData.context || 'Arbete';
       } catch { /* default */ }
-    }
-
-    // Parsa rapport-objektet (pedagogik + analys)
-    let rapport = null;
-    try {
-      rapport = JSON.parse(reportTextRaw);
-    } catch {
-      // Fallback: gammalt format (ren text)
-      rapport = null;
     }
 
     return {
       status: 200,
       body: {
         name,
-        profile_id: record.id,
+        profile_id: row.id,
         rapport,
-        report_text: rapport ? null : reportTextRaw,
+        report_text: rapport ? null : (row.profil_json || null),
         result_json: resultJson,
-        generated_at: generatedAt,
+        generated_at: row.skapad_at,
         situation,
       },
     };

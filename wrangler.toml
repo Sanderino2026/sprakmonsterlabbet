@@ -2,15 +2,13 @@ name = "sprakmonsterlabbet"
 main = "src/index.js"
 compatibility_date = "2024-01-01"
 
-# KV för magic link-tokens (skapa med: npx wrangler kv namespace create "AUTH_TOKENS")
+# KV for magic link tokens
 [[kv_namespaces]]
 binding = "KV"
 id = "a507970ece464c57be2f38b537041f70"
 
 # Hemligheter sätts via: npx wrangler secret put NAMN
 # RESEND_API_KEY
-# AIRTABLE_API_KEY
-# AIRTABLE_BASE_ID
 # SESSION_SECRET
 # ANTHROPIC_API_KEY
 
@@ -21,6 +19,6 @@ directory = "./icons"
 crons = ["0 3 1 * *"]
 
 [[d1_databases]]
-binding = "DEEP_THOUGHT"
-database_name = "deep-thought"
-database_id = "300177bd-badb-4cbc-8b16-35cd3bccba17"
+binding = "SML_DB"
+database_name = "sprakmonsterlabbet"
+database_id = "e95682e7-93e4-40e9-a41f-1ddc1ad34cd3"
