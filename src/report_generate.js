@@ -187,7 +187,7 @@ export async function handleReportGenerate(request, env) {
     </table>
     <p style="font-size:14px;color:#5A5A5A;line-height:1.6;margin:0 0 8px;">
       Rapporten är personlig och gäller dina kommunikationstendenser i det sammanhang du angav.
-      Vi rekommenderar att du läser den tillsammans med din coach.
+      Vi rekommenderar att du reflekterar över den tillsammans med en kollega eller i ditt team.
     </p>
   </td></tr>
   <tr><td style="padding:24px 40px;border-top:1px solid #E2E2E2;">
