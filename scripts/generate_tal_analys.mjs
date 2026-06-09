@@ -2,10 +2,9 @@
 /**
  * generate_tal_analys.mjs
  *
- * Hämtar ett tal LIVE från svenskatal.se, kör SML:s
- * femmönsteranalys via SML-workerns /api/analyse-tal endpoint,
- * verifierar att alla bevis-citat är ordagranna delsträngar
- * av källtexten, och skriver strukturerad JSON till stdout.
+ * Hämtar ett tal LIVE från svenskatal.se, kör SML:s spann-baserade
+ * femmönsteranalys, verifierar varje spann ordagrant mot källtexten,
+ * räknar verifierade spann per pol, och beräknar dominant/procent/n.
  *
  * Användning:
  *   node scripts/generate_tal_analys.mjs \
@@ -19,6 +18,15 @@
  */
 
 const DEFAULT_WORKER = 'https://sprakmonsterlabbet.holmbergfriends.com';
+
+// ── Giltiga poler per mönster ───────────────────────────────────
+const VALID_POLES = {
+  'Motivationsriktning': ['Till', 'Ifrån'],
+  'Förståelse': ['Procedur', 'Alternativ'],
+  'Sinneskanal': ['Syn', 'Hörsel', 'Känsel'],
+  'Beslutsram': ['Intern', 'Extern'],
+  'Detaljnivå': ['Helhet', 'Detalj'],
+};
 
 // ── Parse args ──────────────────────────────────────────────────
 function parseArgs() {
@@ -42,7 +50,6 @@ async function fetchSpeechText(url) {
   if (!res.ok) throw new Error(`Kunde inte hämta tal: ${res.status} ${pageUrl}`);
   const html = await res.text();
 
-  // Extrahera taltext från entry-content div
   const bodyMatch = html.match(/<div[^>]*class="[^"]*entry-content[^"]*"[^>]*>([\s\S]*?)<\/div>/i)
     || html.match(/<article[^>]*>([\s\S]*?)<\/article>/i)
     || html.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
@@ -81,37 +88,93 @@ function normalize(s) {
   return s.replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-// ── Verifiera bevis ordagrant mot källtexten ────────────────────
-function verifyEvidence(patterns, sourceText) {
+// ── Verifiera spann + räkna per pol ─────────────────────────────
+function verifyAndCount(patterns, sourceText) {
   const normalizedSource = normalize(sourceText);
-  const report = { passed: 0, failed: 0, details: [] };
+  const results = [];
 
   for (const pattern of patterns) {
+    const category = pattern.category;
+    const validPoles = VALID_POLES[category];
+    if (!validPoles) {
+      results.push({ category, error: 'Okänd kategori' });
+      continue;
+    }
+
     const verified = [];
     const dropped = [];
 
-    for (const bevis of pattern.bevis) {
-      const normalizedBevis = normalize(bevis);
-      if (normalizedSource.includes(normalizedBevis)) {
-        verified.push(bevis);
-        report.passed++;
+    for (const spann of (pattern.spann || [])) {
+      const text = spann.text;
+      const pol = spann.pol;
+
+      // Kasta spann med ogiltig pol
+      if (!validPoles.includes(pol)) {
+        dropped.push({ text, pol, reason: `ogiltig pol "${pol}"` });
+        continue;
+      }
+
+      // Delsträngskoll
+      if (normalizedSource.includes(normalize(text))) {
+        verified.push({ text, pol });
       } else {
-        dropped.push(bevis);
-        report.failed++;
+        dropped.push({ text, pol, reason: 'ej ordagrant' });
       }
     }
 
-    report.details.push({
-      category: pattern.category,
-      verified,
-      dropped,
-    });
+    // Räkna per pol
+    const fördelning = {};
+    for (const p of validPoles) fördelning[p] = 0;
+    for (const v of verified) fördelning[v.pol]++;
 
-    // Ersätt bevis-arrayen med enbart verifierade citat
-    pattern.bevis = verified;
+    const n = verified.length;
+    const underlagsflagga = n < 5 ? 'tunt underlag, tolka försiktigt' : null;
+
+    // Dominant pol
+    let dominant;
+    let procent;
+    const entries = Object.entries(fördelning).sort((a, b) => b[1] - a[1]);
+    if (n === 0) {
+      dominant = null;
+      procent = 0;
+    } else {
+      dominant = entries[0][0];
+      procent = Math.round((entries[0][1] / n) * 100);
+    }
+
+    // Representativa citat (1-2 från dominant, 1 från minoritet om ej 100%)
+    const representativt_citat = verified
+      .filter(v => v.pol === dominant)
+      .slice(0, 2)
+      .map(v => v.text);
+
+    let minoritetscitat = null;
+    if (procent < 100 && entries.length > 1 && entries[1][1] > 0) {
+      const minoritetsPol = entries[1][0];
+      const mc = verified.find(v => v.pol === minoritetsPol);
+      if (mc) minoritetscitat = { text: mc.text, pol: minoritetsPol };
+    }
+
+    results.push({
+      category,
+      dominant,
+      procent,
+      n,
+      fördelning,
+      representativt_citat,
+      minoritetscitat,
+      underlagsflagga,
+      beskrivning: pattern.beskrivning,
+      tolkning: pattern.tolkning,
+      verification: {
+        verified: verified.length,
+        dropped: dropped.length,
+        dropped_details: dropped,
+      },
+    });
   }
 
-  return report;
+  return results;
 }
 
 // ── Kör analys via SML-worker ───────────────────────────────────
@@ -142,19 +205,22 @@ async function main() {
 
   const analys = await analyseViaSML(text, opts.worker);
 
-  // Programmatisk bevisverifiering — icke-förhandlingsbar
-  const verification = verifyEvidence(analys.patterns, text);
+  // Verifiera spann + räkna
+  const patterns = verifyAndCount(analys.patterns, text);
 
-  process.stderr.write(`\n── BEVISVERIFIERING: ${opts.titel} ──\n`);
-  process.stderr.write(`Passerade: ${verification.passed}  |  Föll: ${verification.failed}\n`);
-  for (const d of verification.details) {
-    process.stderr.write(`  ${d.category}: ${d.verified.length} OK`);
-    if (d.dropped.length > 0) {
-      process.stderr.write(`, ${d.dropped.length} BORTTAGNA: ${JSON.stringify(d.dropped)}`);
-    }
+  // Stderr-rapport
+  let totalVerified = 0, totalDropped = 0;
+  process.stderr.write(`\n── SPANN-RÄKNING: ${opts.titel} ──\n`);
+  for (const p of patterns) {
+    totalVerified += p.verification.verified;
+    totalDropped += p.verification.dropped;
+    const pcts = Object.entries(p.fördelning).map(([k, v]) => `${k}:${v}`).join(' ');
+    process.stderr.write(`  ${p.category}: ${p.dominant} ${p.procent}% (n=${p.n}) [${pcts}]`);
+    if (p.underlagsflagga) process.stderr.write(` ⚠ ${p.underlagsflagga}`);
+    if (p.verification.dropped > 0) process.stderr.write(` — ${p.verification.dropped} borttagna`);
     process.stderr.write('\n');
   }
-  process.stderr.write('\n');
+  process.stderr.write(`  Totalt: ${totalVerified} verifierade, ${totalDropped} borttagna\n\n`);
 
   const output = {
     meta: {
@@ -164,12 +230,10 @@ async function main() {
       kalla: opts.url.replace(/\.pdf$/, ''),
       analyserad: new Date().toISOString(),
     },
-    ...analys,
-    verification: {
-      passed: verification.passed,
-      failed: verification.failed,
-      details: verification.details,
-    },
+    patterns,
+    rubrik: analys.rubrik,
+    summary: analys.summary,
+    note: analys.note,
   };
 
   console.log(JSON.stringify(output, null, 2));
