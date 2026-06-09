@@ -15,6 +15,7 @@ REGLER:
 - Skriv aldrig att någon "är" ett visst mönster. Skriv att texten "signalerar" eller "tyder på".
 - Skriv ALDRIG "Till-personer", "Ifrån-personer", "Procedur-personer" eller liknande. En person är inte sitt mönster — en person HAR ett mönster. Skriv istället: "Texten signalerar Procedur, vilket innebär att..." eller "Det här mönstret kännetecknas av..."
 - Ge korta citat ur talet som bevis — max 10 ord per citat.
+- KRITISKT: Varje bevis-sträng MÅSTE vara en ORDAGRANN delsträng av talet. Parafrasera ALDRIG. Om du inte kan hitta en exakt formulering, citera inte.
 - Analysera HELA talet, inte bara inledningen.
 
 SIGNALORD (referens):
@@ -45,6 +46,12 @@ STYRKA:
   "Trolig" = tydliga men inte överväldigande signaler
   "Möjlig" = svaga eller motstridiga signaler
   "Otillräcklig data" = för kort text för att bedöma
+
+VIKTIGT OM BLANDAD + STYRKA:
+  Om signal = "Blandad" får styrka ALDRIG vara "Tydlig".
+  Ett blandat mönster innebär per definition att signalen inte pekar entydigt åt ett håll.
+  Blandad + Trolig = båda polerna syns tydligt men ingen dominerar.
+  Blandad + Möjlig = svaga eller motstridiga signaler åt båda håll.
 
 Returnera EXAKT JSON enligt detta schema, utan markdown:
 {
@@ -90,7 +97,7 @@ Returnera EXAKT JSON enligt detta schema, utan markdown:
       "tolkning": "..."
     }
   ],
-  "rubrik": "En kort, kreativ rubrik på 3-5 ord som fångar talets kommunikativa kärna. Poetisk, aldrig värderande.",
+  "rubrik": "En kort rubrik på 3-5 ord som beskriver MÖNSTERKOMBINATIONEN, inte talaren. Poetisk men strikt neutral — ALDRIG värderande ord som 'visionär', 'stark', 'skicklig', 'modig', 'kraftfull' e.d. Rubriken ska kunna stå utan att man vet vem som höll talet. Exempel: Till+Procedur → 'Framåt i rätt ordning'. Ifrån+Känsel+Extern → 'Bort från smärtan, andras ord'. Blandad+Alternativ → 'Flera vägar, inget facit'.",
   "summary": "En kort sammanfattning (2-3 meningar) av de fem mönstrens samspel i talet.",
   "note": "Språkmönster beskriver hur språket används i detta tal, inte fasta egenskaper hos talaren."
 }

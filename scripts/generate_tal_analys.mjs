@@ -4,7 +4,8 @@
  *
  * Hämtar ett tal LIVE från svenskatal.se, kör SML:s
  * femmönsteranalys via SML-workerns /api/analyse-tal endpoint,
- * och skriver strukturerad JSON till stdout.
+ * verifierar att alla bevis-citat är ordagranna delsträngar
+ * av källtexten, och skriver strukturerad JSON till stdout.
  *
  * Användning:
  *   node scripts/generate_tal_analys.mjs \
@@ -75,6 +76,44 @@ async function fetchSpeechText(url) {
   return text;
 }
 
+// ── Normalisera whitespace för jämförelse ───────────────────────
+function normalize(s) {
+  return s.replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+// ── Verifiera bevis ordagrant mot källtexten ────────────────────
+function verifyEvidence(patterns, sourceText) {
+  const normalizedSource = normalize(sourceText);
+  const report = { passed: 0, failed: 0, details: [] };
+
+  for (const pattern of patterns) {
+    const verified = [];
+    const dropped = [];
+
+    for (const bevis of pattern.bevis) {
+      const normalizedBevis = normalize(bevis);
+      if (normalizedSource.includes(normalizedBevis)) {
+        verified.push(bevis);
+        report.passed++;
+      } else {
+        dropped.push(bevis);
+        report.failed++;
+      }
+    }
+
+    report.details.push({
+      category: pattern.category,
+      verified,
+      dropped,
+    });
+
+    // Ersätt bevis-arrayen med enbart verifierade citat
+    pattern.bevis = verified;
+  }
+
+  return report;
+}
+
 // ── Kör analys via SML-worker ───────────────────────────────────
 async function analyseViaSML(text, workerUrl) {
   const res = await fetch(`${workerUrl}/api/analyse-tal`, {
@@ -103,6 +142,20 @@ async function main() {
 
   const analys = await analyseViaSML(text, opts.worker);
 
+  // Programmatisk bevisverifiering — icke-förhandlingsbar
+  const verification = verifyEvidence(analys.patterns, text);
+
+  process.stderr.write(`\n── BEVISVERIFIERING: ${opts.titel} ──\n`);
+  process.stderr.write(`Passerade: ${verification.passed}  |  Föll: ${verification.failed}\n`);
+  for (const d of verification.details) {
+    process.stderr.write(`  ${d.category}: ${d.verified.length} OK`);
+    if (d.dropped.length > 0) {
+      process.stderr.write(`, ${d.dropped.length} BORTTAGNA: ${JSON.stringify(d.dropped)}`);
+    }
+    process.stderr.write('\n');
+  }
+  process.stderr.write('\n');
+
   const output = {
     meta: {
       talare: opts.talare,
@@ -112,6 +165,11 @@ async function main() {
       analyserad: new Date().toISOString(),
     },
     ...analys,
+    verification: {
+      passed: verification.passed,
+      failed: verification.failed,
+      details: verification.details,
+    },
   };
 
   console.log(JSON.stringify(output, null, 2));
