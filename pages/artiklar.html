@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Talanalyser — Språkmönsterlabbet</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #0D0D0D; --dark: #1C1C1C; --mid: #5A5A5A; --muted: #999;
+  --border: #E2E2E2; --bg: #FAFAFA; --white: #FFF;
+  --accent: #FF9F46; --accent-hover: #e8892e;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:var(--white); color:var(--dark); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+
+header { text-align:center; padding:64px 24px 40px; }
+.eyebrow { font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+header h1 { font-family:'Crimson Pro',Georgia,serif; font-size:40px; font-weight:300; letter-spacing:-0.03em; color:var(--black); margin-bottom:8px; }
+header p { font-size:15px; color:var(--mid); max-width:480px; margin:0 auto; }
+
+.tal-list { max-width:640px; margin:0 auto; padding:0 24px 80px; }
+.tal-card { display:block; border:1px solid var(--border); padding:28px; margin-bottom:16px; text-decoration:none; color:inherit; transition:border-color 0.2s; }
+.tal-card:hover { border-color:var(--black); }
+.tal-card-datum { font-size:12px; color:var(--muted); }
+.tal-card h2 { font-family:'Crimson Pro',Georgia,serif; font-size:24px; font-weight:300; color:var(--black); margin:4px 0; letter-spacing:-0.02em; }
+.tal-card-rubrik { font-family:'Crimson Pro',Georgia,serif; font-style:italic; font-size:16px; color:var(--accent); margin-bottom:8px; }
+.tal-card p { font-size:14px; color:var(--mid); line-height:1.55; }
+.tal-card-link { font-size:13px; font-weight:500; color:var(--accent); margin-top:12px; display:inline-block; }
+
+.loading { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
+.error { text-align:center; padding:40px; color:#c00; font-size:14px; }
+
+footer { text-align:center; padding:24px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); }
+footer a { color:var(--mid); text-decoration:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="eyebrow">Språkmönsterlabbet</p>
+  <h1>Talanalyser</h1>
+  <p>Kända svenska tal analyserade utifrån fem språkmönster. Varje citat ordagrant verifierat.</p>
+</header>
+
+<div class="tal-list" id="tal-list">
+  <div class="loading">Laddar talanalyser...</div>
+</div>
+
+<footer>
+  <a href="/">← Tillbaka till Språkmönsterlabbet</a>
+</footer>
+
+<script>
+(async function() {
+  const container = document.getElementById('tal-list');
+  try {
+    const res = await fetch('https://deep-thought.holmbergfriends.com/api/tal-analys');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    const tal = data.tal || [];
+    if (tal.length === 0) {
+      container.innerHTML = '<div class="loading">Inga talanalyser publicerade ännu.</div>';
+      return;
+    }
+    container.innerHTML = tal.map(function(t) {
+      var inramning = (t.inramning || '').substring(0, 160);
+      if ((t.inramning || '').length > 160) inramning += '...';
+      return '<a href="https://holmbergfriends.com/tal/' + t.slug + '" class="tal-card" target="_blank">' +
+        '<span class="tal-card-datum">' + (t.datum || '') + '</span>' +
+        '<h2>' + t.talare + ' — ' + t.titel + '</h2>' +
+        '<p class="tal-card-rubrik">' + (t.rubrik || '') + '</p>' +
+        '<p>' + inramning + '</p>' +
+        '<span class="tal-card-link">Läs analysen på holmbergfriends.com →</span>' +
+      '</a>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div class="error">Kunde inte ladda talanalyser.</div>';
+  }
+})();
+</script>
+</body>
+</html>

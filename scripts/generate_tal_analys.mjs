@@ -3,8 +3,8 @@
  * generate_tal_analys.mjs
  *
  * Hämtar ett tal LIVE från svenskatal.se, kör SML:s spann-baserade
- * femmönsteranalys, verifierar varje spann ordagrant mot källtexten,
- * räknar verifierade spann per pol, och beräknar dominant/procent/n.
+ * femmönsteranalys 3 gånger, aggregerar verifierade spann över
+ * körningarna, och rapporterar stabiliserade fördelningar.
  *
  * Användning:
  *   node scripts/generate_tal_analys.mjs \
@@ -13,13 +13,16 @@
  *     --titel "Titeln" \
  *     --datum "YYYY-MM-DD" \
  *     [--worker "https://sprakmonsterlabbet.holmbergfriends.com"]
+ *     [--runs 3]
  *
  * Talet lagras ALDRIG — det streamas genom analysen och kastas.
  */
 
 const DEFAULT_WORKER = 'https://sprakmonsterlabbet.holmbergfriends.com';
-
-// ── Giltiga poler per mönster ───────────────────────────────────
+const DEFAULT_RUNS = 3;
+const CATEGORIES = [
+  'Motivationsriktning', 'Förståelse', 'Sinneskanal', 'Beslutsram', 'Detaljnivå',
+];
 const VALID_POLES = {
   'Motivationsriktning': ['Till', 'Ifrån'],
   'Förståelse': ['Procedur', 'Alternativ'],
@@ -40,10 +43,11 @@ function parseArgs() {
     if (!opts[k]) { console.error(`Saknar --${k}`); process.exit(1); }
   }
   opts.worker = opts.worker || DEFAULT_WORKER;
+  opts.runs = parseInt(opts.runs, 10) || DEFAULT_RUNS;
   return opts;
 }
 
-// ── Hämta taltext från svenskatal.se ────────────────────────────
+// ── Hämta taltext ───────────────────────────────────────────────
 async function fetchSpeechText(url) {
   const pageUrl = url.replace(/\.pdf$/, '');
   const res = await fetch(pageUrl);
@@ -83,114 +87,67 @@ async function fetchSpeechText(url) {
   return text;
 }
 
-// ── Normalisera whitespace för jämförelse ───────────────────────
+// ── Normalisera whitespace ──────────────────────────────────────
 function normalize(s) {
   return s.replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
-// ── Verifiera spann + räkna per pol ─────────────────────────────
-function verifyAndCount(patterns, sourceText) {
+// ── Verifiera spann mot källtext, returnera per-kategori-räkning ─
+function verifyRun(patterns, sourceText) {
   const normalizedSource = normalize(sourceText);
-  const results = [];
+  const perCategory = {};
 
   for (const pattern of patterns) {
-    const category = pattern.category;
-    const validPoles = VALID_POLES[category];
-    if (!validPoles) {
-      results.push({ category, error: 'Okänd kategori' });
-      continue;
-    }
+    const cat = pattern.category;
+    const poles = VALID_POLES[cat];
+    if (!poles) continue;
 
     const verified = [];
-    const dropped = [];
+    let dropped = 0;
 
     for (const spann of (pattern.spann || [])) {
-      const text = spann.text;
-      const pol = spann.pol;
-
-      // Kasta spann med ogiltig pol
-      if (!validPoles.includes(pol)) {
-        dropped.push({ text, pol, reason: `ogiltig pol "${pol}"` });
-        continue;
-      }
-
-      // Delsträngskoll
-      if (normalizedSource.includes(normalize(text))) {
-        verified.push({ text, pol });
+      if (!poles.includes(spann.pol)) { dropped++; continue; }
+      if (normalizedSource.includes(normalize(spann.text))) {
+        verified.push({ text: spann.text, pol: spann.pol });
       } else {
-        dropped.push({ text, pol, reason: 'ej ordagrant' });
+        dropped++;
       }
     }
 
     // Räkna per pol
-    const fördelning = {};
-    for (const p of validPoles) fördelning[p] = 0;
-    for (const v of verified) fördelning[v.pol]++;
+    const counts = {};
+    for (const p of poles) counts[p] = 0;
+    for (const v of verified) counts[v.pol]++;
 
-    const n = verified.length;
-    const underlagsflagga = n < 5 ? 'tunt underlag, tolka försiktigt' : null;
-
-    // Dominant pol — tie-regel: inom 1 spann = Delad
-    let dominant;
-    let procent;
-    const entries = Object.entries(fördelning).sort((a, b) => b[1] - a[1]);
-    if (n === 0) {
-      dominant = null;
-      procent = 0;
-    } else if (entries.length >= 2 && (entries[0][1] - entries[1][1]) <= 1) {
-      // Topp-polerna ligger inom 1 spann — Delad
-      dominant = `Delad (${entries[0][0]}/${entries[1][0]})`;
-      procent = Math.round((entries[0][1] / n) * 100);
-    } else {
-      dominant = entries[0][0];
-      procent = Math.round((entries[0][1] / n) * 100);
-    }
-
-    // Representativa citat: 1 per topp-pol vid Delad, 1-2 från dominant annars
-    let representativt_citat;
-    let minoritetscitat = null;
-
-    if (typeof dominant === 'string' && dominant.startsWith('Delad')) {
-      // Vid delad: 1 citat per pol
-      representativt_citat = [];
-      for (let ei = 0; ei < 2 && ei < entries.length; ei++) {
-        const polNamn = entries[ei][0];
-        const hit = verified.find(v => v.pol === polNamn);
-        if (hit) representativt_citat.push(hit.text);
-      }
-    } else {
-      representativt_citat = verified
-        .filter(v => v.pol === dominant)
-        .slice(0, 2)
-        .map(v => v.text);
-
-      if (procent < 100 && entries.length > 1 && entries[1][1] > 0) {
-        const minoritetsPol = entries[1][0];
-        const mc = verified.find(v => v.pol === minoritetsPol);
-        if (mc) minoritetscitat = { text: mc.text, pol: minoritetsPol };
-      }
-    }
-
-    results.push({
-      category,
-      dominant,
-      procent,
-      n,
-      fördelning,
-      representativt_citat,
-      minoritetscitat,
-      underlagsflagga,
-      beskrivning: pattern.beskrivning,
-      tolkning: pattern.tolkning,
-      verification: {
-        verified: verified.length,
-        dropped: dropped.length,
-        dropped_details: dropped,
-      },
-    });
+    perCategory[cat] = { counts, verified, dropped };
   }
 
-  return results;
+  return perCategory;
+}
+
+// ── Avrunda till närmaste 5 ─────────────────────────────────────
+function roundTo5(n) {
+  return Math.round(n / 5) * 5;
+}
+
+// ── Bestäm dominant med tie-regel ───────────────────────────────
+function determineDominant(fördelning, n) {
+  const entries = Object.entries(fördelning).sort((a, b) => b[1] - a[1]);
+  if (n === 0) return { dominant: null, procent: 0 };
+
+  const topCount = entries[0][1];
+  const secondCount = entries.length >= 2 ? entries[1][1] : 0;
+
+  if (entries.length >= 2 && (topCount - secondCount) <= 1) {
+    return {
+      dominant: `Delad (${entries[0][0]}/${entries[1][0]})`,
+      procent: roundTo5((topCount / n) * 100),
+    };
+  }
+  return {
+    dominant: entries[0][0],
+    procent: roundTo5((topCount / n) * 100),
+  };
 }
 
 // ── Kör analys via SML-worker ───────────────────────────────────
@@ -217,26 +174,123 @@ async function main() {
   process.stderr.write(`Hämtar tal: ${opts.titel} (${opts.talare})...\n`);
 
   const text = await fetchSpeechText(opts.url);
-  process.stderr.write(`Text extraherad: ${text.length} tecken. Kör analys via ${opts.worker}...\n`);
+  process.stderr.write(`Text extraherad: ${text.length} tecken.\n`);
+  process.stderr.write(`Kör ${opts.runs} analyser via ${opts.worker}...\n\n`);
 
-  const analys = await analyseViaSML(text, opts.worker);
+  // ── Kör N gånger ──────────────────────────────────────────────
+  const runResults = [];
+  const runDescriptions = {}; // sista körningens beskrivning/tolkning per kategori
 
-  // Verifiera spann + räkna
-  const patterns = verifyAndCount(analys.patterns, text);
+  for (let i = 0; i < opts.runs; i++) {
+    process.stderr.write(`  Körning ${i + 1}/${opts.runs}...`);
+    const analys = await analyseViaSML(text, opts.worker);
+    const verified = verifyRun(analys.patterns, text);
+    runResults.push(verified);
 
-  // Stderr-rapport
-  let totalVerified = 0, totalDropped = 0;
-  process.stderr.write(`\n── SPANN-RÄKNING: ${opts.titel} ──\n`);
-  for (const p of patterns) {
-    totalVerified += p.verification.verified;
-    totalDropped += p.verification.dropped;
-    const pcts = Object.entries(p.fördelning).map(([k, v]) => `${k}:${v}`).join(' ');
-    process.stderr.write(`  ${p.category}: ${p.dominant} ${p.procent}% (n=${p.n}) [${pcts}]`);
-    if (p.underlagsflagga) process.stderr.write(` ⚠ ${p.underlagsflagga}`);
-    if (p.verification.dropped > 0) process.stderr.write(` — ${p.verification.dropped} borttagna`);
-    process.stderr.write('\n');
+    // Spara beskrivning/tolkning från sista körningen
+    for (const p of analys.patterns) {
+      runDescriptions[p.category] = {
+        beskrivning: p.beskrivning,
+        tolkning: p.tolkning,
+      };
+    }
+
+    const totalV = Object.values(verified).reduce((s, c) => s + c.verified.length, 0);
+    const totalD = Object.values(verified).reduce((s, c) => s + c.dropped, 0);
+    process.stderr.write(` ${totalV} verifierade, ${totalD} borttagna\n`);
   }
-  process.stderr.write(`  Totalt: ${totalVerified} verifierade, ${totalDropped} borttagna\n\n`);
+
+  // ── Aggregera över körningar ──────────────────────────────────
+  process.stderr.write(`\n── AGGREGERAD ANALYS (${opts.runs} körningar): ${opts.titel} ──\n`);
+
+  const aggregated = [];
+
+  for (const cat of CATEGORIES) {
+    const poles = VALID_POLES[cat];
+
+    // Summera verifierade spann per pol, deduplicera på text
+    const seenTexts = new Set();
+    const totalCounts = {};
+    for (const p of poles) totalCounts[p] = 0;
+
+    const allVerified = [];
+    for (const run of runResults) {
+      const rc = run[cat];
+      if (!rc) continue;
+      for (const v of rc.verified) {
+        const key = normalize(v.text) + '|' + v.pol;
+        if (!seenTexts.has(key)) {
+          seenTexts.add(key);
+          totalCounts[v.pol]++;
+          allVerified.push(v);
+        }
+      }
+    }
+
+    const n = Object.values(totalCounts).reduce((a, b) => a + b, 0);
+    const underlagsflagga = n < 5 ? 'tunt underlag, tolka försiktigt' : null;
+
+    // Dominant + procent (tie-regel på aggregat)
+    const { dominant, procent } = determineDominant(totalCounts, n);
+
+    // Per-körnings-dominant för stabilitetskoll
+    const perRunDominants = runResults.map(run => {
+      const rc = run[cat];
+      if (!rc) return null;
+      const rn = Object.values(rc.counts).reduce((a, b) => a + b, 0);
+      return determineDominant(rc.counts, rn).dominant;
+    });
+
+    const allSame = perRunDominants.every(d => d === perRunDominants[0]);
+    const stabilitet = allSame ? 'stabil' : 'instabil';
+
+    // Representativa citat
+    let representativt_citat;
+    let minoritetscitat = null;
+    const entries = Object.entries(totalCounts).sort((a, b) => b[1] - a[1]);
+
+    if (typeof dominant === 'string' && dominant.startsWith('Delad')) {
+      representativt_citat = [];
+      for (let ei = 0; ei < 2 && ei < entries.length; ei++) {
+        const hit = allVerified.find(v => v.pol === entries[ei][0]);
+        if (hit) representativt_citat.push(hit.text);
+      }
+    } else {
+      representativt_citat = allVerified
+        .filter(v => v.pol === dominant)
+        .slice(0, 2)
+        .map(v => v.text);
+
+      if (procent < 100 && entries.length > 1 && entries[1][1] > 0) {
+        const mc = allVerified.find(v => v.pol === entries[1][0]);
+        if (mc) minoritetscitat = { text: mc.text, pol: entries[1][0] };
+      }
+    }
+
+    // Stderr
+    const polStr = Object.entries(totalCounts).map(([k, v]) => `${k}:${v}`).join(' ');
+    process.stderr.write(`  ${cat}: ${dominant} ${procent}% (n=${n}) [${polStr}] — ${stabilitet}`);
+    if (underlagsflagga) process.stderr.write(` ⚠ ${underlagsflagga}`);
+    process.stderr.write(` [${perRunDominants.join(', ')}]\n`);
+
+    aggregated.push({
+      category: cat,
+      dominant,
+      procent,
+      n,
+      fördelning: totalCounts,
+      representativt_citat,
+      minoritetscitat,
+      underlagsflagga,
+      stabilitet,
+      per_körning: perRunDominants,
+      beskrivning: runDescriptions[cat]?.beskrivning || '',
+      tolkning: runDescriptions[cat]?.tolkning || '',
+    });
+  }
+
+  const totalN = aggregated.reduce((s, a) => s + a.n, 0);
+  process.stderr.write(`  Totalt: ${totalN} unika verifierade spann\n\n`);
 
   const output = {
     meta: {
@@ -245,11 +299,10 @@ async function main() {
       datum: opts.datum,
       kalla: opts.url.replace(/\.pdf$/, ''),
       analyserad: new Date().toISOString(),
+      körningar: opts.runs,
     },
-    patterns,
-    rubrik: analys.rubrik,
-    summary: analys.summary,
-    note: analys.note,
+    patterns: aggregated,
+    note: 'Språkmönster beskriver hur språket används i detta tal, inte fasta egenskaper hos talaren.',
   };
 
   console.log(JSON.stringify(output, null, 2));
