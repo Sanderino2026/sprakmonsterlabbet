@@ -13,7 +13,7 @@ id = "a507970ece464c57be2f38b537041f70"
 # ANTHROPIC_API_KEY
 
 [assets]
-directory = "./icons"
+directory = "./pages"
 
 [triggers]
 crons = ["0 3 1 * *"]

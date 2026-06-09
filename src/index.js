@@ -43,17 +43,15 @@ export default {
     const path = url.pathname;
     const method = request.method;
 
-    // Servera frontend för icke-API paths
-    if (!path.startsWith('/api/') && path !== '/') {
-      // Hämta från Pages-frontenden
-      const pagesUrl = 'https://sprakmonsterlabbet.pages.dev' + path;
-      const pagesRes = await fetch(pagesUrl);
-      if (pagesRes.ok) return new Response(pagesRes.body, pagesRes);
+    // Root → redirect till profilsidan
+    if (path === '/' || path === '') {
+      return Response.redirect('https://sprakmonsterlabbet.holmbergfriends.com/profil.html', 302);
     }
 
-    // Root → redirect till /profil
-    if (path === '/' || path === '') {
-      return Response.redirect('https://sprakmonsterlabbet.holmbergfriends.com/profil', 302);
+    // Servera frontend för icke-API paths via ASSETS-binding
+    if (!path.startsWith('/api/')) {
+      const assetRes = await env.ASSETS.fetch(new Request(new URL(path, request.url)));
+      if (assetRes.ok) return new Response(assetRes.body, assetRes);
     }
 
     const reply = (data, status = 200, cookie = null) => {
