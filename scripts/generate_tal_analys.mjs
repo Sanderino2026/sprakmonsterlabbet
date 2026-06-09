@@ -130,29 +130,45 @@ function verifyAndCount(patterns, sourceText) {
     const n = verified.length;
     const underlagsflagga = n < 5 ? 'tunt underlag, tolka försiktigt' : null;
 
-    // Dominant pol
+    // Dominant pol — tie-regel: inom 1 spann = Delad
     let dominant;
     let procent;
     const entries = Object.entries(fördelning).sort((a, b) => b[1] - a[1]);
     if (n === 0) {
       dominant = null;
       procent = 0;
+    } else if (entries.length >= 2 && (entries[0][1] - entries[1][1]) <= 1) {
+      // Topp-polerna ligger inom 1 spann — Delad
+      dominant = `Delad (${entries[0][0]}/${entries[1][0]})`;
+      procent = Math.round((entries[0][1] / n) * 100);
     } else {
       dominant = entries[0][0];
       procent = Math.round((entries[0][1] / n) * 100);
     }
 
-    // Representativa citat (1-2 från dominant, 1 från minoritet om ej 100%)
-    const representativt_citat = verified
-      .filter(v => v.pol === dominant)
-      .slice(0, 2)
-      .map(v => v.text);
-
+    // Representativa citat: 1 per topp-pol vid Delad, 1-2 från dominant annars
+    let representativt_citat;
     let minoritetscitat = null;
-    if (procent < 100 && entries.length > 1 && entries[1][1] > 0) {
-      const minoritetsPol = entries[1][0];
-      const mc = verified.find(v => v.pol === minoritetsPol);
-      if (mc) minoritetscitat = { text: mc.text, pol: minoritetsPol };
+
+    if (typeof dominant === 'string' && dominant.startsWith('Delad')) {
+      // Vid delad: 1 citat per pol
+      representativt_citat = [];
+      for (let ei = 0; ei < 2 && ei < entries.length; ei++) {
+        const polNamn = entries[ei][0];
+        const hit = verified.find(v => v.pol === polNamn);
+        if (hit) representativt_citat.push(hit.text);
+      }
+    } else {
+      representativt_citat = verified
+        .filter(v => v.pol === dominant)
+        .slice(0, 2)
+        .map(v => v.text);
+
+      if (procent < 100 && entries.length > 1 && entries[1][1] > 0) {
+        const minoritetsPol = entries[1][0];
+        const mc = verified.find(v => v.pol === minoritetsPol);
+        if (mc) minoritetscitat = { text: mc.text, pol: minoritetsPol };
+      }
     }
 
     results.push({

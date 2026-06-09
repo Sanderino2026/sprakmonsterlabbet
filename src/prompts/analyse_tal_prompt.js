@@ -20,6 +20,7 @@ DE FEM MÖNSTREN OCH DERAS POLER:
 4. Beslutsram — binärt:
    Intern: jag vet, jag känner, enligt mig, min känsla, egen övertygelse
    Extern: andra säger, bekräftelse, mäts, resultat utifrån, fakta visar
+   VIKTIGT: Personlig levd erfarenhet som grund för auktoritet ("Min pappa omkom", "Jag vet vad det betyder", "jag själv har upplevt") är INTERN — talaren hämtar sin legitimitet inifrån, från egen erfarenhet, inte från externa källor. Extern = hänvisning till ANDRAS bedömningar, statistik, institutioner, press.
 
 5. Detaljnivå — binärt:
    Helhet: övergripande, abstrakta resonemang, stora penseldrag
