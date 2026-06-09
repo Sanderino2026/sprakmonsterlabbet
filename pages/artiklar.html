@@ -66,7 +66,7 @@ footer a { color:var(--mid); text-decoration:none; }
     container.innerHTML = tal.map(function(t) {
       var inramning = (t.inramning || '').substring(0, 160);
       if ((t.inramning || '').length > 160) inramning += '...';
-      return '<a href="https://holmbergfriends.com/tal/' + t.slug + '" class="tal-card" target="_blank">' +
+      return '<a href="https://holmbergfriends.com/inspiration/' + t.slug + '" class="tal-card" target="_blank">' +
         '<span class="tal-card-datum">' + (t.datum || '') + '</span>' +
         '<h2>' + t.talare + ' — ' + t.titel + '</h2>' +
         '<p class="tal-card-rubrik">' + (t.rubrik || '') + '</p>' +
