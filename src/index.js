@@ -10,6 +10,7 @@ import { handleFeedback, handleFeedbackReport } from './feedback.js';
 import { handleProfileSubmit } from './profile_submit.js';
 import { findUserByRecordId, rateAnalysis } from './airtable.js';
 import { handleReportGenerate, handleGetReport, handleReportByProfile } from './report_generate.js';
+import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 
 const ALLOWED_ORIGINS = [
@@ -204,6 +205,12 @@ export default {
     // ── /api/stripe/webhook ──────────────────────────────────────
     if (path === '/api/stripe/webhook' && method === 'POST') {
       const result = await handleStripeWebhook(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/analyse-tal ──────────────────────────────────────────
+    if (path === '/api/analyse-tal' && method === 'POST') {
+      const result = await handleAnalyseTal(request, env);
       return reply(result.body, result.status);
     }
 
