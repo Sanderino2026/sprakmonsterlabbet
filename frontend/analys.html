@@ -965,6 +965,10 @@
           <input id="email-input" type="email" placeholder="din@email.se" style="flex:1; font-family:inherit; font-size:14px; padding:12px 16px; border:1px solid var(--border); outline:none; background:var(--white);" onfocus="this.style.borderColor='var(--black)'" onblur="this.style.borderColor='var(--border)'">
           <button class="btn-primary" onclick="submitEmail()">Skicka →</button>
         </div>
+        <label style="display:flex; align-items:flex-start; gap:8px; margin-top:16px; cursor:pointer;">
+          <input type="checkbox" id="nyhetsbrev-opt" style="margin-top:3px; accent-color:var(--black);">
+          <span style="font-size:0.8rem; color:#666; line-height:1.5;">Intresserad av ledarskap — trender, tips och verktyg? Få vårt nyhetsbrev.</span>
+        </label>
         <p style="font-size:0.75rem; color:#999; margin-top:12px; line-height:1.5;">Genom att ange din e-post godkänner du att vi sparar den och kan kontakta dig med information om Språkmönsterlabbet.</p>
       </div>
       <div id="email-capture-confirm" style="display:none; margin-top:20px; font-size:15px; color:var(--mid); line-height:1.65;"></div>
@@ -1032,8 +1036,24 @@
 </footer>
 
 <script>
-  const BASE_URL = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
+  const BASE_URL = 'https://sprakmonsterlabbet.holmbergfriends.com';
   const RETURN_URL = 'https://www.holmbergfriends.com/sprakmonsterlabbet-analys';
+  const LEAD_URL = 'https://deep-thought.holmbergfriends.com/api/lead';
+
+  // UTM-persistence: spara i sessionStorage så de överlever sidbyten
+  (function() {
+    var p = new URLSearchParams(window.location.search);
+    ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
+      if (p.get(k)) sessionStorage.setItem('sml_' + k, p.get(k));
+    });
+  })();
+  function getUtm() {
+    return {
+      utm_source: sessionStorage.getItem('sml_utm_source') || 'sml',
+      utm_medium: sessionStorage.getItem('sml_utm_medium') || 'organic',
+      utm_campaign: sessionStorage.getItem('sml_utm_campaign') || 'sml-analys'
+    };
+  }
   let currentResult = null;
   let remainingAnalyses = null;
   let currentAccessType = null;
@@ -1315,6 +1335,7 @@
       alert('Ange en giltig e-postadress.');
       return;
     }
+    var nyhetsbrevOpt = document.getElementById('nyhetsbrev-opt')?.checked || false;
     try {
       const res = await fetch(BASE_URL + '/api/send-analysis', {
         method: 'POST',
@@ -1327,6 +1348,25 @@
         const confirm = document.getElementById('email-capture-confirm');
         confirm.innerHTML = 'Din analys är skickad till <strong>' + escHtml(email) + '</strong>';
         confirm.style.display = 'block';
+
+        // Fire-and-forget lead POST till deep-thought
+        try {
+          var utm = getUtm();
+          fetch(LEAD_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'skapa',
+              epost: email,
+              kalla: 'sml',
+              anteckning: 'Analysflöde — e-post insamlad',
+              utm_source: utm.utm_source,
+              utm_medium: utm.utm_medium,
+              utm_campaign: utm.utm_campaign,
+              nyhetsbrev_opt: nyhetsbrevOpt
+            })
+          }).catch(function() {});
+        } catch (e) { /* lead-POST får aldrig blockera */ }
       } else {
         alert('Något gick fel. Försök igen.');
       }
