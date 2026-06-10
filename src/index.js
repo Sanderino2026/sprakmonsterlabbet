@@ -46,7 +46,7 @@ export default {
 
     // Root → redirect till profilsidan
     if (path === '/' || path === '') {
-      return Response.redirect('https://sprakmonsterlabbet.holmbergfriends.com/profil.html', 302);
+      return Response.redirect('https://sprakmonsterlabbet.holmbergfriends.com/profil', 302);
     }
 
     // Servera frontend för icke-API paths via ASSETS-binding

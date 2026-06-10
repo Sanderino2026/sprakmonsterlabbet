@@ -28,7 +28,7 @@ export async function handleGiftReport(env, metadata) {
   console.log('[handleGiftReport] Skapade present-profil:', id, '→ token:', giftToken);
 
   // 2. Skicka presentmail via Resend
-  const profileUrl = `https://sprakmonsterlabbet.holmbergfriends.com/profil.html?gift_token=${giftToken}`;
+  const profileUrl = `https://sprakmonsterlabbet.holmbergfriends.com/profil?gift_token=${giftToken}`;
 
   const emailHtml = `
 <!DOCTYPE html>
