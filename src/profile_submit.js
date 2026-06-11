@@ -16,7 +16,7 @@ export async function handleProfileSubmit(request, env, ctx) {
     return { status: 400, body: { error: 'Ogiltig JSON' } };
   }
 
-  const { first_name, email, context, situation, answers, word_clicks, response_times_ms, gift_token } = body;
+  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms, gift_token } = body;
 
   // Validera obligatoriska fält
   if (!first_name || !email || !answers || !word_clicks || !response_times_ms) {
@@ -45,7 +45,7 @@ export async function handleProfileSubmit(request, env, ctx) {
     if (gift_token) {
       return await handleGiftSubmit(env, ctx, {
         gift_token, first_name, email, context, situation,
-        answers, word_clicks, response_times_ms,
+        answers, word_clicks, word_data, response_times_ms,
       });
     }
 
@@ -57,6 +57,7 @@ export async function handleProfileSubmit(request, env, ctx) {
       situation: situation || context || 'Arbete',
       answers,
       word_clicks,
+      word_data,
       response_times_ms,
     });
 
@@ -133,7 +134,7 @@ export async function handleProfileSubmit(request, env, ctx) {
 }
 
 async function handleGiftSubmit(env, ctx, data) {
-  const { gift_token, first_name, email, context, situation, answers, word_clicks, response_times_ms } = data;
+  const { gift_token, first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms } = data;
 
   // 1. Hitta Profiles-raden via gift_token (Report Token)
   const giftRow = await env.SML_DB.prepare(
@@ -155,6 +156,7 @@ async function handleGiftSubmit(env, ctx, data) {
     situation: situation || context || 'Arbete',
     answers,
     word_clicks,
+    word_data,
     response_times_ms,
   });
 
@@ -176,6 +178,7 @@ async function handleGiftSubmit(env, ctx, data) {
   const answersJson = JSON.stringify({
     answers,
     word_clicks,
+    word_data,
     response_times_ms,
     context: context || 'Arbete',
     situation: situation || context || 'Arbete',

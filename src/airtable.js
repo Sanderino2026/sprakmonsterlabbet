@@ -111,7 +111,7 @@ export async function saveProfile(userId, answers, result, env) {
 }
 
 export async function saveProfileResponse(env, data) {
-  const { first_name, email, context, situation, answers, word_clicks, response_times_ms } = data;
+  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms } = data;
 
   let userId;
   const existing = await findUserByEmail(email, env);
@@ -134,6 +134,7 @@ export async function saveProfileResponse(env, data) {
     JSON.stringify({
       answers,
       word_clicks,
+      word_data,
       response_times_ms,
       context: context || 'Arbete',
       situation: situation || context || 'Arbete',

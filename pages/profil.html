@@ -957,7 +957,7 @@
     <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Ju mer du beskriver, desto mer träffsäker blir analysen.<br>Skriv gärna 3–5 meningar.</p>
     <div class="field-group">
       <textarea id="a1" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch1">0 / 80 tecken</div>
+      <div class="char-hint" id="ch1">0 / 50 tecken</div>
     </div>
     <button class="btn-primary btn-next" data-q="1" disabled>Nästa</button>
   </div>
@@ -971,7 +971,7 @@
     <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Svara spontant utifrån din första känsla.<br>Det finns inget rätt svar.</p>
     <div class="field-group">
       <textarea id="a2" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch2">0 / 40 tecken</div>
+      <div class="char-hint" id="ch2">0 / 50 tecken</div>
     </div>
     <button class="btn-primary btn-next" data-q="2" disabled>Nästa</button>
   </div>
@@ -985,7 +985,7 @@
     <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv konkret — vad ser, hör eller märker du?</p>
     <div class="field-group">
       <textarea id="a3" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch3">0 / 40 tecken</div>
+      <div class="char-hint" id="ch3">0 / 50 tecken</div>
     </div>
     <button class="btn-primary btn-next" data-q="3" disabled>Nästa</button>
   </div>
@@ -999,7 +999,7 @@
     <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Tänk på vad som faktiskt fick dig att tacka ja —<br>inte vad som låter bra.</p>
     <div class="field-group">
       <textarea id="a4" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch4">0 / 80 tecken</div>
+      <div class="char-hint" id="ch4">0 / 50 tecken</div>
     </div>
     <button class="btn-primary btn-next" data-q="4" disabled>Nästa</button>
   </div>
@@ -1013,7 +1013,7 @@
     <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv likheter, skillnader eller hur de hänger ihop —<br>det finns inget rätt svar här.</p>
     <div class="field-group">
       <textarea id="a5" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch5">0 / 40 tecken</div>
+      <div class="char-hint" id="ch5">0 / 50 tecken</div>
     </div>
     <button class="btn-primary btn-next" data-q="5" disabled>Nästa</button>
   </div>
@@ -1110,9 +1110,28 @@
   var selectedSituation = '';
 
   var WORDS = [
-    'Möjligheter','Tydlighet','Resultat','Trygghet',
-    'Frihet','Feedback','Struktur','Framsteg',
-    'Undvika misstag','Egen övertygelse','Variation','Bekräftelse'
+    { ord: 'Resultat', dimension: 'motivationsriktning', pol: 'Till' },
+    { ord: 'Möjligheter', dimension: 'motivationsriktning', pol: 'Till' },
+    { ord: 'Trygghet', dimension: 'motivationsriktning', pol: 'Ifrån' },
+    { ord: 'Undvika misstag', dimension: 'motivationsriktning', pol: 'Ifrån' },
+    { ord: 'Struktur', dimension: 'förståelse', pol: 'Procedur' },
+    { ord: 'Tydliga steg', dimension: 'förståelse', pol: 'Procedur' },
+    { ord: 'Variation', dimension: 'förståelse', pol: 'Alternativ' },
+    { ord: 'Nya vägar', dimension: 'förståelse', pol: 'Alternativ' },
+    { ord: 'Överblick', dimension: 'sinneskanal', pol: 'Syn' },
+    { ord: 'Klarhet', dimension: 'sinneskanal', pol: 'Syn' },
+    { ord: 'Dialog', dimension: 'sinneskanal', pol: 'Hörsel' },
+    { ord: 'Lyssna in', dimension: 'sinneskanal', pol: 'Hörsel' },
+    { ord: 'Magkänsla', dimension: 'sinneskanal', pol: 'Känsel' },
+    { ord: 'Driv', dimension: 'sinneskanal', pol: 'Känsel' },
+    { ord: 'Egen övertygelse', dimension: 'beslutsram', pol: 'Intern' },
+    { ord: 'Självständighet', dimension: 'beslutsram', pol: 'Intern' },
+    { ord: 'Bekräftelse', dimension: 'beslutsram', pol: 'Extern' },
+    { ord: 'Feedback', dimension: 'beslutsram', pol: 'Extern' },
+    { ord: 'Stora linjer', dimension: 'detaljnivå', pol: 'Helhet' },
+    { ord: 'Visionen', dimension: 'detaljnivå', pol: 'Helhet' },
+    { ord: 'Precision', dimension: 'detaljnivå', pol: 'Detalj' },
+    { ord: 'Noggrannhet', dimension: 'detaljnivå', pol: 'Detalj' }
   ];
 
   // Fisher-Yates shuffle
@@ -1296,7 +1315,8 @@
   });
 
   // --- Steps 9–13: Question validation + next ---
-  var minChars = { 1: 80, 2: 40, 3: 40, 4: 80, 5: 40 };
+  var MIN_TECKEN = 50;
+  var minChars = { 1: MIN_TECKEN, 2: MIN_TECKEN, 3: MIN_TECKEN, 4: MIN_TECKEN, 5: MIN_TECKEN };
   for (var q = 1; q <= 5; q++) {
     (function(num) {
       var ta = document.getElementById('a' + num);
@@ -1330,21 +1350,24 @@
   var shuffled = shuffle(WORDS.slice());
 
   for (var w = 0; w < shuffled.length; w++) {
-    (function(word) {
+    (function(wordObj) {
       var chip = document.createElement('button');
       chip.className = 'chip';
       chip.type = 'button';
-      chip.textContent = word;
+      chip.textContent = wordObj.ord;
 
       chip.addEventListener('click', function() {
         if (chip.classList.contains('dimmed')) return;
 
-        var idx = selectedWords.indexOf(word);
+        var idx = -1;
+        for (var si = 0; si < selectedWords.length; si++) {
+          if (selectedWords[si].ord === wordObj.ord) { idx = si; break; }
+        }
         if (idx > -1) {
           selectedWords.splice(idx, 1);
           chip.classList.remove('selected');
         } else if (selectedWords.length < 5) {
-          selectedWords.push(word);
+          selectedWords.push(wordObj);
           chip.classList.add('selected');
         }
 
@@ -1384,7 +1407,8 @@
         q4: document.getElementById('a4').value.trim(),
         q5: document.getElementById('a5').value.trim()
       },
-      word_clicks: selectedWords.slice(),
+      word_clicks: selectedWords.map(function(w) { return w.ord; }),
+      word_data: selectedWords.map(function(w) { return { ord: w.ord, dimension: w.dimension, pol: w.pol }; }),
       response_times_ms: times
     };
 

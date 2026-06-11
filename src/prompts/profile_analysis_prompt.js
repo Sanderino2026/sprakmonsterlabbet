@@ -59,19 +59,39 @@ Signalord Skillnad: annorlunda, nytt, förändrat, skiljer sig, kontrast
 ORDVAL (bekräftande data):
 Respondenten valde dessa 5 ord: ${word_clicks.join(', ')}
 
-Ordkodning:
-Möjligheter → Till + Alternativ
-Tydlighet → Procedur + Intern
+Ordkodning (22 ord, två per pol — scora på pol, aldrig på ordsträngen):
+
+Motivationsriktning:
 Resultat → Till
-Trygghet → Ifrån + Procedur
-Frihet → Alternativ
-Feedback → Extern
-Struktur → Procedur
-Framsteg → Till
+Möjligheter → Till
+Trygghet → Ifrån
 Undvika misstag → Ifrån
-Egen övertygelse → Intern
+
+Förståelse:
+Struktur → Procedur
+Tydliga steg → Procedur
 Variation → Alternativ
+Nya vägar → Alternativ
+
+Sinneskanal:
+Överblick → Syn
+Klarhet → Syn
+Dialog → Hörsel
+Lyssna in → Hörsel
+Magkänsla → Känsel
+Driv → Känsel
+
+Beslutsram:
+Egen övertygelse → Intern
+Självständighet → Intern
 Bekräftelse → Extern
+Feedback → Extern
+
+Detaljnivå:
+Stora linjer → Helhet
+Visionen → Helhet
+Precision → Detalj
+Noggrannhet → Detalj
 
 SVARSTIDER (indikativ data för Proaktiv/Reaktiv):
 ${JSON.stringify(response_times_ms)}
