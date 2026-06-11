@@ -16,11 +16,11 @@
     --bg: #FAFAFA;
     --white: #FFFFFF;
     --accent: #FFA047;
-    --accent-hover: #e8892e;
+    --accent-hover: #FFA047;
     --accent-light: #FFF5EC;
     --green: #2A7A4F;
     --green-light: #F0FAF5;
-    --red: #C8440A;
+    --red: #FFA047;
     --red-light: #FBF1EC;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -772,7 +772,7 @@
     const n = el.value.length;
     const counter = document.getElementById('char-count');
     counter.textContent = n + '/1500';
-    counter.style.color = n > 1400 ? '#C8440A' : 'var(--muted)';
+    counter.style.color = n > 1400 ? '#FFA047' : 'var(--muted)';
   }
   function selectOpt(btn, correct) {
     const group = btn.closest('.quiz-options');

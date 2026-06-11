@@ -16,11 +16,11 @@
     --bg: #FAFAFA;
     --white: #FFFFFF;
     --accent: #FFA047;
-    --accent-hover: #e8892e;
+    --accent-hover: #FFA047;
     --accent-light: #FFF5EC;
     --green: #2A7A4F;
     --green-light: #F0FAF5;
-    --red: #C8440A;
+    --red: #FFA047;
     --red-light: #FBF1EC;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -610,12 +610,12 @@
 
   /* UPGRADE TAB */
   .demo-tab.upgrade-tab {
-    color: #E8622A;
+    color: #FFA047;
     font-weight: 700;
   }
   .demo-tab.upgrade-tab.active {
-    color: #E8622A;
-    border-bottom-color: #E8622A;
+    color: #FFA047;
+    border-bottom-color: #FFA047;
   }
 
   /* PATTERN INFO BOXES */
@@ -944,7 +944,7 @@
     <h1 id="result-heading"></h1>
     <p class="result-meta" id="result-meta"></p>
     <div id="result-patterns"></div>
-    <p id="more-patterns-hint" style="font-size:13px; color:var(--muted); text-align:center; margin:32px 0 0; line-height:1.6;">I den här texten går det att finna fler mönster. <a href="https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys" target="_blank" style="color:#E8622A; text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Klicka här för att ta reda på hur du kan bli skickligare på språkmönster.</a></p>
+    <p id="more-patterns-hint" style="font-size:13px; color:var(--muted); text-align:center; margin:32px 0 0; line-height:1.6;">I den här texten går det att finna fler mönster. <a href="https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys" target="_blank" style="color:#FFA047; text-decoration:none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Klicka här för att ta reda på hur du kan bli skickligare på språkmönster.</a></p>
     <div id="star-widget" class="star-widget">
       <div class="star-widget-label">Hur träffsäker kändes analysen?</div>
       <div class="star-row" id="result-stars">
@@ -1170,7 +1170,7 @@
     const n = el.value.length;
     const counter = document.getElementById('char-count');
     counter.textContent = n + '/1500';
-    counter.style.color = n > 1400 ? '#C8440A' : 'var(--muted)';
+    counter.style.color = n > 1400 ? '#FFA047' : 'var(--muted)';
   }
   const quizState = { 1: false, 2: false };
   const quizFeedback = {
