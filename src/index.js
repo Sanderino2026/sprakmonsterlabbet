@@ -12,6 +12,7 @@ import { findUserByRecordId, rateAnalysis } from './airtable.js';
 import { handleReportGenerate, handleGetReport, handleReportByProfile } from './report_generate.js';
 import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
+import { handleGdprRadera } from './gdpr_radera.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -106,6 +107,12 @@ export default {
     if (path === '/api/auth/logout' && method === 'POST') {
       const result = await handleLogout(request, env);
       return reply(result.body, result.status, result.cookie ?? null);
+    }
+
+    // ── /api/gdpr-radera ─────────────────────────────────────────
+    if (path === '/api/gdpr-radera' && method === 'POST') {
+      const result = await handleGdprRadera(request, env);
+      return reply(result.body, result.status);
     }
 
     // ── Skyddade endpoints — kräver inloggning ───────────────────
