@@ -1,4 +1,4 @@
-export function buildReportPrompt(resultJSON, name) {
+export function buildReportPrompt(resultJSON) {
   const system = `Du är analysmodulen i Språkmönsterlabbet.
 
 Din uppgift är att skriva den PERSONLIGA analysen av en persons språkmönsterprofil.
@@ -195,7 +195,7 @@ Inga kommentarer. Direkt JSON.
   "nästa_steg": "~200 ord. Uppmuntra reflektion, föreslå konkreta situationer att testa, påminn att mönster kan förändras med medvetenhet."
 }`;
 
-  const user = `Skriv den personliga analysen för ${name}.
+  const user = `Skriv den personliga analysen för respondenten.
 
 Input-data:
 ${JSON.stringify(resultJSON, null, 2)}

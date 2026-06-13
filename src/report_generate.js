@@ -68,16 +68,15 @@ export async function handleReportGenerate(request, env) {
       } catch { /* default */ }
     }
 
-    // 5. Lägg till namn, datum, kontext i resultJSON för prompten
+    // 5. Lägg till datum, kontext i resultJSON för prompten (namn utelämnat — dataminimering)
     const enrichedResult = {
-      namn: name,
       datum: new Date().toISOString().split('T')[0],
       kontext,
       ...resultJSON,
     };
 
     // 6. Bygg prompt
-    const prompt = buildReportPrompt(enrichedResult, name);
+    const prompt = buildReportPrompt(enrichedResult);
 
     // 7. Anropa Claude API
     const claudeStartTime = Date.now();

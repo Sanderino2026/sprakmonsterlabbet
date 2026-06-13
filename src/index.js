@@ -13,6 +13,7 @@ import { handleReportGenerate, handleGetReport, handleReportByProfile } from './
 import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 import { handleGdprRadera } from './gdpr_radera.js';
+import { handleGdprExport } from './gdpr_export.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -107,6 +108,12 @@ export default {
     if (path === '/api/auth/logout' && method === 'POST') {
       const result = await handleLogout(request, env);
       return reply(result.body, result.status, result.cookie ?? null);
+    }
+
+    // ── /api/gdpr-export ─────────────────────────────────────────
+    if (path === '/api/gdpr-export' && method === 'POST') {
+      const result = await handleGdprExport(request, env);
+      return new Response(JSON.stringify(result.body), { status: result.status, headers: { 'Content-Type': 'application/json', ...corsHeaders(request) } });
     }
 
     // ── /api/gdpr-radera ─────────────────────────────────────────
