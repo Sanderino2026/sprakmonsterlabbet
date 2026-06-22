@@ -31,6 +31,7 @@ export async function handleStripeCheckout(request, env) {
   params.append('line_items[0][quantity]', '1');
   params.append('success_url', successUrl);
   params.append('cancel_url', cancelUrl);
+  params.append('allow_promotion_codes', 'true');
   params.append('metadata[priceId]', priceId);
   if (price_type) {
     params.append('metadata[price_type]', price_type);
