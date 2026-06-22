@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Språkmönsterlabbet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --canvas: #F4F0E8;
+      --dark: #141210;
+      --text: #5F5959;
+      --accent: #FFA047;
+      --accent-text: #412402;
+      --border: rgba(20,18,16,0.14);
+      --radius: 0 10px 0 10px;
+      --serif: 'Crimson Pro', Georgia, serif;
+      --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--canvas); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+
+    /* ── NAV ── */
+    .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(244,240,232,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    .nav img { height: 22px; width: auto; display: block; }
+    .nav-label { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text); opacity: 0.5; }
+
+    /* ── FRAMES ── */
+    .frame { display: none; min-height: 100vh; }
+    .frame.active { display: flex; }
+
+    /* ── HERO ── */
+    .hero { position: relative; flex-direction: column; justify-content: center; padding: 120px 80px 80px; overflow: hidden; }
+    .hero-constellation { position: absolute; top: 0; right: 0; width: 760px; height: 760px; z-index: 1; }
+    .hero-content { position: relative; z-index: 2; max-width: 600px; }
+    .hero-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 28px; }
+    .hero h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(40px, 5.5vw, 72px); line-height: 1.02; letter-spacing: -0.02em; color: var(--dark); margin-bottom: 28px; }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero-body { font-size: 18px; line-height: 1.7; max-width: 470px; margin-bottom: 40px; }
+    .hero-stats { display: flex; gap: 48px; margin-top: 56px; }
+    .hero-stat-num { font-family: var(--serif); font-weight: 600; font-size: 50px; color: var(--dark); line-height: 1; }
+    .hero-stat-label { font-size: 14px; opacity: 0.6; margin-top: 8px; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-block; background: var(--accent); color: var(--accent-text); font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; padding: 16px 38px; border-radius: var(--radius); border: none; cursor: pointer; transition: opacity 0.15s; }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-outline { background: transparent; color: var(--dark); border: 2px solid rgba(20,18,16,0.2); }
+    .btn-outline:hover { border-color: rgba(20,18,16,0.4); }
+    .btn-lg { font-size: 14px; padding: 17px 42px; }
+
+    /* ── START (Frame 2) ── */
+    .start { flex-direction: column; align-items: center; justify-content: center; padding: 120px 24px 80px; text-align: center; }
+    .start-inner { max-width: 520px; width: 100%; }
+    .start h2 { font-family: var(--serif); font-weight: 600; font-size: 54px; line-height: 1.04; letter-spacing: -0.01em; color: var(--dark); margin-bottom: 22px; }
+    .start p { font-size: 17px; margin-bottom: 44px; }
+    .field { display: flex; flex-direction: column; gap: 6px; text-align: left; margin-bottom: 20px; }
+    .field label { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); opacity: 0.6; }
+    .field input { width: 100%; padding: 16px 20px; background: rgba(20,18,16,0.04); border: 2px solid var(--border); border-radius: var(--radius); font-size: 16px; font-family: var(--sans); color: var(--dark); outline: none; transition: border-color 0.2s; }
+    .field input:focus { border-color: var(--accent); }
+    .field input::placeholder { color: rgba(95,89,89,0.4); }
+    .consent-text { font-size: 13px; opacity: 0.55; max-width: 460px; margin: 26px auto 0; line-height: 1.6; }
+    .consent-text a { color: var(--text); }
+    .checkbox-row { display: flex; align-items: flex-start; gap: 10px; margin-top: 16px; cursor: pointer; text-align: left; }
+    .checkbox-row input[type="checkbox"] { margin-top: 3px; width: 16px; height: 16px; accent-color: var(--accent); flex-shrink: 0; }
+    .checkbox-row span { font-size: 13px; color: var(--text); opacity: 0.55; line-height: 1.5; }
+    .form-error { color: #c44; font-size: 13px; margin-top: 8px; display: none; }
+
+    /* ── TEST (Frame 3) ── */
+    .test { flex-direction: column; align-items: center; justify-content: center; padding: 120px 24px 80px; }
+    .test-inner { max-width: 640px; width: 100%; }
+    .test-progress { display: flex; gap: 4px; margin-bottom: 48px; }
+    .test-progress span { flex: 1; height: 3px; background: rgba(20,18,16,0.12); border-radius: 2px; transition: background 0.3s; }
+    .test-progress span.done { background: var(--accent); }
+    .test-progress span.active { background: var(--dark); }
+    .q-label { font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); opacity: 0.5; margin-bottom: 16px; }
+    .q-text { font-family: var(--serif); font-weight: 600; font-size: 34px; line-height: 1.12; color: var(--dark); margin-bottom: 12px; }
+    .q-hint { font-size: 13px; opacity: 0.55; margin-bottom: 24px; line-height: 1.5; }
+    .test textarea { width: 100%; min-height: 140px; padding: 18px 20px; background: rgba(20,18,16,0.04); border: 2px solid var(--border); border-radius: var(--radius); font-size: 16px; font-family: var(--sans); color: var(--dark); resize: vertical; outline: none; transition: border-color 0.2s; }
+    .test textarea:focus { border-color: var(--accent); }
+    .char-count { font-size: 12px; color: var(--text); opacity: 0.4; margin-top: 8px; }
+
+    /* ── WORD PICK (Frame 3b) ── */
+    .wordpick { flex-direction: column; align-items: center; justify-content: center; padding: 120px 24px 80px; }
+    .wordpick-inner { max-width: 640px; width: 100%; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; margin: 32px 0; }
+    .chip { padding: 10px 20px; border: 2px solid var(--border); border-radius: 20px; font-size: 14px; color: var(--dark); cursor: pointer; transition: all 0.15s; user-select: none; }
+    .chip.selected { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+    .chip.disabled { opacity: 0.3; cursor: not-allowed; }
+    .chips-count { font-size: 13px; color: var(--text); opacity: 0.5; }
+
+    /* ── ANALYZING (Frame 3c) ── */
+    .analyzing { flex-direction: column; align-items: center; justify-content: center; padding: 120px 24px 80px; text-align: center; }
+    .analyzing h2 { font-family: var(--serif); font-weight: 500; font-size: 38px; color: var(--dark); margin-bottom: 16px; }
+    .analyzing p { font-size: 17px; max-width: 440px; margin: 0 auto; }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 32px auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── PEDAGOGIK (Frame 5) ── */
+    .pedagogik { flex-direction: column; align-items: center; padding: 120px 24px 80px; }
+    .pedagogik-inner { max-width: 740px; width: 100%; }
+    .pedagogik-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+    .pedagogik h2 { font-family: var(--serif); font-weight: 600; font-size: 48px; line-height: 1.04; letter-spacing: -0.015em; color: var(--dark); margin-bottom: 30px; }
+    .pedagogik-body { font-size: 18px; line-height: 1.75; margin-bottom: 16px; max-width: 660px; }
+    .pedagogik-note { display: flex; gap: 16px; padding: 20px 24px; border: 1.5px solid var(--border); border-radius: var(--radius); margin: 28px 0; align-items: flex-start; }
+    .pedagogik-note svg { flex: none; margin-top: 2px; }
+    .pedagogik-note p { font-size: 14px; line-height: 1.65; margin: 0; }
+    .patterns-list { margin: 36px 0; }
+    .patterns-list-label { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; margin-bottom: 4px; }
+    .patterns-list-sub { font-size: 14px; opacity: 0.6; margin-bottom: 26px; }
+    .pattern-item { display: flex; align-items: center; gap: 16px; padding: 14px 0; border-bottom: 1.5px solid rgba(20,18,16,0.08); }
+    .pattern-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dark); flex: none; }
+    .pattern-name { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .pattern-desc { font-size: 13px; opacity: 0.6; margin-top: 3px; }
+
+    /* ── RESULTAT (Frame 6) ── */
+    .resultat { flex-direction: row; }
+    .resultat-sidebar { width: 300px; flex: none; border-right: 1.5px solid rgba(20,18,16,0.12); padding: 38px 28px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .sidebar-label { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; margin-bottom: 18px; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; margin-bottom: 28px; }
+    .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-left: 2px solid transparent; font-size: 14px; cursor: pointer; transition: all 0.15s; }
+    .sidebar-item.active { background: rgba(255,160,71,0.12); border-left-color: var(--accent); color: var(--dark); font-weight: 700; }
+    .sidebar-item.locked { opacity: 0.45; cursor: default; }
+    .sidebar-buy { margin-top: auto; border-top: 1.5px solid rgba(20,18,16,0.12); padding-top: 24px; }
+    .sidebar-buy-label { font-size: 13px; margin-bottom: 6px; }
+    .sidebar-buy-price { font-family: var(--serif); font-weight: 600; font-size: 34px; color: var(--dark); line-height: 1; }
+    .sidebar-buy-sub { font-size: 12px; opacity: 0.5; margin: 6px 0 16px; }
+
+    .resultat-content { flex: 1; padding: 44px 72px 80px; }
+    .resultat-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 48px; }
+    .resultat-meta-label { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; }
+    .resultat-meta-info { font-size: 13px; opacity: 0.6; }
+
+    /* Spektrumstack */
+    .spektrum { border: 2px solid var(--border); border-radius: var(--radius); padding: 12px 34px; margin-bottom: 64px; }
+    .spektrum-row { display: grid; grid-template-columns: 210px 1fr 132px; gap: 26px; align-items: center; padding: 20px 0; border-bottom: 1.5px solid rgba(20,18,16,0.1); }
+    .spektrum-row:last-child { border-bottom: none; }
+    .spektrum-row.locked { opacity: 0.5; }
+    .spektrum-name { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .spektrum-bar { position: relative; height: 2px; background: rgba(20,18,16,0.16); }
+    .spektrum-dot { position: absolute; top: 50%; width: 13px; height: 13px; background: var(--accent); border: 2px solid var(--canvas); border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 0 1px var(--accent); }
+    .spektrum-dot.blurred { background: var(--text); width: 11px; height: 11px; box-shadow: none; border: none; filter: blur(2.5px); }
+    .spektrum-val { text-align: right; font-size: 14px; font-weight: 700; color: var(--dark); }
+    .spektrum-val .strength { font-size: 12px; font-weight: 400; color: var(--text); opacity: 0.6; }
+    .spektrum-lock { display: flex; align-items: center; justify-content: flex-end; gap: 6px; color: var(--text); font-size: 12px; letter-spacing: 0.04em; }
+    .lock-svg { width: 12px; height: 12px; }
+
+    /* Free pattern detail */
+    .pattern-detail { margin-bottom: 64px; }
+    .pattern-detail-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
+    .pattern-detail h3 { font-family: var(--serif); font-weight: 600; font-size: 38px; line-height: 1.1; color: var(--dark); margin-bottom: 28px; }
+    .pattern-detail h3 em { font-style: italic; color: var(--accent); }
+    .pattern-viz { background: rgba(20,18,16,0.03); border: 1.5px solid rgba(20,18,16,0.1); border-radius: var(--radius); padding: 28px 34px; margin-bottom: 30px; }
+    .pattern-viz-labels { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.6; margin-bottom: 16px; }
+    .pattern-bar { position: relative; height: 2px; background: rgba(20,18,16,0.16); margin-bottom: 18px; }
+    .pattern-bar-fill { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent); }
+    .pattern-bar-dot { position: absolute; top: 50%; width: 15px; height: 15px; background: var(--accent); border: 2px solid #fff; border-radius: 50%; transform: translate(-50%,-50%); box-shadow: 0 0 0 1px var(--accent); }
+    .pattern-meta { display: flex; align-items: center; gap: 12px; }
+    .pattern-meta span { font-size: 13px; }
+    .strength-badge { font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 6px; }
+    .strength-badge.tydlig { color: var(--accent-text); background: var(--accent); }
+    .strength-badge.trolig { color: var(--text); background: rgba(20,18,16,0.08); }
+    .pattern-text { font-size: 16px; line-height: 1.78; margin-bottom: 18px; }
+    .pattern-tip { border-left: 2px solid var(--accent); padding: 4px 0 4px 20px; margin-top: 24px; }
+    .pattern-tip-label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; margin-bottom: 6px; }
+    .pattern-tip p { font-size: 15px; line-height: 1.7; color: var(--dark); margin: 0; }
+
+    /* Channel viz (Kanal) */
+    .channel-bars { display: flex; flex-direction: column; gap: 16px; }
+    .channel-row { display: flex; align-items: center; gap: 18px; }
+    .channel-label { width: 70px; font-size: 13px; font-weight: 700; color: var(--dark); }
+    .channel-bar { flex: 1; height: 8px; background: rgba(20,18,16,0.1); border-radius: 4px; position: relative; }
+    .channel-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
+    .channel-fill.primary { background: var(--accent); }
+    .channel-fill.secondary { background: rgba(20,18,16,0.3); }
+    .channel-pct { width: 40px; text-align: right; font-size: 13px; }
+
+    /* Paywall */
+    .paywall { background: var(--dark); border-radius: var(--radius); padding: 48px 52px; color: var(--canvas); }
+    .paywall-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+    .paywall h3 { font-family: var(--serif); font-weight: 500; font-size: 34px; line-height: 1.12; color: var(--canvas); margin-bottom: 20px; }
+    .paywall p { font-size: 16px; line-height: 1.7; color: rgba(244,240,232,0.7); margin-bottom: 28px; max-width: 560px; }
+    .paywall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 40px; margin-bottom: 36px; max-width: 620px; }
+    .paywall-grid div { font-size: 14px; color: rgba(244,240,232,0.85); border-top: 1px solid rgba(244,240,232,0.15); padding-top: 10px; }
+    .paywall-actions { display: flex; align-items: center; gap: 28px; flex-wrap: wrap; }
+    .paywall-sub { font-size: 13px; color: rgba(244,240,232,0.55); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .nav { padding: 16px 24px; }
+      .hero { padding: 100px 24px 60px; }
+      .hero h1 { font-size: 40px; }
+      .hero-constellation { width: 400px; height: 400px; opacity: 0.3; }
+      .hero-stats { flex-direction: column; gap: 24px; }
+      .resultat { flex-direction: column; }
+      .resultat-sidebar { width: 100%; height: auto; position: static; flex-direction: row; flex-wrap: wrap; gap: 12px; padding: 20px 24px; border-right: none; border-bottom: 1.5px solid rgba(20,18,16,0.12); }
+      .sidebar-nav { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+      .sidebar-buy { margin-top: 12px; border-top: none; padding-top: 0; }
+      .resultat-content { padding: 32px 24px 60px; }
+      .spektrum-row { grid-template-columns: 140px 1fr 100px; gap: 12px; }
+      .paywall { padding: 32px 24px; }
+      .paywall-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends">
+    <span class="nav-label">Språkmönsterlabbet</span>
+  </nav>
+
+  <!-- FRAME 1: HERO -->
+  <section class="frame hero active" id="frame-hero">
+    <canvas class="hero-constellation" id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Språkmönsterlabbet</div>
+      <h1>Förstå hur du<br><em>tänker</em> och talar</h1>
+      <p class="hero-body">Sju språkmönster styr hur du kommunicerar, ofta utan att du märker det. På några minuter kartlägger vi mönstret i din kommunikation och ger dig verktygen att leda och lyssna mer medvetet.</p>
+      <button class="btn btn-lg" onclick="showFrame('frame-start')">Starta testet</button>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-num">7</div>
+          <div class="hero-stat-label">Mönster kartläggs</div>
+        </div>
+        <div>
+          <div class="hero-stat-label" style="margin-top:8px;">Gratis mönster</div>
+          <div style="font-family:var(--serif);font-weight:600;font-size:28px;color:var(--dark);line-height:1;">Motivationsriktning + Kanal</div>
+        </div>
+        <div>
+          <div class="hero-stat-num" style="font-size:36px;">499 kr</div>
+          <div class="hero-stat-label">Full rapport med alla sju</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 2: START (namn + e-post) -->
+  <section class="frame start" id="frame-start">
+    <div class="start-inner">
+      <h2>Vart ska vi skicka<br>ditt resultat?</h2>
+      <p>Du svarar i lugn och ro. När du är klar landar en länk till ditt resultat i inkorgen, så att du kan läsa det när det passar dig och spara det för att gå tillbaka.</p>
+      <div class="field">
+        <label for="inp-name">Förnamn</label>
+        <input type="text" id="inp-name" placeholder="Ditt förnamn" autocomplete="given-name" required>
+      </div>
+      <div class="field">
+        <label for="inp-email">E-postadress</label>
+        <input type="email" id="inp-email" placeholder="namn@exempel.se" autocomplete="email" required>
+      </div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="inp-nyhetsbrev">
+        <span>Intresserad av ledarskap, trender, tips och verktyg? Få vårt nyhetsbrev.</span>
+      </label>
+      <p class="form-error" id="start-error"></p>
+      <div style="margin-top:32px;">
+        <button class="btn btn-lg" id="btn-start" onclick="handleStart()">Starta frågorna</button>
+      </div>
+      <p class="consent-text">Vi sparar din e-post för att skicka resultatet och eventuell uppföljning, inget annat. Läs mer i vår <a href="/integritetspolicy.html">integritetspolicy</a>.</p>
+    </div>
+  </section>
+
+  <!-- FRAME 3: TEST (questions) -->
+  <section class="frame test" id="frame-test">
+    <div class="test-inner">
+      <div class="test-progress" id="test-progress"></div>
+      <div class="q-label" id="q-label"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="q-hint" id="q-hint"></div>
+      <textarea id="q-answer" placeholder="Skriv fritt..."></textarea>
+      <div class="char-count" id="q-chars">0 / 50 tecken</div>
+      <div style="margin-top:24px;">
+        <button class="btn" id="btn-next-q" onclick="nextQuestion()" disabled>Nästa</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 3b: WORD PICK -->
+  <section class="frame wordpick" id="frame-wordpick">
+    <div class="wordpick-inner">
+      <div class="q-label">Ordval, sista steget</div>
+      <div class="q-text">Välj de 5 ord som känns mest relevanta för dig just nu</div>
+      <div class="chips" id="chips-grid"></div>
+      <div class="chips-count" id="chips-count">0 av 5 valda</div>
+      <div style="margin-top:24px;">
+        <button class="btn" id="btn-submit" onclick="submitProfile()" disabled>Skicka</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FRAME 3c: ANALYZING -->
+  <section class="frame analyzing" id="frame-analyzing">
+    <div class="spinner"></div>
+    <h2>Analyserar dina svar</h2>
+    <p>Vi läser mönstren i din kommunikation. Det tar ungefär en minut.</p>
+  </section>
+
+  <!-- FRAME 5: PEDAGOGIK -->
+  <section class="frame pedagogik" id="frame-pedagogik">
+    <div class="pedagogik-inner">
+      <div class="pedagogik-eyebrow">Innan du ser ditt resultat</div>
+      <h2>Vad ett språkmönster faktiskt är</h2>
+      <p class="pedagogik-body">De flesta tror att de säger ungefär samma sak som alla andra, bara med andra ord. Men hur du formulerar dig följer ett mönster: vart du riktar dig, vad du lägger märke till, hur du vet att något stämmer.</p>
+      <p class="pedagogik-body">De sju mönstren vi läser är inte etiketter. De är positioner på glidande skalor, och de kan skilja sig åt beroende på sammanhang. Ingen ände är bättre än den andra.</p>
+
+      <div class="pedagogik-note">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <p>Vi beskriver mönster i hur du uttrycker dig, aldrig vem du är. Språket är ditt resonemang gjort synligt.</p>
+      </div>
+
+      <div class="patterns-list">
+        <div class="patterns-list-label">De sju mönster vi läser</div>
+        <p class="patterns-list-sub">Varje mönster är en glidande skala mellan två sätt att uttrycka sig.</p>
+        <div class="pattern-item"><span class="pattern-dot" style="background:var(--accent);"></span><div><div class="pattern-name">Motivationsriktning</div><div class="pattern-desc">Mot mål, eller bort från problem</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot"></span><div><div class="pattern-name">Beslutsram</div><div class="pattern-desc">Intern kompass eller yttre bekräftelse</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot"></span><div><div class="pattern-name">Förståelse</div><div class="pattern-desc">Steg för steg eller möjligheter</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot" style="background:var(--accent);"></span><div><div class="pattern-name">Kanal</div><div class="pattern-desc">Vilket sinne språket lutar mot</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot"></span><div><div class="pattern-name">Förändringsrelation</div><div class="pattern-desc">Likheter eller skillnader</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot"></span><div><div class="pattern-name">Handlingsstil</div><div class="pattern-desc">Proaktiv handling eller reaktiv analys</div></div></div>
+        <div class="pattern-item"><span class="pattern-dot"></span><div><div class="pattern-name">Detaljnivå</div><div class="pattern-desc">Helheten eller detaljerna</div></div></div>
+      </div>
+
+      <button class="btn btn-lg" onclick="showFrame('frame-resultat')">Visa mitt resultat</button>
+    </div>
+  </section>
+
+  <!-- FRAME 6: RESULTAT -->
+  <section class="frame resultat" id="frame-resultat">
+    <!-- Sidebar -->
+    <aside class="resultat-sidebar">
+      <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:20px;width:auto;display:block;margin-bottom:40px;">
+      <div class="sidebar-label">Ditt resultat</div>
+      <div class="sidebar-nav" id="sidebar-nav"></div>
+      <div class="sidebar-buy">
+        <div class="sidebar-buy-label">Lås upp hela rapporten</div>
+        <div class="sidebar-buy-price">499 kr</div>
+        <div class="sidebar-buy-sub">Engångsbetalning</div>
+        <button class="btn" style="width:100%;text-align:center;" onclick="buyReport()">Köp hela rapporten</button>
+        <div style="font-size:11px;opacity:0.45;text-align:center;margin-top:10px;">Säker betalning via Stripe</div>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <div class="resultat-content">
+      <div class="resultat-meta">
+        <span class="resultat-meta-label">Kommunikationsprofil</span>
+        <span class="resultat-meta-info" id="resultat-meta"></span>
+      </div>
+
+      <div style="max-width:820px;">
+        <div style="font-size:12px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:18px;">Din profil</div>
+        <h2 style="font-family:var(--serif);font-weight:600;font-size:48px;line-height:1.05;letter-spacing:-0.015em;color:var(--dark);margin:0 0 18px;">Mönstret i hur du<br>kommunicerar</h2>
+        <p style="font-size:17px;line-height:1.7;margin:0 0 44px;max-width:660px;">Här är en överblick av alla sju mönster. Dina två första ligger framme att läsa i sin helhet. De övriga fem, och bilden av hur de samspelar, ingår i den fullständiga rapporten.</p>
+
+        <!-- Spektrumstack -->
+        <div class="spektrum" id="spektrum"></div>
+
+        <!-- Free pattern details -->
+        <div id="free-patterns"></div>
+
+        <!-- Paywall -->
+        <div class="paywall">
+          <div class="paywall-eyebrow">Fem mönster kvar</div>
+          <h3>Hela bilden av hur du kommunicerar</h3>
+          <p>De två mönstren ovan är början. Den fullständiga rapporten skriver fram alla sju, hur de förstärker varandra, vad som händer i konflikt och förhandling, och en mer uttömmande analys av din kombination.</p>
+          <div class="paywall-grid">
+            <div>Beslutsram, Förståelse, Förändring, Handlingsstil, Detaljnivå</div>
+            <div>Hur dina mönster samspelar som helhet</div>
+            <div>Din kommunikation i konflikt och förhandling</div>
+            <div>Konkreta tips för var och en av dina motpoler</div>
+          </div>
+          <div class="paywall-actions">
+            <button class="btn btn-lg" onclick="buyReport()">Köp hela rapporten, 499 kr</button>
+            <span class="paywall-sub">Engångsbetalning, levereras direkt, säker betalning via Stripe</span>
+          </div>
+        </div>
+
+        <div style="text-align:center;font-size:12px;opacity:0.45;margin-top:56px;">holmberg &amp; friends</div>
+      </div>
+    </div>
+  </section>
+
+<script>
+(function() {
+  var API = 'https://sprakmonsterlabbet.holmbergfriends.com';
+  var DT = 'https://deep-thought.holmbergfriends.com';
+  var PRICE_ID = 'price_1TE9RZHrTws6MQZqVEhOtaY0';
+
+  var state = {
+    name: '', email: '', nyhetsbrev: false,
+    answers: {}, wordClicks: [], wordData: [],
+    responseTimes: {}, currentQ: 0,
+    profileId: null, profile: null, qStartTime: null
+  };
+
+  var QUESTIONS = [
+    { label: 'Motivationsriktning, fråga 1 av 5', text: 'Vad är viktigt för dig i ditt arbete?', hint: 'Ju mer du beskriver, desto mer träffsäker blir analysen. Skriv gärna 3\u20135 meningar.', key: 'q1' },
+    { label: 'Beslutsram, fråga 2 av 5', text: 'Hur vet du att du har gjort ett bra jobb?', hint: 'Svara spontant utifrån din första känsla. Det finns inget rätt svar.', key: 'q2' },
+    { label: 'Kanal, fråga 3 av 5', text: 'Hur vet du att någon annan har gjort ett bra jobb?', hint: 'Beskriv konkret. Vad ser, hör eller märker du?', key: 'q3' },
+    { label: 'Förståelse, fråga 4 av 5', text: 'Varför valde du ditt nuvarande arbete?', hint: 'Tänk på vad som faktiskt fick dig att tacka ja, inte vad som låter bra.', key: 'q4' },
+    { label: 'Förändringsrelation, fråga 5 av 5', text: 'Vad är relationen mellan ditt nuvarande arbete och ditt förra?', hint: 'Beskriv likheter, skillnader eller hur de hänger ihop. Det finns inget rätt svar.', key: 'q5' }
+  ];
+
+  var WORDS = [
+    'Trygghet','Förändring','Struktur','Frihet','Resultat','Samarbete','Kontroll',
+    'Nyfikenhet','Engagemang','Utveckling','Tydlighet','Kreativitet','Balans',
+    'Prestation','Ansvar','Tillit','Tempo','Stabilitet','Utmaning','Mening',
+    'Uthållighet','Mod','Kommunikation','Lyhördhet','Effektivitet'
+  ];
+
+  var PATTERNS = [
+    { name: 'Motivationsriktning', poles: ['Ifrån','Till'], free: true },
+    { name: 'Kanal', poles: ['Syn','Hörsel','Känsel'], free: true, isChannel: true },
+    { name: 'Beslutsram', poles: ['Extern','Intern'], free: false },
+    { name: 'Förståelse', poles: ['Procedur','Alternativ'], free: false },
+    { name: 'Förändringsrelation', poles: ['Likhet','Skillnad'], free: false },
+    { name: 'Handlingsstil', poles: ['Reaktiv','Proaktiv'], free: false },
+    { name: 'Detaljnivå', poles: ['Detalj','Helhet'], free: false }
+  ];
+
+  window.showFrame = function(id) {
+    document.querySelectorAll('.frame').forEach(function(f) { f.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo(0, 0);
+  };
+
+  // ── START ──
+  window.handleStart = function() {
+    var name = document.getElementById('inp-name').value.trim();
+    var email = document.getElementById('inp-email').value.trim();
+    var errEl = document.getElementById('start-error');
+
+    if (!name) { errEl.textContent = 'Ange ditt förnamn.'; errEl.style.display = 'block'; return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Ange en giltig e-postadress.'; errEl.style.display = 'block'; return; }
+    // Block disposable / @tmp
+    if (/@tmp$/i.test(email) || /mailinator|guerrilla|tempmail|throwaway|yopmail/i.test(email)) {
+      errEl.textContent = 'Ange en riktig e-postadress.'; errEl.style.display = 'block'; return;
+    }
+    errEl.style.display = 'none';
+    state.name = name;
+    state.email = email;
+    state.nyhetsbrev = document.getElementById('inp-nyhetsbrev').checked;
+
+    // Register lead to deep-thought
+    fetch(DT + '/api/sml-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ epost: email, namn: name })
+    }).catch(function() {});
+
+    state.currentQ = 0;
+    showQuestion();
+    showFrame('frame-test');
+  };
+
+  // ── QUESTIONS ──
+  function showQuestion() {
+    var q = QUESTIONS[state.currentQ];
+    var prog = document.getElementById('test-progress');
+    prog.innerHTML = '';
+    for (var i = 0; i < QUESTIONS.length; i++) {
+      var s = document.createElement('span');
+      if (i < state.currentQ) s.className = 'done';
+      else if (i === state.currentQ) s.className = 'active';
+      prog.appendChild(s);
+    }
+    document.getElementById('q-label').textContent = q.label;
+    document.getElementById('q-text').textContent = q.text;
+    document.getElementById('q-hint').textContent = q.hint;
+    var ta = document.getElementById('q-answer');
+    ta.value = state.answers[q.key] || '';
+    updateCharCount();
+    ta.focus();
+    state.qStartTime = Date.now();
+  }
+
+  function updateCharCount() {
+    var len = document.getElementById('q-answer').value.length;
+    document.getElementById('q-chars').textContent = len + ' / 50 tecken';
+    document.getElementById('btn-next-q').disabled = len < 20;
+  }
+  document.getElementById('q-answer').addEventListener('input', updateCharCount);
+
+  window.nextQuestion = function() {
+    var q = QUESTIONS[state.currentQ];
+    state.answers[q.key] = document.getElementById('q-answer').value.trim();
+    state.responseTimes[q.key] = Date.now() - state.qStartTime;
+    state.currentQ++;
+    if (state.currentQ < QUESTIONS.length) {
+      showQuestion();
+    } else {
+      showWordPick();
+      showFrame('frame-wordpick');
+    }
+  };
+
+  // ── WORD PICK ──
+  function showWordPick() {
+    var grid = document.getElementById('chips-grid');
+    grid.innerHTML = '';
+    WORDS.forEach(function(w) {
+      var c = document.createElement('div');
+      c.className = 'chip';
+      c.textContent = w;
+      c.addEventListener('click', function() { toggleChip(c, w); });
+      grid.appendChild(c);
+    });
+  }
+
+  function toggleChip(el, word) {
+    if (el.classList.contains('selected')) {
+      el.classList.remove('selected');
+      state.wordClicks = state.wordClicks.filter(function(w) { return w !== word; });
+    } else if (state.wordClicks.length < 5) {
+      el.classList.add('selected');
+      state.wordClicks.push(word);
+    }
+    document.getElementById('chips-count').textContent = state.wordClicks.length + ' av 5 valda';
+    document.getElementById('btn-submit').disabled = state.wordClicks.length !== 5;
+    // Disable unselected when 5 reached
+    document.querySelectorAll('.chip').forEach(function(c) {
+      if (!c.classList.contains('selected')) {
+        c.classList.toggle('disabled', state.wordClicks.length >= 5);
+      }
+    });
+  }
+
+  // ── SUBMIT ──
+  window.submitProfile = function() {
+    showFrame('frame-analyzing');
+
+    var payload = {
+      first_name: state.name,
+      email: state.email,
+      context: 'Arbete',
+      situation: 'Arbete',
+      answers: state.answers,
+      word_clicks: state.wordClicks,
+      word_data: state.wordClicks.map(function(w) { return { word: w }; }),
+      response_times_ms: state.responseTimes
+    };
+
+    fetch(API + '/api/profile/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.success && data.profile_id) {
+        state.profileId = data.profile_id;
+        // Poll for result
+        pollForResult(data.profile_id);
+      } else {
+        alert('Något gick fel: ' + (data.error || 'okänt fel'));
+        showFrame('frame-start');
+      }
+    })
+    .catch(function() {
+      alert('Nätverksfel. Försök igen.');
+      showFrame('frame-start');
+    });
+  };
+
+  function pollForResult(profileId) {
+    var attempts = 0;
+    var poll = setInterval(function() {
+      attempts++;
+      fetch(API + '/api/gratis-rapport?profile_id=' + profileId)
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.ok && data.profile) {
+            clearInterval(poll);
+            state.profile = data.profile;
+            renderResult(data);
+            showFrame('frame-pedagogik');
+          } else if (attempts > 60) {
+            clearInterval(poll);
+            // Show pedagogik with demo data
+            showFrame('frame-pedagogik');
+          }
+        })
+        .catch(function() {});
+    }, 3000);
+  }
+
+  // ── RENDER RESULT ──
+  function renderResult(data) {
+    var profile = data.profile || [];
+    var meta = document.getElementById('resultat-meta');
+    meta.textContent = state.name + ', ' + new Date().toISOString().slice(0,10) + ', Sammanhang: arbete';
+
+    // Build sidebar nav
+    var nav = document.getElementById('sidebar-nav');
+    nav.innerHTML = '';
+    PATTERNS.forEach(function(p, i) {
+      var d = document.createElement('div');
+      d.className = 'sidebar-item' + (i === 0 ? ' active' : '') + (!p.free ? ' locked' : '');
+      if (!p.free) {
+        d.innerHTML = '<svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' + p.name;
+      } else {
+        d.textContent = p.name;
+      }
+      nav.appendChild(d);
+    });
+
+    // Build spektrumstack
+    var spektrum = document.getElementById('spektrum');
+    spektrum.innerHTML = '';
+    PATTERNS.forEach(function(p) {
+      var match = findPattern(profile, p.name);
+      var row = document.createElement('div');
+      row.className = 'spektrum-row' + (!p.free ? ' locked' : '');
+
+      var pos = match ? getPosition(match) : 50;
+      var signal = match ? match.signal : '';
+      var strength = match ? match.strength : '';
+
+      if (p.free && match) {
+        row.innerHTML =
+          '<div class="spektrum-name">' + p.name + '</div>' +
+          '<div class="spektrum-bar"><span class="spektrum-dot" style="left:' + pos + '%;"></span></div>' +
+          '<div class="spektrum-val">' + signal + ' <span class="strength">&middot; ' + strength + '</span></div>';
+      } else {
+        row.innerHTML =
+          '<div class="spektrum-name">' + p.name + '</div>' +
+          '<div class="spektrum-bar"><span class="spektrum-dot blurred" style="left:' + (30 + Math.random()*40) + '%;"></span></div>' +
+          '<div class="spektrum-lock"><svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Låst</div>';
+      }
+      spektrum.appendChild(row);
+    });
+
+    // Build free pattern details
+    var freeDiv = document.getElementById('free-patterns');
+    freeDiv.innerHTML = '';
+    PATTERNS.filter(function(p) { return p.free; }).forEach(function(p, idx) {
+      var match = findPattern(profile, p.name);
+      if (!match) return;
+      var detail = document.createElement('div');
+      detail.className = 'pattern-detail';
+      var pos = getPosition(match);
+
+      if (p.isChannel) {
+        // Channel visualization
+        detail.innerHTML =
+          '<div class="pattern-detail-eyebrow">Mönster ' + (idx+1) + ' &middot; ' + p.name + '</div>' +
+          '<h3>' + getChannelHeadline(match) + '</h3>' +
+          '<div class="pattern-viz">' + renderChannelBars(match) + '</div>' +
+          '<p class="pattern-text">' + (match.insight || '') + '</p>';
+      } else {
+        var strengthClass = (match.strength||'').toLowerCase().indexOf('tydlig') >= 0 ? 'tydlig' : 'trolig';
+        detail.innerHTML =
+          '<div class="pattern-detail-eyebrow">Mönster ' + (idx+1) + ' &middot; ' + p.name + '</div>' +
+          '<h3>Ditt språk rör sig <em>' + getSignalWord(match) + '</em></h3>' +
+          '<div class="pattern-viz">' +
+            '<div class="pattern-viz-labels"><span>' + p.poles[0] + '</span><span>' + p.poles[1] + '</span></div>' +
+            '<div class="pattern-bar"><span class="pattern-bar-fill" style="width:' + pos + '%;"></span><span class="pattern-bar-dot" style="left:' + pos + '%;"></span></div>' +
+            '<div class="pattern-meta"><span>Position: <strong style="color:var(--dark);">' + Math.round(pos/10) + ' av 10 mot ' + match.signal + '</strong></span><span class="strength-badge ' + strengthClass + '">' + match.strength + '</span></div>' +
+          '</div>' +
+          '<p class="pattern-text">' + (match.insight || '') + '</p>';
+      }
+
+      if (match.evidence && match.evidence.length) {
+        detail.innerHTML += '<div class="pattern-tip"><div class="pattern-tip-label">Lägg märke till</div><p>' + match.evidence[0] + '</p></div>';
+      }
+      freeDiv.appendChild(detail);
+    });
+  }
+
+  function findPattern(profile, name) {
+    for (var i = 0; i < profile.length; i++) {
+      if (profile[i].category && profile[i].category.toLowerCase().indexOf(name.toLowerCase().slice(0,6)) >= 0) return profile[i];
+    }
+    return null;
+  }
+
+  function getPosition(match) {
+    if (!match || !match.signal) return 50;
+    var s = (match.signal || '').toLowerCase();
+    var str = (match.strength || '').toLowerCase();
+    var base = 50;
+    if (str.indexOf('tydlig') >= 0) base = 80;
+    else if (str.indexOf('trolig') >= 0) base = 70;
+    else base = 60;
+    // Flip for "first pole" signals
+    if (s.indexOf('ifrån') >= 0 || s.indexOf('extern') >= 0 || s.indexOf('procedur') >= 0 ||
+        s.indexOf('likhet') >= 0 || s.indexOf('reaktiv') >= 0 || s.indexOf('detalj') >= 0) {
+      base = 100 - base;
+    }
+    return base;
+  }
+
+  function getSignalWord(match) {
+    if (!match) return '';
+    var s = (match.signal || '');
+    if (s.toLowerCase().indexOf('till') >= 0) return 'mot mål';
+    return s.toLowerCase();
+  }
+
+  function getChannelHeadline(match) {
+    var s = (match.signal || '').toLowerCase();
+    if (s.indexOf('syn') >= 0) return 'Du tänker i <em>bilder</em>';
+    if (s.indexOf('hörsel') >= 0) return 'Du tänker i <em>ljud</em>';
+    return 'Du tänker i <em>känslor</em>';
+  }
+
+  function renderChannelBars(match) {
+    // Simple channel bar rendering based on signal
+    var primary = (match.signal || 'Syn').split('/')[0].trim();
+    var channels = ['Syn','Hörsel','Känsel'];
+    var html = '<div class="channel-bars">';
+    channels.forEach(function(ch) {
+      var isPrimary = ch.toLowerCase() === primary.toLowerCase();
+      var pct = isPrimary ? 82 : (20 + Math.floor(Math.random() * 30));
+      html += '<div class="channel-row">' +
+        '<span class="channel-label">' + ch + '</span>' +
+        '<span class="channel-bar"><span class="channel-fill ' + (isPrimary ? 'primary' : 'secondary') + '" style="width:' + pct + '%;"></span></span>' +
+        '<span class="channel-pct">' + pct + '%</span></div>';
+    });
+    html += '</div>';
+    html += '<div style="display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1.5px solid rgba(20,18,16,0.1);"><span style="font-size:13px;">Tydligast: <strong style="color:var(--dark);">' + primary + '</strong></span><span class="strength-badge trolig">' + (match.strength || 'TROLIG') + '</span></div>';
+    return html;
+  }
+
+  // ── BUY ──
+  window.buyReport = function() {
+    fetch(API + '/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        priceId: PRICE_ID,
+        email: state.email,
+        profile_id: state.profileId,
+        price_type: 'rapport_alumni'
+      })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok && data.url) window.location.href = data.url;
+      else alert('Kunde inte starta betalning.');
+    })
+    .catch(function() { alert('Nätverksfel.'); });
+  };
+
+  // ── CONSTELLATION (Hero) ──
+  function drawConstellation() {
+    var canvas = document.getElementById('heroCanvas');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var w = canvas.width = canvas.offsetWidth * 2;
+    var h = canvas.height = canvas.offsetHeight * 2;
+    ctx.scale(2, 2);
+    var cw = canvas.offsetWidth, ch = canvas.offsetHeight;
+
+    var nodes = [];
+    for (var i = 0; i < 18; i++) {
+      nodes.push({ x: 100 + Math.random() * (cw - 200), y: 80 + Math.random() * (ch - 200), r: 3 + Math.random() * 3 });
+    }
+    // Draw lines
+    ctx.strokeStyle = 'rgba(20,18,16,0.12)';
+    ctx.lineWidth = 1;
+    nodes.forEach(function(a, i) {
+      nodes.forEach(function(b, j) {
+        if (j <= i) return;
+        var dist = Math.sqrt((a.x-b.x)**2 + (a.y-b.y)**2);
+        if (dist < 220) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      });
+    });
+    // Draw nodes
+    nodes.forEach(function(n, i) {
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      if (i % 5 === 0) {
+        ctx.fillStyle = 'rgba(255,160,71,0.3)';
+        ctx.shadowColor = 'rgba(255,160,71,0.2)';
+        ctx.shadowBlur = 12;
+      } else {
+        ctx.fillStyle = '#141210';
+        ctx.shadowBlur = 0;
+      }
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+  }
+
+  // ── DEMO MODE (show result with placeholder data for checkpoint) ──
+  function loadDemoResult() {
+    var demoProfile = [
+      { category: 'Motivationsriktning', signal: 'Till', strength: 'Tydlig', evidence: ['I samtal där faror behöver vägas, stanna lika länge vid det som ska undvikas som vid det som ska nås.'], insight: 'Ditt språk rör sig mot det du vill uppnå. När du beskriver din roll återkommer formuleringar om vad du strävar efter, vad som ska byggas och vart det leder. Kommunikationen prioriterar mål framför hinder.' },
+      { category: 'Sinneskommunikationskanaler', signal: 'Syn', strength: 'Trolig', evidence: ['Med någon vars språk lutar mot hörsel eller känsel kan budskapet tappa fäste.'], insight: 'Kommunikationen lutar mot det visuella. Du beskriver hur saker ser ut, målar upp lägen och använder ord som klart, tydligt och perspektiv.' },
+      { category: 'Beslutsram', signal: 'Intern', strength: 'Trolig', evidence: [], insight: '' },
+      { category: 'Förståelse', signal: 'Alternativ', strength: 'Möjlig', evidence: [], insight: '' },
+      { category: 'Förändringsrelation', signal: 'Likhet med undantag', strength: 'Trolig', evidence: [], insight: '' },
+      { category: 'Handlingsstil', signal: 'Proaktiv', strength: 'Trolig', evidence: [], insight: '' },
+      { category: 'Detaljnivå', signal: 'Helhet', strength: 'Möjlig', evidence: [], insight: '' }
+    ];
+    state.name = 'Elin';
+    state.profile = demoProfile;
+    renderResult({ profile: demoProfile });
+  }
+
+  // Init
+  drawConstellation();
+
+  // If URL has ?demo, show result directly
+  if (window.location.search.indexOf('demo') >= 0) {
+    loadDemoResult();
+    showFrame('frame-resultat');
+  }
+})();
+</script>
+</body>
+</html>
