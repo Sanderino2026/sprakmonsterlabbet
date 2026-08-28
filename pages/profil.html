@@ -3,34 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Språkprofil</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Språkprofil — Språkmönsterlabbet</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --black: #0D0D0D;
-    --dark: #1C1C1C;
-    --mid: #5A5A5A;
-    --muted: #999999;
-    --border: #E2E2E2;
-    --border-light: #F0F0F0;
-    --bg: #FAFAFA;
-    --white: #FFFFFF;
-    --accent: #534AB7;
-    --accent-hover: #443d9a;
-    --accent-light: #EEEDFA;
-    --green: #2E7D32;
-    --green-light: #E8F5E9;
-    --red: #C62828;
-    --red-light: #FFEBEE;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #0c0c0b;
-    color: #f0ede6;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #F5F3EE;
+    color: #141210;
     font-size: 16px;
-    line-height: 1.3;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 {
+    font-family: 'Crimson Pro', Georgia, serif;
   }
 
   /* FADE IN */
@@ -40,398 +26,414 @@
   }
   .page.active .wrap { animation: fadeIn 0.4s ease both; }
 
-  /* NAV */
-  nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 22px 48px;
-    background: #0c0c0b;
-    border-bottom: 0.5px solid rgba(240,237,230,0.1);
-  }
-  .nav-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
-    color: rgba(240,237,230,0.5);
-    letter-spacing: 0.04em;
-  }
-  .nav-step {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: #c8b89a;
-    letter-spacing: 0.06em;
-  }
-
-  /* DOT PROGRESS */
-  .dot-progress {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 16px 0;
-    background: #0c0c0b;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: rgba(240,237,230,0.2);
-    transition: background 0.3s, transform 0.3s;
-  }
-  .dot.active {
-    background: #c8b89a;
-    transform: scale(1.25);
-  }
-  .dot.done {
-    background: #c8b89a;
-    opacity: 0.5;
-  }
-
-  /* PROGRESS BAR (for question steps) */
-  .progress-bar {
-    height: 3px;
-    background: rgba(240,237,230,0.08);
-  }
-  .progress-fill {
-    height: 100%;
-    background: #c8b89a;
-    transition: width 0.4s ease;
-    width: 0%;
-  }
-
   /* PAGES */
   .page { display: none; }
   .page.active { display: block; }
 
-  /* SHARED */
+  /* SHARED WRAP */
   .wrap {
-    max-width: 640px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 72px 24px 96px;
+    padding: 64px 24px 80px;
   }
-  h1 {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 42px;
-    font-weight: 900;
+
+  /* ── STEP 0: LANDING ── */
+  #step0 { background: #F5F3EE; }
+  #step0 .wrap { max-width: 720px; }
+
+  .s0-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px;
+  }
+  .s0-nav a { text-decoration: none; }
+
+  .s0-eyebrow {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8A929E;
+    margin-bottom: 16px;
+  }
+
+  .s0-h1 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 48px;
+    font-weight: 400;
     line-height: 1.1;
-    letter-spacing: -0.03em;
-    color: #f0ede6;
+    letter-spacing: -0.02em;
+    color: #141210;
     margin-bottom: 20px;
   }
-  h1 em { font-style: italic; color: #c8b89a; }
-  .intro-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 300;
-    line-height: 1.7;
-    color: rgba(240,237,230,0.6);
-    margin-bottom: 40px;
-    max-width: 520px;
+
+  .s0-body {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #8A929E;
+    max-width: 560px;
+    margin-bottom: 36px;
   }
 
-  /* EYEBROW */
-  .eyebrow {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: #c8b89a;
-    margin-bottom: 16px;
-  }
-
-  /* SPRAK + SPEECH BUBBLE */
-  .sprak-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 32px;
-  }
-  .sprak-img {
-    width: 80px;
-    height: 80px;
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-  .speech-bubble {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-size: 15px;
-    color: var(--mid);
-    line-height: 1.6;
-    position: relative;
-  }
-  .speech-bubble::before {
-    content: '';
-    position: absolute;
-    left: -8px;
-    top: 20px;
-    width: 0;
-    height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--border);
-  }
-  .speech-bubble::after {
-    content: '';
-    position: absolute;
-    left: -7px;
-    top: 20px;
-    width: 0;
-    height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-right: 8px solid var(--bg);
-  }
-
-  /* BUTTONS */
   .btn-primary {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    background: #f0ede6;
-    color: #0c0c0b;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    background: #FFA047;
+    color: #141210;
     border: none;
-    border-radius: 0;
+    border-radius: 0 10px 0 10px;
     padding: 16px 36px;
     cursor: pointer;
-    transition: background 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
   }
-  .btn-primary:hover { background: #fff; }
+  .btn-primary:hover { background: #ffb06a; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
   .btn-primary:disabled {
-    background: rgba(240,237,230,0.15);
-    color: rgba(240,237,230,0.3);
+    background: #E2E2E2;
+    color: #8A929E;
     cursor: not-allowed;
+    transform: none;
   }
-  .btn-primary:disabled:hover { background: rgba(240,237,230,0.15); }
 
-  /* CHECKBOXES */
-  .cb-list {
+  .s0-micro {
+    font-size: 13px;
+    color: #8A929E;
+    margin-top: 12px;
+  }
+
+  /* CARDS */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 56px 0 48px;
+  }
+  .info-card {
+    background: #FFFFFF;
+    border-radius: 0 10px 0 10px;
+    padding: 28px 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .info-card-number {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: #141210;
+    margin-bottom: 8px;
+  }
+  .info-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #141210;
+    margin-bottom: 6px;
+  }
+  .info-card-text {
+    font-size: 14px;
+    color: #8A929E;
+    line-height: 1.55;
+  }
+
+  .s0-footer {
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    color: #8A929E;
+  }
+
+  /* ── STEPS 1-4: QUESTIONS ── */
+  .page-questions { background: #FFFFFF; }
+  .page-questions .wrap { max-width: 640px; }
+
+  .q-progress {
+    font-size: 13px;
+    color: #8A929E;
+    margin-bottom: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  .q-text {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.25;
+    color: #141210;
+    margin-bottom: 32px;
+  }
+
+  .choice-cards {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-bottom: 40px;
   }
-  .cb-item {
+  .choice-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E2E2;
+    border-radius: 0 10px 0 10px;
+    padding: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #141210;
+  }
+  .choice-card:hover {
+    border-color: #FFA047;
+  }
+  .choice-card.selected {
+    border-color: #FFA047;
+    background: rgba(255, 160, 71, 0.06);
+  }
+
+  /* ── STEP 5: EMAIL ── */
+  .page-email { background: #FFFFFF; }
+  .page-email .wrap { max-width: 540px; }
+
+  .page-email h1 {
+    font-size: 36px;
+    font-weight: 400;
+    color: #141210;
+    margin-bottom: 12px;
+  }
+  .page-email .sub {
+    font-size: 16px;
+    color: #8A929E;
+    margin-bottom: 32px;
+  }
+
+  .field-group { margin-bottom: 20px; }
+  .field-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #141210;
+    margin-bottom: 6px;
+  }
+  .field-group input[type="text"],
+  .field-group input[type="email"] {
+    width: 100%;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    color: #141210;
+    border: 1px solid #E2E2E2;
+    border-radius: 0 10px 0 10px;
+    padding: 14px 16px;
+    background: #FFFFFF;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .field-group input:focus {
+    border-color: #FFA047;
+  }
+
+  .cb-row {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 14px;
     cursor: pointer;
-    user-select: none;
   }
-  .cb-item input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    margin-top: 2px;
-    accent-color: #c8b89a;
+  .cb-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: #FFA047;
     flex-shrink: 0;
     cursor: pointer;
   }
-  .cb-item span {
-    font-size: 15px;
-    color: rgba(240,237,230,0.8);
+  .cb-row span {
+    font-size: 14px;
+    color: #141210;
     line-height: 1.5;
   }
+  .cb-row span a {
+    color: #FFA047;
+    text-decoration: underline;
+  }
 
-  /* QUIZ */
-  .quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
+  .consent-area {
+    margin: 24px 0 32px;
   }
-  .quiz-opt {
-    border: 0.5px solid rgba(240,237,230,0.15);
-    border-radius: 0;
-    padding: 16px 20px;
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    color: rgba(240,237,230,0.8);
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    background: rgba(240,237,230,0.04);
-  }
-  .quiz-opt:hover { border-color: rgba(240,237,230,0.3); background: rgba(240,237,230,0.08); }
-  .quiz-opt.correct {
-    border-color: #c8b89a;
-    background: rgba(200,184,154,0.1);
-    color: #c8b89a;
-    cursor: default;
-  }
-  .quiz-opt.wrong {
-    border-color: rgba(255,160,71,0.5);
-    background: rgba(255,160,71,0.08);
-    color: rgba(255,160,71,0.8);
-    cursor: default;
-  }
-  .quiz-opt.disabled {
-    opacity: 0.5;
-    cursor: default;
-    pointer-events: none;
-  }
-  .quiz-feedback {
+
+  .error-msg {
     display: none;
-    margin-bottom: 24px;
+    background: #FFEBEE;
+    color: #C62828;
+    padding: 12px 16px;
+    border-radius: 0 10px 0 10px;
+    font-size: 14px;
+    margin-bottom: 20px;
   }
-  .quiz-feedback.visible { display: block; }
+  .error-msg.visible { display: block; }
 
-  /* SITUATION CARDS */
-  .sit-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-  .sit-card {
-    border: 0.5px solid rgba(240,237,230,0.15);
-    border-radius: 0;
-    padding: 20px 16px;
-    text-align: center;
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    color: rgba(240,237,230,0.7);
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-  }
-  .sit-card:hover { border-color: rgba(240,237,230,0.3); background: rgba(240,237,230,0.08); }
-  .sit-card.selected { border-color: #c8b89a; background: rgba(200,184,154,0.1); color: #c8b89a; font-weight: 500; }
-  .sit-other-input {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: #f0ede6;
-    border: 0.5px solid rgba(240,237,230,0.2);
-    padding: 12px 14px;
-    background: rgba(240,237,230,0.05);
-    outline: none;
-    margin-bottom: 24px;
-    display: none;
-    transition: border-color 0.15s;
-  }
-  .sit-other-input:focus { border-color: rgba(240,237,230,0.5); }
-  .sit-other-input.visible { display: block; }
+  /* ── STEP 6: RESULT ── */
+  #step6 { background: #F5F3EE; }
+  #step6 .wrap { max-width: 720px; }
 
-  /* FORM FIELDS */
-  .field-group { margin-bottom: 24px; }
-  .field-group label {
-    display: block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
+  .result-eyebrow {
+    font-size: 12px;
     font-weight: 500;
-    color: rgba(240,237,230,0.7);
-    margin-bottom: 8px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #8A929E;
+    margin-bottom: 12px;
   }
-  .field-group input,
-  .field-group textarea {
-    width: 100%;
-    font-family: 'DM Sans', sans-serif;
+
+  .result-h1 {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: #141210;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .result-score {
     font-size: 16px;
-    font-weight: 300;
-    color: #f0ede6;
-    border: 0.5px solid rgba(240,237,230,0.2);
-    border-radius: 0;
-    padding: 14px 16px;
-    background: rgba(240,237,230,0.05);
-    transition: border-color 0.15s, background 0.15s;
-    outline: none;
+    color: #8A929E;
+    margin-bottom: 32px;
   }
-  .field-group input::placeholder,
-  .field-group textarea::placeholder {
-    color: rgba(240,237,230,0.25);
+
+  .result-card {
+    background: #FFFFFF;
+    border-radius: 0 10px 0 10px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
-  .field-group input:focus,
-  .field-group textarea:focus {
-    border-color: rgba(240,237,230,0.5);
-    background: rgba(240,237,230,0.08);
+  .result-card p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: #141210;
+    margin-bottom: 16px;
   }
-  .field-group textarea {
-    resize: vertical;
-    min-height: 120px;
+  .result-card p:last-child { margin-bottom: 0; }
+
+  .reservation-box {
+    background: #F5F3EE;
+    border-radius: 0 10px 0 10px;
+    padding: 20px 24px;
+    margin-top: 24px;
+    font-size: 14px;
+    color: #8A929E;
     line-height: 1.6;
   }
-  .consent-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: rgba(240,237,230,0.35);
-    line-height: 1.5;
-    margin-top: 16px;
-    margin-bottom: 32px;
-  }
-  .char-hint {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: rgba(240,237,230,0.3);
-    margin-top: 6px;
-    text-align: right;
-    transition: color 0.15s;
-  }
-  .char-hint.ok { color: #c8b89a; }
 
-  /* QUESTION */
-  .q-number {
-    font-family: 'DM Sans', sans-serif;
+  .cta-section {
+    background: #FFFFFF;
+    border-radius: 0 10px 0 10px;
+    padding: 32px;
+    margin-bottom: 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    text-align: center;
+  }
+  .cta-section h3 {
+    font-size: 24px;
+    font-weight: 400;
+    color: #141210;
+    margin-bottom: 12px;
+  }
+  .cta-section p {
+    font-size: 15px;
+    color: #8A929E;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  /* MOT ALEXANDER */
+  .alexander-section {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+    margin-bottom: 48px;
+  }
+  .alexander-section img {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .alexander-section h3 {
+    font-size: 22px;
+    font-weight: 300;
+    color: #141210;
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .alexander-section p {
+    font-size: 15px;
+    color: #8A929E;
+    line-height: 1.65;
+    margin-bottom: 8px;
+  }
+  .alexander-links {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+  .alexander-links a.btn-link {
+    font-size: 14px;
+    color: #8A929E;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .alexander-links a.btn-link:hover { color: #141210; }
+
+  /* TEASER */
+  .teaser-link {
+    display: block;
+    border: 1px solid #E2E2E2;
+    border-radius: 0 10px 0 10px;
+    padding: 24px 28px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+    margin-bottom: 48px;
+  }
+  .teaser-link:hover { border-color: #FFA047; }
+  .teaser-link .teaser-eyebrow {
     font-size: 11px;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #c8b89a;
-    margin-bottom: 16px;
+    color: #8A929E;
   }
-  .q-text {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-size: 32px;
-    font-weight: 900;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    color: #f0ede6;
-    margin-bottom: 32px;
+  .teaser-link h3 {
+    font-size: 20px;
+    font-weight: 400;
+    color: #141210;
+    margin: 6px 0 8px;
+  }
+  .teaser-link p {
+    font-size: 14px;
+    color: #8A929E;
+    line-height: 1.55;
+    margin: 0 0 8px;
+  }
+  .teaser-link .teaser-arrow {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFA047;
   }
 
-  /* CHIPS */
-  .chips-grid {
+  .site-footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: #8A929E;
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-  .chip {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(240,237,230,0.7);
-    background: rgba(240,237,230,0.04);
-    border: 0.5px solid rgba(240,237,230,0.15);
-    border-radius: 0;
-    padding: 12px 18px;
-    cursor: pointer;
-    transition: all 0.15s;
-    user-select: none;
-  }
-  .chip:hover { background: rgba(240,237,230,0.08); border-color: rgba(240,237,230,0.3); }
-  .chip.selected {
-    background: rgba(200,184,154,0.15);
-    color: #c8b89a;
-    border-color: #c8b89a;
-  }
-  .chip.dimmed {
-    color: rgba(240,237,230,0.25);
-    border-color: rgba(240,237,230,0.08);
-    opacity: 0.5;
-    cursor: default;
-  }
-  .chip.dimmed:hover { background: rgba(240,237,230,0.04); }
-  .chips-count {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: rgba(240,237,230,0.4);
-    margin-bottom: 28px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
   /* SPINNER */
@@ -439,437 +441,135 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255,255,255,0.4);
-    border-top-color: var(--white);
+    border: 2px solid rgba(20,18,16,0.3);
+    border-top-color: #141210;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 6px;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* INFO BLOCKS */
-  .info-blocks {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    margin-bottom: 40px;
-  }
-  .info-block {
-    border-left: 2px solid #c8b89a;
-    padding-left: 20px;
-    margin-bottom: 24px;
-  }
-  .info-block:last-child { margin-bottom: 0; }
-  .info-block-title {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    color: #c8b89a;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .info-block-text {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 300;
-    color: rgba(240,237,230,0.6);
-    line-height: 1.6;
-  }
-
-  /* SUBTITLE */
-  .subtitle {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: rgba(240,237,230,0.4);
-    font-style: italic;
-    margin-top: -12px;
-    margin-bottom: 24px;
-  }
-
-  /* FOOTER */
-  .site-footer {
-    text-align: center;
-    padding: 24px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: rgba(240,237,230,0.25);
-    border-top: 0.5px solid rgba(240,237,230,0.08);
-  }
-
-  /* STEP 15 */
-  #step15 h1 { font-size: 56px; }
-
-  /* MOBILE */
-  @media (max-width: 600px) {
-    nav { padding: 16px 20px; }
-    .wrap { padding: 48px 20px 72px; }
-    h1 { font-size: 32px; }
-    #step15 h1 { font-size: 40px; }
-    .q-text { font-size: 26px; }
-    .chip { padding: 8px 16px; font-size: 13px; }
-    .sit-grid { grid-template-columns: 1fr; }
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .s0-h1 { font-size: 36px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .q-text { font-size: 24px; }
+    .result-h1 { font-size: 28px; }
+    .alexander-section { flex-direction: column; align-items: center; text-align: center; }
+    .alexander-links { justify-content: center; }
+    .s0-nav { padding: 16px 20px; }
+    .wrap { padding: 48px 20px 64px; }
   }
 </style>
 </head>
 <body>
 
-<nav style="display:none;">
-  <div class="nav-title">Språkprofil</div>
-  <div class="nav-step" id="navStep"></div>
-</nav>
-<div class="dot-progress" id="dotProgress" style="display:none;"></div>
-<div class="progress-bar" style="display:none;"><div class="progress-fill" id="progressFill"></div></div>
-
-<!-- STEG 0 — HERO -->
+<!-- ══════════════════════════════════════════════
+     STEP 0 — LANDING (HERO)
+     ══════════════════════════════════════════════ -->
 <div class="page active" id="step0">
-<style>
-  #step0 { background: #0c0c0b; }
-  #step0 .wrap { max-width: none; padding: 0; }
-  #step0 .s0-nav {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 18px 48px;
-    border-bottom: 0.5px solid rgba(240,237,230,0.12);
-  }
-  #step0 .s0-nav-left {
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
-    color: rgba(240,237,230,0.35); letter-spacing: 0.02em;
-  }
-  #step0 .s0-hero {
-    display: grid; grid-template-columns: 1fr 1fr;
-    min-height: calc(100vh - 57px - 72px);
-  }
-  #step0 .s0-left {
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 80px 64px 80px 48px;
-  }
-  #step0 .s0-eyebrow {
-    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
-    letter-spacing: 0.18em; text-transform: uppercase;
-    color: rgba(240,237,230,0.3); margin-bottom: 24px;
-  }
-  #step0 .s0-h1 {
-    font-family: 'Playfair Display', Georgia, serif; font-size: 72px;
-    font-weight: 900; line-height: 1.05; letter-spacing: -0.03em;
-    color: #f0ede6; margin-bottom: 28px;
-  }
-  #step0 .s0-h1 em {
-    font-style: italic; color: #c8b89a;
-  }
-  #step0 .s0-body {
-    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 300;
-    line-height: 1.7; color: rgba(240,237,230,0.55); max-width: 440px;
-    margin-bottom: 40px;
-  }
-  #step0 .s0-cta-row { display: flex; flex-direction: column; gap: 12px; }
-  #step0 .s0-btn {
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    background: #f0ede6; color: #0c0c0b; border: none;
-    padding: 16px 36px; cursor: pointer; transition: background 0.15s;
-    display: inline-block; width: fit-content;
-  }
-  #step0 .s0-btn:hover { background: #fff; }
-  #step0 .s0-sub {
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300;
-    color: rgba(240,237,230,0.35);
-  }
-  #step0 .s0-right {
-    position: relative; overflow: hidden;
-  }
-  #step0 #introCanvas {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-  }
-  #step0 .s0-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px 48px;
-    border-top: 0.5px solid rgba(240,237,230,0.08);
-    font-family: 'DM Sans', sans-serif; font-size: 12px;
-    color: rgba(240,237,230,0.25);
-  }
-  #step0 .s0-footer a {
-    color: rgba(240,237,230,0.35); text-decoration: none;
-  }
-  #step0 .s0-footer a:hover { color: rgba(240,237,230,0.6); }
-  #step0 .s0-footer-links { display: flex; gap: 24px; }
-
-  @media (max-width: 860px) {
-    #step0 .s0-hero { grid-template-columns: 1fr; }
-    #step0 .s0-left { padding: 56px 24px 48px; }
-    #step0 .s0-h1 { font-size: 44px; }
-    #step0 .s0-right { min-height: 360px; }
-    #step0 .s0-nav { padding: 14px 24px; }
-    #step0 .s0-footer { padding: 16px 24px; flex-direction: column; gap: 8px; }
-  }
-</style>
-
-<div class="wrap">
   <div class="s0-nav">
-    <div class="s0-nav-left"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:18px;opacity:0.5;"></div>
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:20px;"></a>
   </div>
+  <div class="wrap" style="padding-top:40px;">
+    <div class="s0-eyebrow">SPRÅKMÖNSTERLABBET</div>
+    <h1 class="s0-h1">Förstå hur du tänker — på två minuter</h1><!-- PLATSHALLARE_COPY -->
+    <p class="s0-body">Fyra frågor. Inget test. Du får direkt se ditt första språkmönster — hur du naturligt organiserar information.</p><!-- PLATSHALLARE_COPY -->
+    <button class="btn-primary" id="btnStart">Gör din språkprofil</button>
+    <div class="s0-micro">Fyra frågor &middot; Cirka två minuter</div>
 
-  <div class="s0-hero">
-    <div class="s0-left">
-      <div class="s0-eyebrow">Språkprofil</div>
-      <h1 class="s0-h1">Förstå hur du <em>tänker</em> och talar</h1>
-      <p class="s0-body">Sju språkmönster styr hur du kommunicerar — utan att du vet om det. Vi kartlägger ditt mönster och ger dig verktygen att leda och lyssna mer effektivt.</p>
-      <div class="s0-cta-row">
-        <button class="s0-btn" id="btnStep0">KOM IGÅNG</button>
-        <span class="s0-sub">Tar cirka fem minuter</span>
+    <div class="cards-grid">
+      <div class="info-card">
+        <div class="info-card-number">1</div>
+        <div class="info-card-title">Svara på fyra frågor</div><!-- PLATSHALLARE_COPY -->
+        <div class="info-card-text">Inga fritextsvar — du väljer det alternativ som stämmer bäst. Snabbt och intuitivt.</div><!-- PLATSHALLARE_COPY -->
+      </div>
+      <div class="info-card">
+        <div class="info-card-number">2</div>
+        <div class="info-card-title">Se ditt första mönster</div><!-- PLATSHALLARE_COPY -->
+        <div class="info-card-text">Du får direkt se hur du naturligt organiserar information — genom procedur eller alternativ.</div><!-- PLATSHALLARE_COPY -->
+      </div>
+      <div class="info-card">
+        <div class="info-card-number">3</div>
+        <div class="info-card-title">Förstå vad det betyder</div><!-- PLATSHALLARE_COPY -->
+        <div class="info-card-text">En kort förklaring av ditt mönster och hur det påverkar din kommunikation i vardagen.</div><!-- PLATSHALLARE_COPY -->
       </div>
     </div>
-    <div class="s0-right">
-      <canvas id="introCanvas"></canvas>
+
+    <div style="text-align:center;margin-bottom:48px;">
+      <button class="btn-primary" id="btnStart2">Gör din språkprofil</button>
     </div>
   </div>
-
-  <div class="s0-footer">
-    <div class="s0-footer-links">
-      <a href="https://coachholmberg.com">coachholmberg.com</a>
-      <a href="https://holmbergfriends.com">holmbergfriends.com</a>
-      <a href="#">Integritetspolicy</a>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">&copy; 2026 <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:14px;opacity:0.4;"></div>
-  </div>
-</div>
+  <div class="s0-footer">&copy; 2026 holmberg &amp; friends</div>
 </div>
 
-<script>
-(function() {
-  var canvas = document.getElementById('introCanvas');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var nodes = [];
-  var N = 55;
-  var maxDist = 140;
-  var w, h;
-
-  function resize() {
-    var rect = canvas.parentElement.getBoundingClientRect();
-    w = rect.width; h = rect.height;
-    canvas.width = w * devicePixelRatio;
-    canvas.height = h * devicePixelRatio;
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
-  }
-
-  function init() {
-    resize();
-    nodes = [];
-    for (var i = 0; i < N; i++) {
-      var big = i < Math.floor(N * 0.2);
-      nodes.push({
-        x: Math.random() * w, y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: big ? 3 + Math.random() * 4 : 1.2 + Math.random() * 1.5,
-        big: big,
-        phase: Math.random() * Math.PI * 2,
-        sinAmpX: 0.15 + Math.random() * 0.3,
-        sinAmpY: 0.15 + Math.random() * 0.3,
-        sinFreqX: 0.3 + Math.random() * 0.5,
-        sinFreqY: 0.3 + Math.random() * 0.5,
-      });
-    }
-  }
-
-  function draw(t) {
-    ctx.clearRect(0, 0, w, h);
-    var ts = t / 1000;
-
-    for (var i = 0; i < N; i++) {
-      var n = nodes[i];
-      n.x += n.vx + Math.sin(ts * n.sinFreqX + n.phase) * n.sinAmpX;
-      n.y += n.vy + Math.cos(ts * n.sinFreqY + n.phase) * n.sinAmpY;
-      if (n.x < -20) n.x = w + 20;
-      if (n.x > w + 20) n.x = -20;
-      if (n.y < -20) n.y = h + 20;
-      if (n.y > h + 20) n.y = -20;
-    }
-
-    for (var i = 0; i < N; i++) {
-      for (var j = i + 1; j < N; j++) {
-        var dx = nodes[i].x - nodes[j].x;
-        var dy = nodes[i].y - nodes[j].y;
-        var dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < maxDist) {
-          var alpha = Math.pow(1 - dist / maxDist, 1.5) * 0.45;
-          ctx.beginPath();
-          ctx.moveTo(nodes[i].x, nodes[i].y);
-          ctx.lineTo(nodes[j].x, nodes[j].y);
-          ctx.strokeStyle = 'rgba(200,184,154,' + alpha + ')';
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      }
-    }
-
-    for (var i = 0; i < N; i++) {
-      var n = nodes[i];
-      var pulse = 0.75 + Math.sin(ts * 1.8 + n.phase) * 0.25;
-      var r = n.r * pulse;
-
-      if (n.big) {
-        var grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, r * 3);
-        grad.addColorStop(0, 'rgba(240,237,230,0.9)');
-        grad.addColorStop(0.4, 'rgba(200,184,154,0.3)');
-        grad.addColorStop(1, 'rgba(200,184,154,0)');
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, r * 3, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-      }
-
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = n.big ? 'rgba(240,237,230,0.9)' : 'rgba(200,184,154,0.55)';
-      ctx.fill();
-    }
-
-    requestAnimationFrame(draw);
-  }
-
-  init();
-  requestAnimationFrame(draw);
-  window.addEventListener('resize', function() { resize(); });
-})();
-</script>
-
-<!-- STEG 1 — TRE SAKER VI BLANDAR IHOP -->
-<div class="page" id="step1">
+<!-- ══════════════════════════════════════════════
+     STEP 1 — FRÅGA 1
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step1">
   <div class="wrap">
-    <div class="eyebrow">INTRODUKTION 1 AV 3</div>
-    <h1>Tre saker vi blandar ihop</h1>
-    <p class="intro-text">
-      När vi tar emot kommunikation från någon uppfattar vi den ofta som
-      en del av deras identitet och personlighet. Det är en av anledningarna
-      till att kommunikation kan vara utmanande.
-    </p>
-    <div class="info-blocks">
-      <div class="info-block">
-        <div class="info-block-title">01 · IDENTITET</div>
-        <div class="info-block-text">Vem vi upplever att vi är — just nu. Inte ett fast tillstånd, utan en levande upplevelse som alltid är i rörelse. Det är identiteten som avgör vad vi tillåter oss att tänka, känna och göra.</div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-title">02 · BETEENDE</div>
-        <div class="info-block-text">Allt vi gör. Beteendet speglar identitetsupplevelsen — men är inte samma sak som den. Och eftersom de påverkar varandra kan ett förändrat beteende också förändra hur vi upplever oss själva.</div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-title">03 · KOMMUNIKATION</div>
-        <div class="info-block-text">De tolkningar som uppstår — hos oss och hos andra. Kommunikation pågår alltid, även utan avsikt. Även tanken är kommunikation — med oss själva. Det betyder att språket vi använder, inåt och utåt, formar verkligheten vi lever i.</div>
-      </div>
+    <div class="q-progress">Fråga 1 av 4</div>
+    <div class="q-text">Du får ett nytt uppdrag på jobbet. Vad gör du först?</div><!-- PLATSHALLARE_COPY -->
+    <div class="choice-cards">
+      <div class="choice-card" data-fraga="1" data-svar="Procedur">Tar reda på hur det brukar göras — vilka steg och vilken ordning som gäller</div><!-- PLATSHALLARE_COPY -->
+      <div class="choice-card" data-fraga="1" data-svar="Alternativ">Utforskar vilka möjligheter som finns — det kan finnas flera sätt att lösa det på</div><!-- PLATSHALLARE_COPY -->
     </div>
-    <button class="btn-primary" id="btnStep1">Nästa →</button>
   </div>
 </div>
 
-<!-- STEG 2 — VAR FINNS SPRÅKMÖNSTREN? -->
-<div class="page" id="step2">
+<!-- ══════════════════════════════════════════════
+     STEP 2 — FRÅGA 2
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step2">
   <div class="wrap">
-    <div class="eyebrow">INTRODUKTION 2 AV 3</div>
-    <h1>Var finns språkmönstren?</h1>
-    <p class="intro-text">
-      Språkmönster är en underkategori till kommunikation — inte till identitet.
-      Det betyder att en text kan signalera ett mönster utan att det säger något
-      om vem personen är.
-    </p>
-    <blockquote style="border-left: 2px solid #c8b89a; padding-left: 20px; margin: 32px 0;">
-      <p class="intro-text" style="margin-bottom: 0;">Vi har mönster — vi är inte våra mönster, vi är så mycket mer.</p>
-      <p style="font-size: 13px; color: rgba(240,237,230,0.4); margin-top: 8px;">— Alexander Holmberg</p>
-    </blockquote>
-    <p class="intro-text">
-      Analysen handlar om hur språket organiseras. Inte om vem som skriver det.
-    </p>
-    <button class="btn-primary" id="btnStep2">Nästa →</button>
+    <div class="q-progress">Fråga 2 av 4</div>
+    <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div><!-- PLATSHALLARE_COPY -->
+    <div class="choice-cards">
+      <div class="choice-card" data-fraga="2" data-svar="Procedur">Föreslår en tydlig plan — först det här, sedan det här, i rätt ordning</div><!-- PLATSHALLARE_COPY -->
+      <div class="choice-card" data-fraga="2" data-svar="Alternativ">Lyfter flera möjliga vägar — det finns sällan bara ett rätt svar</div><!-- PLATSHALLARE_COPY -->
+    </div>
   </div>
 </div>
 
-<!-- STEG 3 — INNAN DU BÖRJAR -->
-<div class="page" id="step3">
+<!-- ══════════════════════════════════════════════
+     STEP 3 — FRÅGA 3
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step3">
   <div class="wrap">
-    <div class="eyebrow">INTRODUKTION 3 AV 3</div>
-    <h1>Innan du börjar</h1>
-    <p class="intro-text">
-      Svara på frågorna nedan — det handlar inte om rätt eller fel, utan om att
-      vi delar samma förståelse för vad språkmönster är: kommunikation, inte
-      personlighet.
-    </p>
-    <button class="btn-primary" id="btnStep3">Det förstår jag →</button>
+    <div class="q-progress">Fråga 3 av 4</div>
+    <div class="q-text">Varför valde du ditt nuvarande arbete?</div><!-- PLATSHALLARE_COPY -->
+    <div class="choice-cards">
+      <div class="choice-card" data-fraga="3" data-svar="Procedur">Det var en naturlig fortsättning — stegen ledde dit</div><!-- PLATSHALLARE_COPY -->
+      <div class="choice-card" data-fraga="3" data-svar="Alternativ">Det var ett av flera alternativ — jag valde bland möjligheter</div><!-- PLATSHALLARE_COPY -->
+    </div>
   </div>
 </div>
 
-<!-- STEG 2 — DU ÄR INTE DIN PROFIL -->
-<div class="page" id="step4">
+<!-- ══════════════════════════════════════════════
+     STEP 4 — FRÅGA 4
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step4">
   <div class="wrap">
-    <div class="eyebrow">VIKTIGT ATT VETA</div>
-    <h1>Du är inte dina mönster</h1>
-    <p style="font-size: 15px; font-weight: 300; color: rgba(240,237,230,0.6); margin-bottom: 32px; line-height: 1.7;">
-      Motivationsriktning handlar om vad som driver dig: söker du mot mål och
-      möjligheter (Till), eller bort från problem och risker (Ifrån)?<br><br>
-      Förståelsemönster handlar om hur du bearbetar information: föredrar du
-      öppna alternativ och valmöjligheter (Alternativ), eller tydliga steg och
-      processer (Procedur)?<br><br>
-      Dessa är mönster i hur du kommunicerar — inte en beskrivning av vem du är.
-    </p>
-    <p class="intro-text">
-      Innan vi går vidare, bekräfta att du förstår följande:
-    </p>
-    <div class="cb-list">
-      <label class="cb-item">
-        <input type="checkbox" class="consent-cb">
-        <span>Jag förstår att profilen beskriver mönster i min kommunikation — inte vem jag är som person.</span>
-      </label>
-      <label class="cb-item">
-        <input type="checkbox" class="consent-cb">
-        <span>Jag förstår att samma person kan ha helt olika mönster i olika situationer och sammanhang.</span>
-      </label>
-      <label class="cb-item">
-        <input type="checkbox" class="consent-cb">
-        <span>Jag förstår att inga kommunikationsmönster är bättre eller sämre än andra.</span>
-      </label>
+    <div class="q-progress">Fråga 4 av 4</div>
+    <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div><!-- PLATSHALLARE_COPY -->
+    <div class="choice-cards">
+      <div class="choice-card" data-fraga="4" data-svar="Procedur">Steg för steg i rätt ordning — först det här, sedan det här</div><!-- PLATSHALLARE_COPY -->
+      <div class="choice-card" data-fraga="4" data-svar="Alternativ">Genom att visa hur det hänger ihop med saker de redan känner till</div><!-- PLATSHALLARE_COPY -->
     </div>
-    <button class="btn-primary" id="btnStep4" disabled>Gå vidare</button>
   </div>
 </div>
 
-<!-- STEG 3 — KUNSKAPSFRÅGA -->
-<div class="page" id="step5">
+<!-- ══════════════════════════════════════════════
+     STEP 5 — NAMN + E-POST + SAMTYCKE
+     ══════════════════════════════════════════════ -->
+<div class="page page-email" id="step5">
   <div class="wrap">
-    <div class="eyebrow">KUNSKAPSFRÅGA</div>
-    <h1>Snabb koll</h1>
-    <div class="quiz-options" id="quizOptions">
-      <div class="quiz-opt" data-answer="wrong1">Din personlighetstyp</div>
-      <div class="quiz-opt" data-answer="correct">Dina språkliga kommunikationsmönster</div>
-      <div class="quiz-opt" data-answer="wrong2">Hur bra du är på att kommunicera</div>
-    </div>
-    <div class="quiz-feedback" id="quizFeedbackCorrect">
-      <p class="intro-text" style="color: #c8b89a;">Precis! Vi kartlägger mönster i hur du kommunicerar — inte vem du är.</p>
-    </div>
-    <div class="quiz-feedback" id="quizFeedbackWrong">
-      <p class="intro-text" style="color: var(--red);">Inte riktigt! Vi mäter inte personlighet eller skicklighet — utan de språkliga mönster du använder. Prova igen!</p>
-    </div>
-    <button class="btn-primary" id="btnStep5" disabled style="display:none;">Nästa</button>
-  </div>
-</div>
+    <h1>Dina svar är klara</h1><!-- PLATSHALLARE_COPY -->
+    <p class="sub">Fyll i namn och e-post så visar vi ditt resultat.</p><!-- PLATSHALLARE_COPY -->
 
-<!-- STEG 4 — SITUATION -->
-<div class="page" id="step6">
-  <div class="wrap">
-    <div class="eyebrow">DIN KONTEXT</div>
-    <h1>Berätta kort om din situation</h1>
-    <p class="intro-text" style="color:var(--muted);font-size:14px;">Vad är det som gör att du vill förstå din kommunikation just nu?</p>
-    <div class="field-group">
-      <textarea id="situationText" style="min-height:80px;" placeholder="T.ex. ska börja nytt jobb, vill förstå hur jag kommunicerar i min ledningsgrupp, förbereder en viktig förhandling, vill bli en bättre lyssnare..."></textarea>
-    </div>
-    <button class="btn-primary" id="btnStep6">Nästa →</button>
-  </div>
-</div>
+    <div id="errorMsg" class="error-msg"></div>
 
-<!-- STEG 5 — NAMN OCH E-POST -->
-<div class="page" id="step7">
-  <div class="wrap">
-    <div class="eyebrow">DINA UPPGIFTER</div>
-    <h1>Vad heter du och hur når vi dig?</h1>
     <div class="field-group">
       <label for="firstName">Förnamn</label>
       <input type="text" id="firstName" placeholder="Ditt förnamn" autocomplete="given-name">
@@ -878,199 +578,100 @@
       <label for="email">E-postadress</label>
       <input type="email" id="email" placeholder="namn@exempel.se" autocomplete="email">
     </div>
-    <label style="display:flex; align-items:flex-start; gap:8px; margin-top:16px; cursor:pointer;">
-      <input type="checkbox" id="nyhetsbrev-opt" style="margin-top:3px; accent-color:#f0ede6;">
-      <span style="font-size:0.8rem; color:rgba(240,237,230,0.55); line-height:1.5;">Intresserad av ledarskap — trender, tips och verktyg? Få vårt nyhetsbrev.</span>
-    </label>
-    <p class="consent-text">Din e-postadress används för att leverera din rapport. Vi delar inte din information med tredje part.</p>
-    <button class="btn-primary" id="btnStep7" disabled>Starta frågorna</button>
+
+    <div class="consent-area">
+      <label class="cb-row">
+        <input type="checkbox" id="consent-cb">
+        <span>Jag samtycker till att mina svar sparas enligt <a href="/integritetspolicy.html">integritetspolicyn</a>.</span>
+      </label>
+      <label class="cb-row">
+        <input type="checkbox" id="nyhetsbrev-opt">
+        <span>Intresserad av ledarskap? Få vårt nyhetsbrev med trender, tips och verktyg.</span>
+      </label>
+    </div>
+
+    <button class="btn-primary" id="btnShowResult" disabled>Visa mitt resultat</button>
   </div>
 </div>
 
-<!-- STEG — INNAN DU BÖRJAR -->
-<div class="page" id="step8">
+<!-- ══════════════════════════════════════════════
+     STEP 6 — RESULTAT
+     ══════════════════════════════════════════════ -->
+<div class="page" id="step6">
   <div class="wrap">
-    <div class="eyebrow">DU ÄR REDO</div>
-    <h1>Innan du börjar</h1>
-    <p class="subtitle">Så här fungerar frågorna</p>
-    <div class="info-blocks">
-      <div class="info-block">
-        <div class="info-block-title">Språkmönstersorterande frågor</div>
-        <div class="info-block-text">Varje fråga är noggrant formulerad för att synliggöra ett specifikt kommunikationsmönster. Det är inte vad du svarar som analyseras — det är hur du svarar.</div>
+    <div class="result-eyebrow">DITT RESULTAT</div>
+    <h1 class="result-h1" id="resultTitle"></h1>
+    <div class="result-score" id="resultScore"></div>
+
+    <div class="result-card">
+      <div id="resultText"></div>
+      <div class="reservation-box">
+        Fyra frågor ger en indikation — inte en slutsats. Dina mönster kan se annorlunda ut i andra sammanhang. Du är inte dina mönster.
       </div>
-      <div class="info-block">
-        <div class="info-block-title">Svara spontant</div>
-        <div class="info-block-text">Din första tanke är den mest autentiska. Övertänkta svar ger en mindre träffsäker profil. Skriv det som kommer naturligt — inte det du tror att du borde svara.</div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-title">Inga bättre eller sämre mönster</div>
-        <div class="info-block-text">Alla kommunikationsmönster är lika värdefulla i rätt sammanhang. Det finns inget rätt svar. Det finns bara ditt svar.</div>
-      </div>
     </div>
-    <button class="btn-primary" id="btnStep8">Jag förstår — starta frågorna →</button>
-  </div>
-</div>
 
-<!-- STEG 6 — FRÅGA 1 -->
-<div class="page" id="step9">
-  <div class="wrap">
-    <div class="q-number">MOTIVATIONSRIKTNING · FRÅGA 1 AV 5</div>
-    <div class="q-text">Vad är viktigt för dig i ditt arbete?</div>
-    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Ju mer du beskriver, desto mer träffsäker blir analysen.<br>Skriv gärna 3–5 meningar.</p>
-    <div class="field-group">
-      <textarea id="a1" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch1">0 / 50 tecken</div>
+    <div class="cta-section">
+      <h3>Din fullständiga språkprofil</h3><!-- PLATSHALLARE_COPY -->
+      <p>Sju dimensioner, personlig analys, konkreta insikter om hur du kommunicerar i ledarskap, konflikt och förhandling.</p><!-- PLATSHALLARE_COPY -->
+      <button class="btn-primary" id="btnBuyProfile">Se hela profilen</button>
+      <div style="margin-top:12px;"><span id="profilePrice"></span></div><!-- PLATSHALLARE_COPY: pris hämtas vid rendering, aldrig hårdkodat -->
     </div>
-    <button class="btn-primary btn-next" data-q="1" disabled>Nästa</button>
-  </div>
-</div>
-
-<!-- STEG 7 — FRÅGA 2 -->
-<div class="page" id="step10">
-  <div class="wrap">
-    <div class="q-number">BESLUTSRAM · FRÅGA 2 AV 5</div>
-    <div class="q-text">Hur vet du att du har gjort ett bra jobb?</div>
-    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Svara spontant utifrån din första känsla.<br>Det finns inget rätt svar.</p>
-    <div class="field-group">
-      <textarea id="a2" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch2">0 / 50 tecken</div>
-    </div>
-    <button class="btn-primary btn-next" data-q="2" disabled>Nästa</button>
-  </div>
-</div>
-
-<!-- STEG 8 — FRÅGA 3 -->
-<div class="page" id="step11">
-  <div class="wrap">
-    <div class="q-number">SINNESKANAL · FRÅGA 3 AV 5</div>
-    <div class="q-text">Hur vet du att någon annan har gjort ett bra jobb?</div>
-    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv konkret — vad ser, hör eller märker du?</p>
-    <div class="field-group">
-      <textarea id="a3" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch3">0 / 50 tecken</div>
-    </div>
-    <button class="btn-primary btn-next" data-q="3" disabled>Nästa</button>
-  </div>
-</div>
-
-<!-- STEG 9 — FRÅGA 4 -->
-<div class="page" id="step12">
-  <div class="wrap">
-    <div class="q-number">FÖRSTÅELSE · FRÅGA 4 AV 5</div>
-    <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
-    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Tänk på vad som faktiskt fick dig att tacka ja —<br>inte vad som låter bra.</p>
-    <div class="field-group">
-      <textarea id="a4" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch4">0 / 50 tecken</div>
-    </div>
-    <button class="btn-primary btn-next" data-q="4" disabled>Nästa</button>
-  </div>
-</div>
-
-<!-- STEG 10 — FRÅGA 5 -->
-<div class="page" id="step13">
-  <div class="wrap">
-    <div class="q-number">FÖRÄNDRINGSRELATION · FRÅGA 5 AV 5</div>
-    <div class="q-text">Vad är relationen mellan ditt nuvarande arbete och ditt förra?</div>
-    <p style="font-size:13px;color:#888;line-height:1.5;margin-bottom:24px;">Beskriv likheter, skillnader eller hur de hänger ihop —<br>det finns inget rätt svar här.</p>
-    <div class="field-group">
-      <textarea id="a5" placeholder="Skriv fritt..."></textarea>
-      <div class="char-hint" id="ch5">0 / 50 tecken</div>
-    </div>
-    <button class="btn-primary btn-next" data-q="5" disabled>Nästa</button>
-  </div>
-</div>
-
-<!-- STEG 11 — ORDKLICK -->
-<div class="page" id="step14">
-  <div class="wrap">
-    <div class="eyebrow">ORDVAL · SISTA STEGET</div>
-    <h1>Ett sista steg</h1>
-    <p class="intro-text">Välj de 5 ord som känns mest relevanta för dig i din valda situation just nu.</p>
-    <div class="chips-grid" id="chipsGrid"></div>
-    <div class="chips-count" id="chipsCount">0 av 5 valda</div>
-    <button class="btn-primary" id="btnSubmit" disabled>Skicka</button>
-  </div>
-</div>
-
-<!-- STEG 12 — TACK -->
-<div class="page" id="step15">
-  <div class="wrap">
-    <div class="eyebrow">KLART</div>
-    <h1 id="thankTitle">Tack!</h1>
-    <p class="intro-text">Vi har tagit emot dina svar och skickat en bekräftelse till din e-post. Du hör från oss inom 2 arbetsdagar.</p>
 
     <!-- Möt Alexander -->
-    <div style="margin-top:56px;display:flex;gap:32px;align-items:flex-start;">
-      <img src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/1773570214333-W5TL1UKXZN45GNZ4AJNX/PRESS_Alexander.holmberg_FOTO_Peter.Knutson.jpg" alt="Alexander Holmberg" style="width:120px;height:120px;object-fit:cover;border-radius:50%;flex-shrink:0;">
+    <div class="alexander-section">
+      <img src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/1773570214333-W5TL1UKXZN45GNZ4AJNX/PRESS_Alexander.holmberg_FOTO_Peter.Knutson.jpg" alt="Alexander Holmberg">
       <div>
-        <h3 style="font-family:'Crimson Pro',Georgia,serif;font-size:22px;font-weight:300;color:#f0ede6;margin:0 0 16px;line-height:1.3;letter-spacing:-0.02em;">Jag hör mönster innan jag hör åsikter.</h3>
-        <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:rgba(240,237,230,0.7);line-height:1.65;margin:0 0 8px;">Det är en yrkesskada efter 21 år som coach och utbildare. Orden människor väljer avslöjar hur de tänker — inte vad de tycker. Det är därför kommunikation inte är ett verktyg för ledarskap. Det är ledarskapet.</p>
-        <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:rgba(240,237,230,0.7);line-height:1.65;margin:0 0 24px;">Vill du prata mönster, ledarskap, eller se vad det här gör för din organisation — boka ett möte med oss.</p>
-        <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
-          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" style="display:inline-block;background:#f0ede6;color:#0c0c0b;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:16px 36px;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#f0ede6'">Boka ett möte →</a>
-          <a href="https://www.holmbergfriends.com?utm_source=sml" target="_blank" style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:14px;color:rgba(240,237,230,0.5);text-decoration:none;" onmouseover="this.style.color='#f0ede6'" onmouseout="this.style.color='rgba(240,237,230,0.5)'">Till holmbergfriends.com</a>
+        <h3>Jag hör mönster innan jag hör åsikter.</h3>
+        <p>Det är en yrkesskada efter 21 år som coach och utbildare. Orden människor väljer avslöjar hur de tänker — inte vad de tycker. Det är därför kommunikation inte är ett verktyg för ledarskap. Det är ledarskapet.</p>
+        <p>Vill du prata mönster, ledarskap, eller se vad det här gör för din organisation — boka ett möte med oss.</p>
+        <div class="alexander-links">
+          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 28px;">Boka ett möte</a>
+          <a href="https://www.holmbergfriends.com?utm_source=sml" target="_blank" class="btn-link">Till holmbergfriends.com</a>
         </div>
       </div>
     </div>
+
+    <!-- Talanalyser teaser -->
+    <a href="/artiklar.html" class="teaser-link">
+      <span class="teaser-eyebrow">Språkmönsterlabbet</span>
+      <h3>Talanalyser — kända svenska tal i fem mönster</h3>
+      <p>Palme, Schyman, Carl XVI Gustaf — varje citat ordagrant verifierat mot källtexten.</p>
+      <span class="teaser-arrow">Se analyserna &rarr;</span>
+    </a>
+
+    <footer class="site-footer">Ett verktyg från <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:14px;opacity:0.6;"></footer>
   </div>
 </div>
 
-<!-- TEASER: Talanalyser -->
-<div id="teaser-talanalyser" style="max-width:640px;margin:40px auto;padding:0 24px;">
-  <a href="/artiklar.html" style="display:block;border:1px solid rgba(240,237,230,0.2);padding:24px 28px;text-decoration:none;color:inherit;transition:border-color 0.2s;">
-    <span style="font-size:11px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:rgba(240,237,230,0.4);">Språkmönsterlabbet</span>
-    <h3 style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:20px;font-weight:500;color:#f0ede6;margin:6px 0 8px;letter-spacing:-0.01em;">Talanalyser — kända svenska tal i fem mönster</h3>
-    <p style="font-size:14px;color:rgba(240,237,230,0.55);line-height:1.55;margin:0 0 8px;">Palme, Schyman, Carl XVI Gustaf — varje citat ordagrant verifierat mot källtexten.</p>
-    <span style="font-size:13px;font-weight:500;color:#FFA047;">Se analyserna →</span>
-  </a>
-</div>
-
-<div id="cta-dcl" style="max-width:640px;margin:48px auto;padding:0 24px;">
-  <div style="border:1px solid #FFA047;border-radius:0 10px 0 10px;padding:32px 28px;">
-    <h3 style="font-family:'Crimson Pro',Georgia,serif;font-size:22px;font-weight:300;color:#f0ede6;margin:0 0 12px;letter-spacing:-0.02em;line-height:1.3;">Du har just sett dina egna mönster.</h3>
-    <p style="font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:15px;color:rgba(240,237,230,0.7);line-height:1.6;margin:0 0 24px;">Nästa steg är att höra andras. På Coachande ledarskap lär du dig läsa språkmönster i realtid — i samtal, i möten, i ledarskap.</p>
-    <a href="https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-profil" target="_blank" style="display:inline-block;background:#f0ede6;color:#0c0c0b;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:16px 36px;border-radius:0;text-decoration:none;transition:background 0.15s;" onmouseover="this.style.background='#fff'" onmouseout="this.style.background='#f0ede6'">Se utbildningen →</a>
+<!-- ORDVAL — bevarad för betalflödet, används inte i gratisflödet -->
+<!--
+<div id="ordval-step" style="display:none;">
+  <div class="wrap">
+    <div class="eyebrow">ORDVAL</div>
+    <h1>Välj de ord som känns mest relevanta</h1>
+    <div class="chips-grid" id="chipsGrid"></div>
+    <div class="chips-count" id="chipsCount">0 av 5 valda</div>
+    <button class="btn-primary" id="btnSubmitWords" disabled>Skicka</button>
   </div>
 </div>
-
-<footer class="site-footer" style="display:flex;align-items:center;justify-content:center;gap:8px;">Ett verktyg från <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:14px;opacity:0.5;"></footer>
+-->
 
 <script>
 (function() {
+  'use strict';
+
   var API = 'https://sprakmonsterlabbet.holmbergfriends.com';
   var LEAD_URL = 'https://deep-thought.holmbergfriends.com/api/lead';
-  var TOTAL = 16; // step 0–15
-  var ONBOARDING_STEPS = 9; // steps 0–8
 
-  // UTM-persistence
+  // ── UTM PERSISTENCE ──
   (function() {
     var p = new URLSearchParams(window.location.search);
     ['utm_source','utm_medium','utm_campaign'].forEach(function(k) {
       if (p.get(k)) sessionStorage.setItem('sml_' + k, p.get(k));
     });
   })();
-  function getUtm() {
-    return {
-      utm_source: sessionStorage.getItem('sml_utm_source') || 'sml',
-      utm_medium: sessionStorage.getItem('sml_utm_medium') || 'organic',
-      utm_campaign: sessionStorage.getItem('sml_utm_campaign') || 'sml-profil'
-    };
-  }
 
-  // Gift token — om länken innehåller ?gift_token=xxx sparas det för submit
-  var urlParams = new URLSearchParams(window.location.search);
-  var giftToken = urlParams.get('gift_token') || sessionStorage.getItem('sml_gift_token') || '';
-  if (giftToken) {
-    sessionStorage.setItem('sml_gift_token', giftToken);
-  }
-
-  var current = 0;
-  var times = {};
-  var qStart = null;
-  var selectedWords = [];
-  var selectedSituation = '';
-
+  // ── ORDVAL (bevarad för betalflödet) ──
   var WORDS = [
     { ord: 'Resultat', dimension: 'motivationsriktning', pol: 'Till' },
     { ord: 'Möjligheter', dimension: 'motivationsriktning', pol: 'Till' },
@@ -1096,339 +697,194 @@
     { ord: 'Noggrannhet', dimension: 'detaljnivå', pol: 'Detalj' }
   ];
 
-  // Fisher-Yates shuffle
-  function shuffle(arr) {
-    for (var i = arr.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-    }
-    return arr;
-  }
+  // ── PEDAGOGICAL TEXTS ──
+  var FORSTAELSE_PROCEDUR_TEXT = '<p>Procedurmönster i kommunikationen innebär att du naturligt söker efter den rätta vägen. Det finns en logik, en ordning, ett sätt att göra saker som fungerar — och när du hittat det vill du följa det. Det ger trygghet, effektivitet och reproducerbarhet.</p>'
+    + '<p>De vars kommunikation signalerar ett procedurmönster är ofta de som får saker att faktiskt hända — de som tar en komplex process och gör den hanterbar, repeterbar och skalbar. De är ovärderliga i miljöer där kvalitet, säkerhet eller konsistens är kritiskt. Men de kan ibland uppleva kommunikation med alternativmönster som rörig — och bli frustrerade när \u201Cdet sätt vi alltid gjort det på\u201D ifrågasätts utan god anledning.</p>'
+    + '<p>I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation med procedurmönster förklarar naturligt i sekvenser: \u201CFörst gör vi det här, sedan det här, till slut det här.\u201D</p>';
 
-  // Build dot progress indicators
-  var dotContainer = document.getElementById('dotProgress');
-  for (var d = 0; d < ONBOARDING_STEPS; d++) {
-    var dot = document.createElement('div');
-    dot.className = 'dot';
-    dot.setAttribute('data-dot', d);
-    dotContainer.appendChild(dot);
-  }
+  var FORSTAELSE_ALTERNATIV_TEXT = '<p>Alternativmönster i kommunikationen innebär att du naturligt söker efter möjliga vägar. Det finns sällan bara ett sätt — det finns flera, och valet mellan dem är en del av det intressanta. Regler och processer är utgångspunkter, inte slutpunkter.</p>'
+    + '<p>De vars kommunikation signalerar ett alternativmönster är ofta de som hittar lösningar ingen annan tänkt på — de som ser en annan väg när den uppenbara är blockerad. Men de kan ibland upplevas som att de aldrig slutför, att de alltid vill ändra planen, att de inte respekterar strukturer som faktiskt finns av goda skäl.</p>'
+    + '<p>I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation med alternativmönster förklarar naturligt associativt: \u201CDet här hänger ihop med det här, och det påminner mig om det här, och det öppnar upp för det här.\u201D</p>';
 
-  function updateDots(step) {
-    var dots = dotContainer.querySelectorAll('.dot');
-    for (var i = 0; i < dots.length; i++) {
-      dots[i].className = 'dot';
-      if (i < step) dots[i].classList.add('done');
-      if (i === step) dots[i].classList.add('active');
-    }
-  }
+  var FORSTAELSE_MIXED_TEXT = '<p>Det vi tittar på här är inte hur du tänker — det är hur ditt tänkande kommuniceras. Strukturerat eller associativt. Steg för steg eller möjlighet för möjlighet.</p>'
+    + '<p>Dina svar visar en jämn fördelning mellan Procedur och Alternativ. Det kan betyda att du rör dig flexibelt mellan de två — eller att kontexten avgör. Fyra frågor ger en indikation, inte en slutsats.</p>';
 
+  // ── STATE ──
+  var answers = []; // [{fraga: N, svar: 'Procedur'|'Alternativ'}, ...]
+  var current = 0;
+
+  // ── NAVIGATION ──
   function show(step) {
     var pages = document.querySelectorAll('.page');
     for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
-    document.getElementById('step' + step).classList.add('active');
+    var target = document.getElementById('step' + step);
+    if (target) target.classList.add('active');
     current = step;
-
-    // Dölja global nav, dots och progress-bar på step0 (hero)
-    var globalNav = document.querySelector('nav');
-    var progressBar = document.querySelector('.progress-bar');
-    if (step === 0) {
-      if (globalNav) globalNav.style.display = 'none';
-      dotContainer.style.display = 'none';
-      if (progressBar) progressBar.style.display = 'none';
-    } else {
-      if (globalNav) globalNav.style.display = '';
-      if (progressBar) progressBar.style.display = '';
-    }
-
-    // Dot progress for onboarding (steps 1–7)
-    if (step > 0 && step < ONBOARDING_STEPS) {
-      dotContainer.style.display = 'flex';
-      updateDots(step);
-      document.getElementById('progressFill').style.width = '0%';
-    } else if (step >= ONBOARDING_STEPS) {
-      dotContainer.style.display = 'none';
-    }
-
-    // Progress bar for question steps (9–14)
-    if (step >= 9 && step <= 14) {
-      var qProgress = ((step - 9) / 6) * 100;
-      document.getElementById('progressFill').style.width = qProgress + '%';
-    }
-    if (step === 15) {
-      document.getElementById('progressFill').style.width = '100%';
-    }
-
-    // Nav step text
-    var nav = document.getElementById('navStep');
-    var navLabels = { 9: 'Motivation', 10: 'Beslut', 11: 'Sinneskanal', 12: 'Förståelse', 13: 'Förändring', 14: 'Ordval' };
-    nav.textContent = navLabels[step] || '';
-
-    // Start timer for question steps (9–13)
-    if (step >= 9 && step <= 13) {
-      qStart = Date.now();
-    }
-
     window.scrollTo(0, 0);
   }
 
-  // --- Step 0: Welcome ---
-  document.getElementById('btnStep0').addEventListener('click', function() {
-    show(1);
+  // ── STEP 0: START BUTTONS ──
+  function onStart() {
     try { smlBeacon('sml_start_klick'); } catch(e) {}
-  });
-
-  // --- Step 1 (1a): Identity ---
-  document.getElementById('btnStep1').addEventListener('click', function() {
-    show(2);
-    try { smlBeacon('sml_intro_steg', {steg: 1}); } catch(e) {}
-  });
-
-  // --- Step 2 (1b): Behavior ---
-  document.getElementById('btnStep2').addEventListener('click', function() {
-    show(3);
-    try { smlBeacon('sml_intro_steg', {steg: 2}); } catch(e) {}
-  });
-
-  // --- Step 3 (1c): Communication ---
-  document.getElementById('btnStep3').addEventListener('click', function() {
-    show(4);
-    try { smlBeacon('sml_intro_steg', {steg: 3}); } catch(e) {}
-  });
-
-  // --- Step 4: Checkboxes ---
-  var checkboxes = document.querySelectorAll('.consent-cb');
-  var btnStep4 = document.getElementById('btnStep4');
-
-  function checkConsent() {
-    var allChecked = true;
-    for (var i = 0; i < checkboxes.length; i++) {
-      if (!checkboxes[i].checked) { allChecked = false; break; }
-    }
-    btnStep4.disabled = !allChecked;
+    show(1);
   }
-  for (var c = 0; c < checkboxes.length; c++) {
-    checkboxes[c].addEventListener('change', checkConsent);
-  }
-  btnStep4.addEventListener('click', function() {
-    if (!btnStep4.disabled) {
-      show(5);
-      try { smlBeacon('sml_intro_steg', {steg: 4}); } catch(e) {}
-    }
-  });
+  document.getElementById('btnStart').addEventListener('click', onStart);
+  document.getElementById('btnStart2').addEventListener('click', onStart);
 
-  // --- Step 5: Quiz ---
-  var quizAnswered = false;
-  var quizOpts = document.querySelectorAll('#quizOptions .quiz-opt');
+  // ── STEPS 1-4: CHOICE CARDS ──
+  var allCards = document.querySelectorAll('.choice-card');
+  for (var ci = 0; ci < allCards.length; ci++) {
+    (function(card) {
+      card.addEventListener('click', function() {
+        var fraga = parseInt(card.getAttribute('data-fraga'), 10);
+        var svar = card.getAttribute('data-svar');
 
-  for (var qi = 0; qi < quizOpts.length; qi++) {
-    (function(opt) {
-      opt.addEventListener('click', function() {
-        if (quizAnswered) return;
-        var answer = opt.getAttribute('data-answer');
-
-        if (answer === 'correct') {
-          quizAnswered = true;
-          opt.classList.add('correct');
-          for (var j = 0; j < quizOpts.length; j++) {
-            if (quizOpts[j] !== opt) quizOpts[j].classList.add('disabled');
-          }
-          document.getElementById('quizFeedbackCorrect').classList.add('visible');
-          document.getElementById('quizFeedbackWrong').classList.remove('visible');
-          var btnQ = document.getElementById('btnStep5');
-          btnQ.disabled = false;
-          btnQ.style.display = '';
-        } else {
-          opt.classList.add('wrong');
-          document.getElementById('quizFeedbackWrong').classList.add('visible');
-          document.getElementById('quizFeedbackCorrect').classList.remove('visible');
-          setTimeout(function() { opt.classList.remove('wrong'); }, 1500);
+        // Prevent re-answering
+        for (var a = 0; a < answers.length; a++) {
+          if (answers[a].fraga === fraga) return;
         }
+
+        // Visual selection
+        var siblings = card.parentElement.querySelectorAll('.choice-card');
+        for (var s = 0; s < siblings.length; s++) siblings[s].classList.remove('selected');
+        card.classList.add('selected');
+
+        // Store answer
+        answers.push({ fraga: fraga, svar: svar });
+
+        try { smlBeacon('sml_fraga_besvarad', { fraga: fraga }); } catch(e) {}
+
+        // Auto-advance after 300ms
+        setTimeout(function() {
+          if (fraga < 4) {
+            show(fraga + 1);
+          } else {
+            // All questions done, show email step
+            try { smlBeacon('sml_epost_efterfragad'); } catch(e) {}
+            show(5);
+          }
+        }, 300);
       });
-    })(quizOpts[qi]);
+    })(allCards[ci]);
   }
 
-  document.getElementById('btnStep5').addEventListener('click', function() {
-    show(6);
-    try { smlBeacon('sml_intro_steg', {steg: 5}); } catch(e) {}
-  });
-
-  // --- Step 6: Situation (fritext) ---
-  var btnStep6 = document.getElementById('btnStep6');
-  var situationTextEl = document.getElementById('situationText');
-
-  btnStep6.addEventListener('click', function() {
-    selectedSituation = situationTextEl.value.trim();
-    show(7);
-    try { smlBeacon('sml_epost_efterfragad'); } catch(e) {}
-  });
-
-  // --- Step 7: Name + email ---
+  // ── STEP 5: EMAIL VALIDATION ──
   var nameEl = document.getElementById('firstName');
   var emailEl = document.getElementById('email');
-  var btnStep7 = document.getElementById('btnStep7');
+  var consentEl = document.getElementById('consent-cb');
+  var btnResult = document.getElementById('btnShowResult');
 
-  function checkStep7() {
+  function checkStep5() {
     var nameOk = nameEl.value.trim().length > 0;
     var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
-    btnStep7.disabled = !(nameOk && emailOk);
+    var consentOk = consentEl.checked;
+    btnResult.disabled = !(nameOk && emailOk && consentOk);
   }
-  nameEl.addEventListener('input', checkStep7);
-  emailEl.addEventListener('input', checkStep7);
+  nameEl.addEventListener('input', checkStep5);
+  emailEl.addEventListener('input', checkStep5);
+  consentEl.addEventListener('change', checkStep5);
 
-  btnStep7.addEventListener('click', function() {
-    if (!btnStep7.disabled) {
-      show(8);
-      try { smlBeacon('sml_epost_angiven'); } catch(e) {}
-    }
-  });
+  // ── SUBMIT ──
+  btnResult.addEventListener('click', function() {
+    if (btnResult.disabled) return;
 
-  // --- Step 8: Before questions ---
-  document.getElementById('btnStep8').addEventListener('click', function() {
-    show(9);
-  });
+    var firstName = nameEl.value.trim();
+    var email = emailEl.value.trim();
+    var nyhetsbrevChecked = document.getElementById('nyhetsbrev-opt').checked;
 
-  // --- Steps 9–13: Question validation + next ---
-  var MIN_TECKEN = 50;
-  var minChars = { 1: MIN_TECKEN, 2: MIN_TECKEN, 3: MIN_TECKEN, 4: MIN_TECKEN, 5: MIN_TECKEN };
-  for (var q = 1; q <= 5; q++) {
-    (function(num) {
-      var ta = document.getElementById('a' + num);
-      var hint = document.getElementById('ch' + num);
-      var btn = document.querySelector('.btn-next[data-q="' + num + '"]');
-      var req = minChars[num];
+    // Hide previous errors
+    var errEl = document.getElementById('errorMsg');
+    errEl.classList.remove('visible');
 
-      ta.addEventListener('input', function() {
-        var len = ta.value.trim().length;
-        hint.textContent = len + ' / ' + req + ' tecken';
-        hint.classList.toggle('ok', len >= req);
-        btn.disabled = len < req;
-      });
+    // Disable button
+    btnResult.disabled = true;
+    btnResult.innerHTML = '<span class="spinner"></span> Skickar...';
 
-      btn.addEventListener('click', function() {
-        if (btn.disabled) return;
-        if (qStart) {
-          times['q' + num] = Date.now() - qStart;
-        }
-        try { smlBeacon('sml_fraga_besvarad', {fraga: num}); } catch(e) {}
-        if (num < 5) {
-          show(num + 9);
-        } else {
-          show(14);
-        }
-      });
-    })(q);
-  }
-
-  // --- Step 14: Word chips ---
-  var grid = document.getElementById('chipsGrid');
-  var shuffled = shuffle(WORDS.slice());
-
-  for (var w = 0; w < shuffled.length; w++) {
-    (function(wordObj) {
-      var chip = document.createElement('button');
-      chip.className = 'chip';
-      chip.type = 'button';
-      chip.textContent = wordObj.ord;
-
-      chip.addEventListener('click', function() {
-        if (chip.classList.contains('dimmed')) return;
-
-        var idx = -1;
-        for (var si = 0; si < selectedWords.length; si++) {
-          if (selectedWords[si].ord === wordObj.ord) { idx = si; break; }
-        }
-        if (idx > -1) {
-          selectedWords.splice(idx, 1);
-          chip.classList.remove('selected');
-        } else if (selectedWords.length < 5) {
-          selectedWords.push(wordObj);
-          chip.classList.add('selected');
-        }
-
-        var all = grid.querySelectorAll('.chip');
-        for (var cc = 0; cc < all.length; cc++) {
-          if (selectedWords.length >= 5) {
-            if (!all[cc].classList.contains('selected')) all[cc].classList.add('dimmed');
-          } else {
-            all[cc].classList.remove('dimmed');
-          }
-        }
-
-        document.getElementById('chipsCount').textContent = selectedWords.length + ' av 5 valda';
-        document.getElementById('btnSubmit').disabled = selectedWords.length !== 5;
-      });
-
-      grid.appendChild(chip);
-    })(shuffled[w]);
-  }
-
-  // --- Submit ---
-  var btnSubmit = document.getElementById('btnSubmit');
-  btnSubmit.addEventListener('click', function() {
-    if (btnSubmit.disabled) return;
-    try { smlBeacon('sml_profil_klar'); } catch(e) {}
-    btnSubmit.disabled = true;
-    btnSubmit.innerHTML = '<span class="spinner"></span> Sparar dina svar...';
+    try { smlBeacon('sml_epost_angiven'); } catch(e) {}
 
     var payload = {
-      first_name: nameEl.value.trim(),
-      email: emailEl.value.trim(),
-      context: selectedSituation || 'Arbete',
-      situation: selectedSituation || 'Arbete',
-      answers: {
-        q1: document.getElementById('a1').value.trim(),
-        q2: document.getElementById('a2').value.trim(),
-        q3: document.getElementById('a3').value.trim(),
-        q4: document.getElementById('a4').value.trim(),
-        q5: document.getElementById('a5').value.trim()
-      },
-      word_clicks: selectedWords.map(function(w) { return w.ord; }),
-      word_data: selectedWords.map(function(w) { return { ord: w.ord, dimension: w.dimension, pol: w.pol }; }),
-      response_times_ms: times
+      flow: 'free',
+      first_name: firstName,
+      email: email,
+      nyhetsbrev_opt: nyhetsbrevChecked,
+      free_answers: answers
     };
 
-    if (giftToken) {
-      payload.gift_token = giftToken;
-    }
-
-    fetch(API + '/api/profile/submit', {
+    fetch(API + '/api/profile/submit-free', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     })
-    .then(function(res) { return res.json().then(function(d) { return { ok: res.ok, data: d }; }); })
+    .then(function(res) {
+      return res.json().then(function(d) { return { ok: res.ok, data: d }; });
+    })
     .then(function(r) {
       if (!r.ok) throw new Error(r.data.error || 'Okänt fel');
-      document.getElementById('thankTitle').textContent = 'Tack, ' + payload.first_name + '!';
-      show(15);
 
-      // Fire-and-forget lead POST till deep-thought
+      // Calculate result client-side
+      renderResult();
+      show(6);
+      try { smlBeacon('sml_monster_visat'); } catch(e) {}
+
+      // Fire-and-forget lead POST
       try {
-        var utm = getUtm();
-        var nyhetsbrevOpt = document.getElementById('nyhetsbrev-opt')?.checked || false;
         fetch(LEAD_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             action: 'skapa',
-            epost: payload.email,
-            namn: payload.first_name,
+            epost: email,
+            namn: firstName,
             kalla: 'sml',
-            anteckning: 'Profilflöde — onboarding slutförd',
-            utm_source: utm.utm_source,
-            utm_medium: utm.utm_medium,
-            utm_campaign: utm.utm_campaign,
-            nyhetsbrev_opt: nyhetsbrevOpt
+            anteckning: 'Gratis språkprofil — förståelse',
+            utm_source: sessionStorage.getItem('sml_utm_source') || 'sml',
+            utm_medium: sessionStorage.getItem('sml_utm_medium') || 'organic',
+            utm_campaign: sessionStorage.getItem('sml_utm_campaign') || 'sml-profil',
+            nyhetsbrev_opt: nyhetsbrevChecked
           })
         }).catch(function() {});
-      } catch (e) { /* lead-POST får aldrig blockera */ }
+      } catch(e) {}
     })
     .catch(function(err) {
-      alert('Något gick fel: ' + err.message);
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = 'Skicka';
+      errEl.textContent = 'Något gick fel: ' + err.message;
+      errEl.classList.add('visible');
+      btnResult.disabled = false;
+      btnResult.textContent = 'Visa mitt resultat';
     });
+  });
+
+  // ── RENDER RESULT ──
+  function renderResult() {
+    var procedur = 0;
+    var alternativ = 0;
+    for (var i = 0; i < answers.length; i++) {
+      if (answers[i].svar === 'Procedur') procedur++;
+      else alternativ++;
+    }
+
+    var titleEl = document.getElementById('resultTitle');
+    var scoreEl = document.getElementById('resultScore');
+    var textEl = document.getElementById('resultText');
+
+    if (procedur > alternativ) {
+      titleEl.textContent = 'Dina svar lutar åt Procedur';
+      scoreEl.textContent = procedur + ' av 4 svar åt Procedur';
+      textEl.innerHTML = FORSTAELSE_PROCEDUR_TEXT;
+    } else if (alternativ > procedur) {
+      titleEl.textContent = 'Dina svar lutar åt Alternativ';
+      scoreEl.textContent = alternativ + ' av 4 svar åt Alternativ';
+      textEl.innerHTML = FORSTAELSE_ALTERNATIV_TEXT;
+    } else {
+      titleEl.textContent = 'Lika fördelat';
+      scoreEl.textContent = '2 av 4 svar åt Procedur, 2 av 4 åt Alternativ';
+      textEl.innerHTML = FORSTAELSE_MIXED_TEXT;
+    }
+  }
+
+  // ── BUY PROFILE CTA ──
+  document.getElementById('btnBuyProfile').addEventListener('click', function() {
+    try { smlBeacon('sml_kop_klick'); } catch(e) {}
+    // TODO: Connect to /api/stripe/checkout with profile_id
   });
 
 })();

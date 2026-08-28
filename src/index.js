@@ -8,6 +8,7 @@ import { handleSendAnalysis } from './send_analysis.js';
 import { handleStripeCheckout, handleStripeWebhook } from './stripe.js';
 import { handleFeedback, handleFeedbackReport } from './feedback.js';
 import { handleProfileSubmit } from './profile_submit.js';
+import { handleFreeProfileSubmit } from './profile_submit_free.js';
 import { findUserByRecordId, rateAnalysis } from './airtable.js';
 import { handleReportGenerate, handleGetReport, handleReportByProfile } from './report_generate.js';
 import { handleAnalyseTal } from './analyse_tal.js';
@@ -195,6 +196,12 @@ export default {
     // ── /api/gratis-rapport ──────────────────────────────────────
     if (path === '/api/gratis-rapport' && method === 'GET') {
       const result = await handleGratisRapport(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/profile/submit-free ────────────────────────────────
+    if (path === '/api/profile/submit-free' && method === 'POST') {
+      const result = await handleFreeProfileSubmit(request, env);
       return reply(result.body, result.status);
     }
 
