@@ -64,7 +64,7 @@ export async function handleProfileSubmit(request, env, ctx) {
     // Skicka bekräftelsemail
     try {
       if (env.MAIL_PAUSAT === 'true') {
-        console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Dina svar är mottagna — din språkmönsterprofil');
+        console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Dina svar är mottagna — din språkprofil');
       } else {
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -75,8 +75,8 @@ export async function handleProfileSubmit(request, env, ctx) {
         body: JSON.stringify({
           from: 'holmberg & friends <friends@holmbergfriends.com>',
           to: email,
-          subject: 'Dina svar är mottagna — din språkmönsterprofil',
-          html: `<p>Hej ${first_name},</p><p>Tack för att du fyllt i din språkmönsterprofil. Vi analyserar dina svar och återkommer inom 2 arbetsdagar med din rapport.</p><p>/ holmberg & friends</p>`,
+          subject: 'Dina svar är mottagna — din språkprofil',
+          html: `<p>Hej ${first_name},</p><p>Tack för att du fyllt i din språkprofil. Vi analyserar dina svar och återkommer inom 2 arbetsdagar med din rapport.</p><p>/ holmberg & friends</p>`,
         }),
       });
       }
@@ -100,7 +100,7 @@ export async function handleProfileSubmit(request, env, ctx) {
         // Skicka mail med länk till gratisrapporten
         const rapportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/gratis-rapport.html?token=${token}`;
         if (env.MAIL_PAUSAT === 'true') {
-          console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkmönsterprofil är klar');
+          console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkprofil är klar');
         } else {
         await fetch('https://api.resend.com/emails', {
           method: 'POST',
@@ -111,8 +111,8 @@ export async function handleProfileSubmit(request, env, ctx) {
           body: JSON.stringify({
             from: 'holmberg & friends <friends@holmbergfriends.com>',
             to: email,
-            subject: 'Din språkmönsterprofil är klar',
-            html: `<p>Hej ${first_name},</p><p>Din språkmönsterprofil är nu klar. Klicka på länken nedan för att se ditt resultat:</p><p><a href="${rapportUrl}">${rapportUrl}</a></p><p>/ holmberg & friends</p>`,
+            subject: 'Din språkprofil är klar',
+            html: `<p>Hej ${first_name},</p><p>Din språkprofil är nu klar. Klicka på länken nedan för att se ditt resultat:</p><p><a href="${rapportUrl}">${rapportUrl}</a></p><p>/ holmberg & friends</p>`,
           }),
         });
         console.log('[handleProfileSubmit] Gratisrapport-mail skickat till:', email);

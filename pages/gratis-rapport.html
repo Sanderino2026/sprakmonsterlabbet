@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Din förståelseprofil — Språkmönsterlabbet</title>
+<title>Din språkprofil — Språkmönsterlabbet</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;900&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap');
 
   :root {
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'DM Sans', sans-serif;
-    --color-primary: #c8b89a;
-    --color-gold: #c8b89a;
-    --color-text: #f0ede6;
-    --color-text-light: rgba(240,237,230,0.5);
-    --color-text-subtle: rgba(240,237,230,0.35);
-    --color-border: rgba(240,237,230,0.08);
-    --color-bg: #0c0c0b;
-    --color-bg-subtle: rgba(240,237,230,0.05);
+    --font-display: 'Crimson Pro', Georgia, serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --color-primary: #FFA047;
+    --color-gold: #FFA047;
+    --color-text: #141210;
+    --color-text-light: rgba(20,18,16,0.5);
+    --color-text-subtle: rgba(20,18,16,0.35);
+    --color-border: rgba(20,18,16,0.08);
+    --color-bg: #FFFFFF;
+    --color-bg-subtle: rgba(20,18,16,0.03);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -44,8 +44,8 @@
     left: 0;
     width: 220px;
     height: 100vh;
-    background: #111110;
-    border-right: 0.5px solid rgba(240,237,230,0.08);
+    background: #F5F5F5;
+    border-right: 0.5px solid rgba(20,18,16,0.08);
     padding: 32px 24px;
     overflow-y: auto;
     z-index: 100;
@@ -58,7 +58,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #c8b89a;
+    color: #FFA047;
     margin-bottom: 20px;
   }
   .gr-sidebar-nav {
@@ -73,14 +73,14 @@
     font-family: var(--font-body);
     font-size: 13px;
     font-weight: 400;
-    color: rgba(240,237,230,0.25);
+    color: rgba(20,18,16,0.25);
     border-left: 2px solid transparent;
     margin-bottom: 2px;
   }
   .gr-nav-item.active {
-    background: rgba(200,184,154,0.1);
-    border-left: 2px solid #c8b89a;
-    color: #f0ede6;
+    background: rgba(255,160,71,0.1);
+    border-left: 2px solid #FFA047;
+    color: #141210;
   }
   .gr-nav-lock {
     font-size: 10px;
@@ -89,27 +89,27 @@
 
   /* SIDEBAR CTA */
   .gr-sidebar-cta {
-    border-top: 0.5px solid rgba(240,237,230,0.08);
+    border-top: 0.5px solid rgba(20,18,16,0.08);
     margin-top: 24px;
     padding-top: 24px;
   }
   .gr-cta-text {
     font-family: var(--font-body);
     font-size: 13px;
-    color: #c8b89a;
+    color: #FFA047;
     margin-bottom: 8px;
   }
   .gr-cta-price {
     font-family: var(--font-display);
     font-size: 32px;
     font-weight: 400;
-    color: #f0ede6;
+    color: #141210;
     margin-bottom: 4px;
   }
   .gr-cta-meta {
     font-family: var(--font-body);
     font-size: 11px;
-    color: rgba(240,237,230,0.35);
+    color: rgba(20,18,16,0.35);
     margin-bottom: 16px;
   }
   .gr-cta-btn {
@@ -120,21 +120,21 @@
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    background: #f0ede6;
-    color: #0c0c0b;
+    background: #141210;
+    color: #FFFFFF;
     border: none;
-    border-radius: 0;
+    border-radius: 0 10px 0 10px;
     padding: 14px 0;
     cursor: pointer;
     transition: background 0.15s;
     text-align: center;
   }
-  .gr-cta-btn:hover { background: #fff; }
-  .gr-cta-btn:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: not-allowed; }
+  .gr-cta-btn:hover { background: #333; }
+  .gr-cta-btn:disabled { background: rgba(20,18,16,0.1); color: rgba(20,18,16,0.3); cursor: not-allowed; }
   .gr-cta-stripe {
     font-family: var(--font-body);
     font-size: 10px;
-    color: rgba(240,237,230,0.25);
+    color: rgba(20,18,16,0.25);
     margin-top: 10px;
     text-align: center;
   }
@@ -142,7 +142,7 @@
   /* MAIN */
   .gr-main {
     margin-left: 220px;
-    background: #0c0c0b;
+    background: #FFFFFF;
     flex: 1;
     min-height: 100vh;
   }
@@ -154,7 +154,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 0.5px solid rgba(240,237,230,0.08);
+    border-bottom: 0.5px solid rgba(20,18,16,0.08);
   }
   .gr-header-brand {
     font-family: var(--font-body);
@@ -162,12 +162,12 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(240,237,230,0.4);
+    color: rgba(20,18,16,0.4);
   }
   .gr-header-meta {
     font-family: var(--font-body);
     font-size: 13px;
-    color: rgba(240,237,230,0.5);
+    color: rgba(20,18,16,0.5);
   }
 
   /* CONTENT */
@@ -211,7 +211,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #c8b89a;
+    color: #FFA047;
     margin-bottom: 16px;
   }
 
@@ -225,7 +225,7 @@
     font-weight: 300;
     letter-spacing: 0.02em;
     line-height: 1.2;
-    color: #f0ede6;
+    color: #141210;
     margin-bottom: 8px;
   }
   .section-divider {
@@ -248,11 +248,11 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(240,237,230,0.35);
+    color: rgba(20,18,16,0.35);
     margin-bottom: 16px;
   }
   .block-om p {
-    color: rgba(240,237,230,0.65);
+    color: rgba(20,18,16,0.65);
     font-weight: 300;
     margin-bottom: 16px;
     line-height: 1.75;
@@ -266,18 +266,18 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: #c8b89a;
+    color: #FFA047;
     margin-top: 48px;
     margin-bottom: 16px;
   }
 
   /* BLOCK B — Resultat */
   .block-resultat {
-    border-left: 1px solid #c8b89a;
+    border-left: 1px solid #FFA047;
     padding-left: 24px;
   }
   .block-resultat p {
-    color: rgba(240,237,230,0.65);
+    color: rgba(20,18,16,0.65);
     font-weight: 300;
     margin-bottom: 16px;
     line-height: 1.75;
@@ -286,11 +286,11 @@
 
   /* Scale viz card */
   .viz-card {
-    border: 0.5px solid rgba(240,237,230,0.1);
-    border-radius: 0;
+    border: 0.5px solid rgba(20,18,16,0.08);
+    border-radius: 0 10px 0 10px;
     padding: 32px 40px;
     margin: 40px 0;
-    background: rgba(240,237,230,0.05);
+    background: rgba(20,18,16,0.03);
   }
   .scale-labels {
     display: flex;
@@ -298,14 +298,14 @@
     font-family: var(--font-body);
     font-size: 11px;
     font-weight: 400;
-    color: rgba(240,237,230,0.5);
+    color: rgba(20,18,16,0.5);
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
   .scale-track {
     position: relative;
     height: 2px;
-    background: rgba(240,237,230,0.15);
+    background: rgba(20,18,16,0.1);
     border-radius: 1px;
     margin: 20px 0 8px;
   }
@@ -314,7 +314,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: #c8b89a;
+    background: #FFA047;
     border-radius: 1px;
   }
   .scale-thumb {
@@ -322,8 +322,8 @@
     top: 50%;
     width: 14px;
     height: 14px;
-    background: #0c0c0b;
-    border: 1.5px solid #c8b89a;
+    background: #FFFFFF;
+    border: 1.5px solid #FFA047;
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
@@ -331,11 +331,11 @@
     text-align: center;
     font-family: var(--font-body);
     font-size: 12px;
-    color: #c8b89a;
+    color: #FFA047;
   }
-  .strength-tydlig { color: #c8b89a; }
-  .strength-trolig { color: #c8b89a; }
-  .strength-mojlig { color: rgba(240,237,230,0.35); }
+  .strength-tydlig { color: #FFA047; }
+  .strength-trolig { color: #FFA047; }
+  .strength-mojlig { color: rgba(20,18,16,0.35); }
 
   /* SELL SECTION (inline in main) */
   .sell-separator {
@@ -349,14 +349,14 @@
     font-weight: 300;
     letter-spacing: 0.02em;
     line-height: 1.3;
-    color: #f0ede6;
+    color: #141210;
     margin-bottom: 24px;
   }
   .sell-text {
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 300;
-    color: rgba(240,237,230,0.65);
+    color: rgba(20,18,16,0.65);
     line-height: 1.8;
     margin-bottom: 40px;
   }
@@ -364,13 +364,13 @@
     font-family: var(--font-display);
     font-size: 36px;
     font-weight: 400;
-    color: #f0ede6;
+    color: #141210;
     margin-bottom: 8px;
   }
   .sell-price-meta {
     font-family: var(--font-body);
     font-size: 12px;
-    color: rgba(240,237,230,0.35);
+    color: rgba(20,18,16,0.35);
     margin-bottom: 32px;
   }
   .sell-btn {
@@ -380,20 +380,20 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    background: #f0ede6;
-    color: #0c0c0b;
+    background: #141210;
+    color: #FFFFFF;
     border: none;
-    border-radius: 0;
+    border-radius: 0 10px 0 10px;
     padding: 16px 40px;
     cursor: pointer;
     transition: background 0.15s;
   }
-  .sell-btn:hover { background: #fff; }
-  .sell-btn:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: default; }
+  .sell-btn:hover { background: #333; }
+  .sell-btn:disabled { background: rgba(20,18,16,0.1); color: rgba(20,18,16,0.3); cursor: default; }
   .sell-stripe-note {
     font-family: var(--font-body);
     font-size: 11px;
-    color: rgba(240,237,230,0.25);
+    color: rgba(20,18,16,0.25);
     margin-top: 16px;
   }
 
@@ -404,7 +404,7 @@
     margin-top: 56px;
     font-family: var(--font-body);
     font-size: 11px;
-    color: rgba(240,237,230,0.25);
+    color: rgba(20,18,16,0.25);
   }
 
   /* MOBILE */
@@ -426,7 +426,7 @@
     .gr-sidebar { display: none !important; }
     .gr-main { margin-left: 0 !important; }
     .sell-separator, .sell-section, .footer { display: none !important; }
-    body { background: white; color: #1a1a1a; }
+    body { background: white; color: #141210; }
   }
 </style>
 </head>
@@ -500,7 +500,7 @@
               wrap.innerHTML = '<div style="text-align:center;padding:80px 24px;">'
                 + '<div class="eyebrow">SPR\u00c5KM\u00d6NSTERLABBET</div>'
                 + '<div class="section-title">Tack f\u00f6r ditt k\u00f6p!</div>'
-                + '<p style="font-size:14px;color:rgba(240,237,230,0.65);line-height:1.8;margin-top:24px;">Din rapport genereras och skickas till din e-post inom n\u00e5gra minuter.</p>'
+                + '<p style="font-size:14px;color:rgba(20,18,16,0.65);line-height:1.8;margin-top:24px;">Din rapport genereras och skickas till din e-post inom n\u00e5gra minuter.</p>'
                 + '<div class="footer">holmberg &amp; friends</div>';
             }
           })
@@ -516,7 +516,7 @@
       wrap.innerHTML = '<div style="text-align:center;padding:80px 24px;">'
         + '<div class="eyebrow">SPR\u00c5KM\u00d6NSTERLABBET</div>'
         + '<div class="section-title">Tack f\u00f6r ditt k\u00f6p!</div>'
-        + '<p style="font-size:14px;color:rgba(240,237,230,0.65);line-height:1.8;margin-top:24px;">Din fullst\u00e4ndiga rapport genereras nu och skickas till din e-post inom n\u00e5gra minuter.</p>'
+        + '<p style="font-size:14px;color:rgba(20,18,16,0.65);line-height:1.8;margin-top:24px;">Din fullst\u00e4ndiga rapport genereras nu och skickas till din e-post inom n\u00e5gra minuter.</p>'
         + '<div class="footer">holmberg &amp; friends</div>';
     }
     return;
@@ -601,7 +601,7 @@
     // SELL SECTION (inline)
     html += '<div class="sell-separator"></div>';
     html += '<div class="sell-section">';
-    html += '<div class="sell-title">Din fullst\u00e4ndiga kommunikationsprofil</div>';
+    html += '<div class="sell-title">Din fullst\u00e4ndiga språkprofil</div>';
     html += '<div class="sell-text">';
     html += 'Det h\u00e4r \u00e4r bara ett av sju kommunikationsm\u00f6nster i din profil. Den fullst\u00e4ndiga rapporten inneh\u00e5ller:<br><br>';
     html += '\u00b7 Motivationsriktning \u2014 vad som driver din kommunikation<br>';
@@ -693,5 +693,6 @@
 
 })();
 </script>
+<script src="/beacon.js"></script>
 </body>
 </html>

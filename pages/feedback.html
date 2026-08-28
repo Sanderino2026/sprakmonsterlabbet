@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Feedback — Språkmönsterlabbet</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
-    font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     background: #ffffff;
-    color: #1a1a1a;
+    color: #141210;
     font-size: 15px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -31,7 +31,7 @@
     margin: 0 auto 24px;
   }
   .intro-title {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Crimson Pro', Georgia, serif;
     font-size: 28px;
     font-weight: 400;
     text-align: center;
@@ -39,7 +39,7 @@
   }
   .intro-text {
     text-align: center;
-    color: #666;
+    color: #8A929E;
     font-size: 15px;
     margin-bottom: 32px;
   }
@@ -50,19 +50,19 @@
     width: 100%;
     max-width: 320px;
     margin: 0 auto;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 500;
-    background: #534AB7;
+    background: #FFA047;
     color: #ffffff;
     border: none;
     padding: 14px 28px;
-    border-radius: 6px;
+    border-radius: 0 10px 0 10px;
     cursor: pointer;
     transition: background 0.15s;
     letter-spacing: 0.02em;
   }
-  .btn-primary:hover { background: #4339a0; }
+  .btn-primary:hover { background: #FFA047; }
   .btn-primary:disabled { background: #ccc; cursor: default; }
 
   /* QUESTIONS */
@@ -70,27 +70,27 @@
     margin-bottom: 36px;
   }
   .question-label {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: 500;
-    color: #1a1a1a;
+    color: #141210;
     margin-bottom: 10px;
   }
   .question-textarea {
     width: 100%;
     min-height: 80px;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     line-height: 1.6;
     border: 1.5px solid #e0e0e0;
-    border-radius: 6px;
+    border-radius: 0 10px 0 10px;
     padding: 12px 14px;
     resize: vertical;
     transition: border-color 0.15s;
   }
   .question-textarea:focus {
     outline: none;
-    border-color: #534AB7;
+    border-color: #FFA047;
   }
 
   /* STARS */
@@ -106,8 +106,8 @@
     user-select: none;
     line-height: 1;
   }
-  .star.active { color: #534AB7; }
-  .star:hover { color: #534AB7; }
+  .star.active { color: #FFA047; }
+  .star:hover { color: #FFA047; }
 
   /* OPTION BUTTONS */
   .option-buttons {
@@ -116,21 +116,21 @@
     flex-wrap: wrap;
   }
   .option-btn {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 13px;
     font-weight: 500;
     padding: 10px 20px;
     border: 1.5px solid #e0e0e0;
     border-radius: 999px;
     background: #ffffff;
-    color: #1a1a1a;
+    color: #141210;
     cursor: pointer;
     transition: all 0.15s;
   }
   .option-btn.selected {
-    background: #534AB7;
+    background: #FFA047;
     color: #ffffff;
-    border-color: #534AB7;
+    border-color: #FFA047;
   }
 
   /* SPINNER */
@@ -145,7 +145,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid #e8e8e8;
-    border-top-color: #534AB7;
+    border-top-color: #FFA047;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin-right: 8px;
@@ -154,7 +154,7 @@
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinner-text {
     font-size: 14px;
-    color: #666;
+    color: #8A929E;
     vertical-align: middle;
   }
 
@@ -166,7 +166,7 @@
     margin: 0 auto 24px;
   }
   .tack-title {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: 'Crimson Pro', Georgia, serif;
     font-size: 28px;
     font-weight: 400;
     text-align: center;
@@ -174,7 +174,7 @@
   }
   .tack-text {
     text-align: center;
-    color: #666;
+    color: #8A929E;
     font-size: 15px;
     margin-bottom: 32px;
   }
@@ -189,7 +189,7 @@
     text-align: center;
     padding: 120px 24px;
     font-size: 18px;
-    color: #666;
+    color: #8A929E;
   }
   .submit-error {
     text-align: center;
@@ -428,5 +428,6 @@
 
 })();
 </script>
+<script src="/beacon.js"></script>
 </body>
 </html>

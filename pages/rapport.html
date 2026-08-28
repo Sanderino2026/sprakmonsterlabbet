@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kommunikationsrapport — Språkmönsterlabbet</title>
+<title>Språkprofil — Språkmönsterlabbet</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap');
 
   :root {
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'DM Sans', sans-serif;
-    --color-primary: #c8b89a;
-    --color-gold: #c8b89a;
-    --color-text: #f0ede6;
-    --color-text-light: rgba(240,237,230,0.5);
-    --color-text-subtle: rgba(240,237,230,0.35);
-    --color-border: rgba(240,237,230,0.08);
-    --color-bg: #0c0c0b;
-    --color-bg-subtle: rgba(240,237,230,0.05);
+    --font-display: 'Crimson Pro', Georgia, serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --color-primary: #FFA047;
+    --color-gold: #FFA047;
+    --color-text: #141210;
+    --color-text-light: rgba(20,18,16,0.5);
+    --color-text-subtle: rgba(20,18,16,0.35);
+    --color-border: rgba(20,18,16,0.08);
+    --color-bg: #FFFFFF;
+    --color-bg-subtle: rgba(20,18,16,0.03);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -101,10 +101,10 @@
     border: none;
     padding: 8px 16px;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: 0 10px 0 10px;
     transition: background 0.2s;
   }
-  .btn-pdf:hover { background: #f0ede6; color: #0c0c0b; }
+  .btn-pdf:hover { background: #141210; color: #FFFFFF; }
 
   /* ═══════════════════════════════════════ */
   /* LAYOUT: SIDEBAR + MAIN                  */
@@ -152,17 +152,17 @@
     border-left: 2px solid transparent;
   }
   .sidebar-item:hover {
-    color: #f0ede6;
+    color: #141210;
     background: var(--color-bg-subtle);
   }
   .sidebar-item.active {
-    color: #f0ede6;
-    border-left-color: #c8b89a;
+    color: #141210;
+    border-left-color: #FFA047;
     font-weight: 500;
-    background: rgba(200,184,154,0.1);
+    background: rgba(255,160,71,0.1);
   }
   .sidebar-item.done {
-    color: rgba(240,237,230,0.5);
+    color: rgba(20,18,16,0.5);
   }
   .sidebar-dot {
     width: 6px;
@@ -219,18 +219,18 @@
     border: 1px solid var(--color-border);
     cursor: pointer;
     padding: 12px 28px;
-    border-radius: 2px;
+    border-radius: 0 10px 0 10px;
     transition: border-color 0.2s, color 0.2s;
   }
-  .nav-btn:hover { border-color: #c8b89a; color: #c8b89a; }
+  .nav-btn:hover { border-color: #FFA047; color: #FFA047; }
   .nav-btn:disabled { opacity: 0; cursor: default; pointer-events: none; }
   .nav-btn-next {
-    color: #0c0c0b;
-    background: #f0ede6;
-    border-color: #f0ede6;
+    color: #FFFFFF;
+    background: #141210;
+    border-color: #141210;
     font-weight: 500;
   }
-  .nav-btn-next:hover { background: #fff; border-color: #fff; color: #0c0c0b; }
+  .nav-btn-next:hover { background: #333; border-color: #333; color: #FFFFFF; }
 
   /* ═══════════════════════════════════════ */
   /* REVEAL BUTTON                           */
@@ -244,15 +244,15 @@
     background: none;
     border: 1px solid var(--color-primary);
     padding: 10px 24px;
-    border-radius: 2px;
+    border-radius: 0 10px 0 10px;
     cursor: pointer;
     margin-top: 32px;
     transition: background 0.2s, color 0.2s;
     letter-spacing: 0.03em;
   }
   .btn-reveal:hover {
-    background: #c8b89a;
-    color: #0c0c0b;
+    background: #FFA047;
+    color: #FFFFFF;
   }
 
   /* Block B hidden by default in online mode */
@@ -344,7 +344,7 @@
     margin-bottom: 40px;
   }
   .block-om p {
-    color: rgba(240,237,230,0.65);
+    color: rgba(20,18,16,0.65);
     font-weight: 300;
     margin-bottom: 16px;
   }
@@ -368,7 +368,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(240,237,230,0.35);
+    color: rgba(20,18,16,0.35);
     margin-bottom: 16px;
   }
   .block-label-accent {
@@ -397,7 +397,7 @@
   }
   .viz-card {
     border: 1px solid var(--color-border);
-    border-radius: 4px;
+    border-radius: 0 10px 0 10px;
     padding: 32px 40px;
     margin: 40px 0;
     background: var(--color-bg-subtle);
@@ -424,7 +424,7 @@
   .scale-track {
     position: relative;
     height: 2px;
-    background: rgba(240,237,230,0.15);
+    background: rgba(20,18,16,0.1);
     border-radius: 1px;
     margin: 20px 0 8px;
   }
@@ -437,8 +437,8 @@
   .scale-thumb {
     position: absolute; top: 50%;
     width: 14px; height: 14px;
-    background: #0c0c0b;
-    border: 1.5px solid #c8b89a;
+    background: #FFFFFF;
+    border: 1.5px solid #FFA047;
     border-radius: 50%;
     transform: translate(-50%, -50%);
   }
@@ -464,7 +464,7 @@
     text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.15s;
   }
   .channel-chip.active { color: var(--color-primary); }
-  .channel-chip.inactive { color: rgba(240,237,230,0.25); }
+  .channel-chip.inactive { color: rgba(20,18,16,0.25); }
   .channel-icon { font-size: 24px; line-height: 1; margin-bottom: 8px; }
 
   /* Change segments */
@@ -475,7 +475,7 @@
   .change-seg.inactive .change-seg-bar { background: var(--color-border); }
   .change-seg-label { font-family: var(--font-body); font-size: 11px; font-weight: 400; display: none; }
   .change-seg.active .change-seg-label { display: block; color: var(--color-primary); margin-top: 10px; }
-  .change-seg.inactive .change-seg-label { color: rgba(240,237,230,0.25); }
+  .change-seg.inactive .change-seg-label { color: rgba(20,18,16,0.25); }
 
   /* Indicator row */
   .indicator-row { display: flex; align-items: center; gap: 0; }
@@ -484,7 +484,7 @@
     letter-spacing: 0.05em; padding: 3px 10px; border: 1px solid var(--color-primary);
     border-radius: 2px; color: var(--color-primary);
   }
-  .indicator-sep { color: rgba(240,237,230,0.25); margin: 0 12px; font-size: 12px; }
+  .indicator-sep { color: rgba(20,18,16,0.25); margin: 0 12px; font-size: 12px; }
   .indicator-desc { font-family: var(--font-body); font-size: 12px; font-weight: 400; color: var(--color-text-subtle); }
 
   /* ═══════════════════════════════════════ */
@@ -517,7 +517,7 @@
   .profile-card-kombination { margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--color-border); text-align: center; }
   .profile-card-kombination-label { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 16px; }
   .profile-card-kombination-text { font-family: var(--font-body); font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.75; color: var(--color-text); max-width: 600px; margin: 0 auto; }
-  .profile-card-footer { text-align: center; font-family: var(--font-body); font-size: 11px; color: rgba(240,237,230,0.25); margin-top: 56px; }
+  .profile-card-footer { text-align: center; font-family: var(--font-body); font-size: 11px; color: rgba(20,18,16,0.25); margin-top: 56px; }
 
   /* ═══════════════════════════════════════ */
   /* FEEDBACK                                */
@@ -535,7 +535,7 @@
   .fb-group { margin-bottom: 28px; }
   .fb-question { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 10px; }
   .fb-stars { display: flex; gap: 8px; }
-  .fb-star { font-size: 28px; cursor: pointer; color: rgba(240,237,230,0.2); transition: color 0.1s; user-select: none; line-height: 1; }
+  .fb-star { font-size: 28px; cursor: pointer; color: rgba(20,18,16,0.2); transition: color 0.1s; user-select: none; line-height: 1; }
   .fb-star.active { color: var(--color-gold); }
   .fb-star:hover { color: var(--color-gold); }
   .fb-textarea {
@@ -543,22 +543,22 @@
     line-height: 1.6; border: 1px solid var(--color-border); border-radius: 0; padding: 12px 14px; resize: none; transition: border-color 0.15s;
     background: transparent; color: var(--color-text);
   }
-  .fb-textarea:focus { outline: none; border-color: #c8b89a; }
+  .fb-textarea:focus { outline: none; border-color: #FFA047; }
   .fb-pills { display: flex; gap: 8px; flex-wrap: wrap; }
   .fb-pill {
     font-family: var(--font-body); font-size: 11px; font-weight: 400; letter-spacing: 0.05em;
     padding: 8px 16px; border: 1px solid var(--color-border); border-radius: 0;
     background: transparent; color: var(--color-text); cursor: pointer; transition: all 0.15s;
   }
-  .fb-pill.selected { background: #c8b89a; color: #0c0c0b; border-color: #c8b89a; }
+  .fb-pill.selected { background: #FFA047; color: #FFFFFF; border-color: #FFA047; }
   .fb-divider { height: 1px; background: var(--color-border); margin: 8px 0 28px; }
   .fb-submit {
     display: block; width: auto; margin: 0 auto; font-family: var(--font-body); font-size: 11px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: 0.1em; background: #f0ede6; color: #0c0c0b;
+    text-transform: uppercase; letter-spacing: 0.1em; background: #141210; color: #FFFFFF;
     border: none; padding: 14px 32px; border-radius: 0; cursor: pointer; transition: background 0.15s;
   }
-  .fb-submit:hover { background: #fff; }
-  .fb-submit:disabled { background: rgba(240,237,230,0.15); color: rgba(240,237,230,0.3); cursor: default; }
+  .fb-submit:hover { background: #333; }
+  .fb-submit:disabled { background: rgba(20,18,16,0.1); color: rgba(20,18,16,0.3); cursor: default; }
   .fb-spinner { text-align: center; padding: 16px 0; display: none; }
   .fb-spinner.visible { display: block; }
   .fb-spinner-dot { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
@@ -898,7 +898,7 @@
 
     if (analys.sammanfattning) {
       panels += '<div class="profile-card-kombination">';
-      panels += '<div class="profile-card-kombination-label">KOMMUNIKATIONSPROFIL</div>';
+      panels += '<div class="profile-card-kombination-label">SPRÅKPROFIL</div>';
       panels += '<div class="profile-card-kombination-text">' + formatMarkdown(esc(analys.sammanfattning.replace(/\n/g, ' '))) + '</div>';
       panels += '</div>';
     }
@@ -1367,14 +1367,14 @@
         var angle = (axes[a].angle * Math.PI) / 180;
         ringPoints.push((cx + r * Math.cos(angle)).toFixed(1) + ',' + (cy + r * Math.sin(angle)).toFixed(1));
       }
-      svg += '<polygon points="' + ringPoints.join(' ') + '" fill="none" stroke="rgba(240,237,230,0.12)" stroke-width="0.5"/>';
+      svg += '<polygon points="' + ringPoints.join(' ') + '" fill="none" stroke="rgba(20,18,16,0.12)" stroke-width="0.5"/>';
     }
 
     for (var i = 0; i < 6; i++) {
       var angle = (axes[i].angle * Math.PI) / 180;
       var x2 = cx + maxR * Math.cos(angle);
       var y2 = cy + maxR * Math.sin(angle);
-      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="rgba(240,237,230,0.12)" stroke-width="0.5"/>';
+      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="rgba(20,18,16,0.12)" stroke-width="0.5"/>';
     }
 
     var dataPoints = [];
@@ -1385,10 +1385,10 @@
       dataPoints.push({ x: cx + dist * Math.cos(ang), y: cy + dist * Math.sin(ang) });
     }
     var polyStr = dataPoints.map(function(p) { return p.x.toFixed(1) + ',' + p.y.toFixed(1); }).join(' ');
-    svg += '<polygon points="' + polyStr + '" fill="#c8b89a" fill-opacity="0.12" stroke="#c8b89a" stroke-width="1"/>';
+    svg += '<polygon points="' + polyStr + '" fill="#FFA047" fill-opacity="0.12" stroke="#FFA047" stroke-width="1"/>';
 
     for (var k = 0; k < dataPoints.length; k++) {
-      svg += '<circle cx="' + dataPoints[k].x.toFixed(1) + '" cy="' + dataPoints[k].y.toFixed(1) + '" r="4" fill="#c8b89a"/>';
+      svg += '<circle cx="' + dataPoints[k].x.toFixed(1) + '" cy="' + dataPoints[k].y.toFixed(1) + '" r="4" fill="#FFA047"/>';
     }
 
     for (var l = 0; l < 6; l++) {
@@ -1398,7 +1398,7 @@
       var ly = cy + lblR * Math.sin(lblAngle);
       var anchor = 'middle';
       if (axes[l].angle >= 150 || axes[l].angle <= -150) anchor = 'end';
-      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="' + anchor + '" font-family="\'Playfair Display\', serif" font-size="14" font-weight="400" fill="rgba(240,237,230,0.5)">' + axes[l].label + '</text>';
+      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="' + anchor + '" font-family="\'Crimson Pro\', serif" font-size="14" font-weight="400" fill="rgba(20,18,16,0.5)">' + axes[l].label + '</text>';
     }
 
     svg += '</svg></div>';
@@ -1649,5 +1649,6 @@
 
 })();
 </script>
+<script src="/beacon.js"></script>
 </body>
 </html>

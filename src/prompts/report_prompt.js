@@ -1,7 +1,7 @@
 export function buildReportPrompt(resultJSON) {
   const system = `Du är analysmodulen i Språkmönsterlabbet.
 
-Din uppgift är att skriva den PERSONLIGA analysen av en persons språkmönsterprofil.
+Din uppgift är att skriva den PERSONLIGA analysen av en persons språkprofil.
 Du skriver INTE pedagogiska texter om mönstren — de serveras statiskt.
 Du skriver BARA den personliga analysen baserad på respondentens data.
 

@@ -43,7 +43,7 @@ export async function handleGiftReport(env, metadata) {
   </td></tr>
   <tr><td style="padding:40px;">
     <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 16px;">Hej ${gift_to_name},</p>
-    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 16px;"><strong>${gift_from_name}</strong> har gett dig en personlig kommunikationsrapport från Språkmönsterlabbet.</p>
+    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 16px;"><strong>${gift_from_name}</strong> har gett dig en personlig språkprofil från Språkmönsterlabbet.</p>
     <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 24px;">Rapporten analyserar hur du kommunicerar — inte vem du är, utan hur ditt språk rör sig. Det tar 5–6 minuter att svara på frågorna.</p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
     <tr><td style="background:#534AB7;border-radius:4px;padding:14px 28px;">
@@ -64,7 +64,7 @@ export async function handleGiftReport(env, metadata) {
 </html>`;
 
   if (env.MAIL_PAUSAT === 'true') {
-    console.log('[MAIL PAUSAT] Skulle ha skickat till:', gift_to_email, '| Ämne:', `${gift_from_name} har gett dig en kommunikationsrapport`);
+    console.log('[MAIL PAUSAT] Skulle ha skickat till:', gift_to_email, '| Ämne:', `${gift_from_name} har gett dig en språkprofil`);
     return;
   }
 
@@ -77,7 +77,7 @@ export async function handleGiftReport(env, metadata) {
     body: JSON.stringify({
       from: 'noreply@holmbergfriends.com',
       to: gift_to_email,
-      subject: `${gift_from_name} har gett dig en kommunikationsrapport`,
+      subject: `${gift_from_name} har gett dig en språkprofil`,
       html: emailHtml,
     }),
   });

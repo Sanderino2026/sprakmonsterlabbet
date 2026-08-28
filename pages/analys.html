@@ -7,17 +7,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0D0D0D;
-    --dark: #1C1C1C;
-    --mid: #5A5A5A;
-    --muted: #999999;
+    --black: #141210;
+    --dark: #141210;
+    --mid: #8A929E;
+    --muted: #8A929E;
     --border: #E2E2E2;
     --border-light: #F0F0F0;
     --bg: #FAFAFA;
     --white: #FFFFFF;
     --accent: #FFA047;
     --accent-hover: #FFA047;
-    --accent-light: #FFF5EC;
+    --accent-light: rgba(255,160,71,0.08);
     --green: #2A7A4F;
     --green-light: #F0FAF5;
     --red: #FFA047;
@@ -177,6 +177,7 @@
     cursor: pointer;
     transition: background 0.15s;
     display: inline-block;
+    border-radius: 0 10px 0 10px;
   }
   .btn-primary:hover { background: var(--accent-hover); }
   .btn-primary:disabled {
@@ -882,7 +883,7 @@
       <p>Analysen handlar om <em>hur</em> språket organiseras. Inte om vem som skriver det.</p>
       <div class="quote-block">
         <p>"Vi har mönster — vi är inte våra mönster, vi är så mycket mer."</p>
-        <p style="font-family: Helvetica Neue, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #999; margin-top: 12px; font-style: normal;">Alexander Holmberg</p>
+        <p style="font-family: Helvetica Neue, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: #8A929E; margin-top: 12px; font-style: normal;">Alexander Holmberg</p>
       </div>
     </div>
     <button class="btn-primary" onclick="show('quiz')">Gå vidare till frågorna →</button>
@@ -967,9 +968,9 @@
         </div>
         <label style="display:flex; align-items:flex-start; gap:8px; margin-top:16px; cursor:pointer;">
           <input type="checkbox" id="nyhetsbrev-opt" style="margin-top:3px; accent-color:var(--black);">
-          <span style="font-size:0.8rem; color:#666; line-height:1.5;">Intresserad av ledarskap — trender, tips och verktyg? Få vårt nyhetsbrev.</span>
+          <span style="font-size:0.8rem; color:#8A929E; line-height:1.5;">Intresserad av ledarskap — trender, tips och verktyg? Få vårt nyhetsbrev.</span>
         </label>
-        <p style="font-size:0.75rem; color:#999; margin-top:12px; line-height:1.5;">Genom att ange din e-post godkänner du att vi sparar den och kan kontakta dig med information om Språkmönsterlabbet.</p>
+        <p style="font-size:0.75rem; color:#8A929E; margin-top:12px; line-height:1.5;">Genom att ange din e-post godkänner du att vi sparar den och kan kontakta dig med information om Språkmönsterlabbet.</p>
       </div>
       <div id="email-capture-confirm" style="display:none; margin-top:20px; font-size:15px; color:var(--mid); line-height:1.65;"></div>
     </div>
@@ -977,7 +978,7 @@
       <p class="eyebrow">Coachande Ledarskap</p>
       <h2>Vill du förstå det<br>här på djupet?</h2>
       <p>I utbildningen Coachande Ledarskap lär du dig läsa och använda kommunikationsmönster i riktiga samtal — inte bara i text. Du tränar dig att ställa rätt frågor och anpassa ditt budskap efter hur den andra personen faktiskt tar emot information.</p>
-      <button class="btn-primary" style="background:#0c0c0b;color:#f0ede6;" onclick="window.open('https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys','_blank')">Läs om utbildningen →</button>
+      <button class="btn-primary" style="background:#141210;color:#FFFFFF;" onclick="window.open('https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys','_blank')">Läs om utbildningen →</button>
     </div>
     <div style="margin-top:48px; padding-top:32px; border-top:1px solid var(--border-light); display:flex; align-items:center; justify-content:space-between;">
       <button class="btn-secondary" onclick="show('analys')">← Analysera en ny text</button>
@@ -1018,7 +1019,7 @@
       <p class="eyebrow">Coachande Ledarskap</p>
       <h2>Vill du lära dig göra den<br>här typen av analyser <em>själv?</em></h2>
       <p>Lär dig språkmönster på den omtalade utbildningen "Coachande Ledarskap" med Holmberg & Vänner. Coachande Ledarskap ger dig verktygen att läsa kommunikationsmönster i levande samtal — och använda den kunskapen i ledarskap, coaching och samarbete.</p>
-      <button class="btn-primary" style="background:#0c0c0b;color:#f0ede6;" onclick="window.open('https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys','_blank')">Läs om utbildningen →</button>
+      <button class="btn-primary" style="background:#141210;color:#FFFFFF;" onclick="window.open('https://www.holmbergfriends.com/coachande-ledarskap?utm_source=sml&utm_medium=referral&utm_campaign=sml-analys','_blank')">Läs om utbildningen →</button>
     </div>
   </div>
 </div>
@@ -1231,6 +1232,7 @@
       return;
     }
 
+    try { smlBeacon('sml_analys_pabörjad'); } catch(e) {}
     const btn = document.querySelector('#page-analys .btn-primary');
     const orig = btn.textContent;
     const loadingTexts = ["Fnular...", "Grammatiserar...", "Definierar...", "Punktuerar...", "Kommatecknar...", "Läser...", "Funderar...", "Tar en kaffe...", "Blickar ut över solen...", "Passar på att må bra...", "Letar efter mönster...", "Lyssnar på språket...", "Tolkar signalerna...", "Väger orden...", "Sorterar meningarna...", "Noterar pauserna...", "Kikar på strukturen...", "Petar lite...", "Pillar...", "Tänker ett varv till...", "Frågar sig vad du egentligen menar...", "Hittar tråden...", "Följer tankegångarna...", "Märker något intressant...", "Snart klart..."];
@@ -1279,6 +1281,7 @@
       renderResult(data.result);
       document.getElementById('tab-resultat').classList.remove('locked');
       show('resultat');
+      try { smlBeacon('sml_analys_klar'); } catch(e) {}
     } catch (e) {
       alert('Något gick fel. Kontrollera din anslutning och försök igen.');
     } finally {
@@ -1377,6 +1380,7 @@
   }
 
   async function startCheckout(priceId, btn) {
+    try { smlBeacon('sml_kop_klick', {priceId: priceId}); } catch(e) {}
     const orig = btn.textContent;
     btn.textContent = 'Laddar...';
     btn.disabled = true;
@@ -1443,7 +1447,7 @@
       el.textContent = 'Betalningen avbröts.';
       el.style.background = 'var(--red-light)';
       el.style.color = 'var(--red)';
-      el.style.borderBottom = '1px solid #f0c4b0';
+      el.style.borderBottom = '1px solid #FFA047';
       el.style.display = 'block';
       show('upgrade');
     }
@@ -1463,5 +1467,6 @@
   })();
 
 </script>
+<script src="/beacon.js"></script>
 </body>
 </html>

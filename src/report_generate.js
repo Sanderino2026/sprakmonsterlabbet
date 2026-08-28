@@ -178,7 +178,7 @@ export async function handleReportGenerate(request, env) {
   </td></tr>
   <tr><td style="padding:40px;">
     <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 16px;">Hej ${name},</p>
-    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 24px;">Din kommunikationsrapport är nu klar.</p>
+    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 24px;">Din språkprofil är nu klar.</p>
     <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
     <tr><td style="background:#534AB7;border-radius:4px;padding:14px 28px;">
       <a href="${reportUrl}" style="color:#ffffff;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;">Läs din rapport →</a>
@@ -199,7 +199,7 @@ export async function handleReportGenerate(request, env) {
 </html>`;
 
     if (env.MAIL_PAUSAT === 'true') {
-      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din kommunikationsrapport från Språkmönsterlabbet');
+      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkprofil från Språkmönsterlabbet');
       return { status: 200, body: { ok: true, paused: true } };
     }
 
@@ -212,7 +212,7 @@ export async function handleReportGenerate(request, env) {
       body: JSON.stringify({
         from: 'noreply@holmbergfriends.com',
         to: email,
-        subject: 'Din kommunikationsrapport från Språkmönsterlabbet',
+        subject: 'Din språkprofil från Språkmönsterlabbet',
         html: emailHtml,
       }),
     });

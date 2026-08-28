@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Språkmönsterprofil</title>
+<title>Språkprofil</title>
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&family=Playfair+Display:ital,wght@0,900;1,900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -514,7 +514,7 @@
 <body>
 
 <nav style="display:none;">
-  <div class="nav-title">Språkmönsterprofil</div>
+  <div class="nav-title">Språkprofil</div>
   <div class="nav-step" id="navStep"></div>
 </nav>
 <div class="dot-progress" id="dotProgress" style="display:none;"></div>
@@ -534,11 +534,6 @@
     font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
     color: rgba(240,237,230,0.35); letter-spacing: 0.02em;
   }
-  #step0 .s0-nav-right a {
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
-    color: rgba(240,237,230,0.5); text-decoration: none;
-  }
-  #step0 .s0-nav-right a:hover { color: rgba(240,237,230,0.8); }
   #step0 .s0-hero {
     display: grid; grid-template-columns: 1fr 1fr;
     min-height: calc(100vh - 57px - 72px);
@@ -578,34 +573,11 @@
     font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 300;
     color: rgba(240,237,230,0.35);
   }
-  #step0 .s0-price {
-    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400;
-    color: #c8b89a;
-  }
   #step0 .s0-right {
     position: relative; overflow: hidden;
   }
   #step0 #introCanvas {
     position: absolute; inset: 0; width: 100%; height: 100%;
-  }
-  #step0 .s0-stats {
-    position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
-    display: grid; grid-template-columns: 1fr 1fr;
-  }
-  #step0 .s0-stat {
-    background: rgba(12,12,11,0.85); padding: 36px 32px;
-    border-top: 0.5px solid rgba(240,237,230,0.08);
-  }
-  #step0 .s0-stat:nth-child(odd) {
-    border-right: 0.5px solid rgba(240,237,230,0.08);
-  }
-  #step0 .s0-stat-num {
-    font-family: 'Playfair Display', Georgia, serif; font-size: 44px;
-    font-weight: 900; color: #f0ede6; line-height: 1; margin-bottom: 6px;
-  }
-  #step0 .s0-stat-label {
-    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400;
-    color: rgba(240,237,230,0.4); letter-spacing: 0.04em;
   }
   #step0 .s0-footer {
     display: flex; justify-content: space-between; align-items: center;
@@ -627,36 +599,26 @@
     #step0 .s0-right { min-height: 360px; }
     #step0 .s0-nav { padding: 14px 24px; }
     #step0 .s0-footer { padding: 16px 24px; flex-direction: column; gap: 8px; }
-    #step0 .s0-stat { padding: 24px 20px; }
-    #step0 .s0-stat-num { font-size: 32px; }
   }
 </style>
 
 <div class="wrap">
   <div class="s0-nav">
     <div class="s0-nav-left"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:18px;opacity:0.5;"></div>
-    <div class="s0-nav-right"><a href="#">Om verktyget</a></div>
   </div>
 
   <div class="s0-hero">
     <div class="s0-left">
-      <div class="s0-eyebrow">Kommunikationsprofil</div>
+      <div class="s0-eyebrow">Språkprofil</div>
       <h1 class="s0-h1">Förstå hur du <em>tänker</em> och talar</h1>
-      <p class="s0-body">Sju språkmönster styr hur du kommunicerar — utan att du vet om det. På tio minuter kartlägger vi ditt mönster och ger dig verktygen att leda och lyssna mer effektivt.</p>
+      <p class="s0-body">Sju språkmönster styr hur du kommunicerar — utan att du vet om det. Vi kartlägger ditt mönster och ger dig verktygen att leda och lyssna mer effektivt.</p>
       <div class="s0-cta-row">
         <button class="s0-btn" id="btnStep0">KOM IGÅNG</button>
-        <span class="s0-sub">Tar 5–6 minuter · Gratis förhandsvisning</span>
-        <span class="s0-price">Full rapport 499 kr</span>
+        <span class="s0-sub">Tar cirka fem minuter</span>
       </div>
     </div>
     <div class="s0-right">
       <canvas id="introCanvas"></canvas>
-      <div class="s0-stats">
-        <div class="s0-stat"><div class="s0-stat-num">7</div><div class="s0-stat-label">Mönster kartläggs</div></div>
-        <div class="s0-stat"><div class="s0-stat-num">5 min</div><div class="s0-stat-label">Genomförtid</div></div>
-        <div class="s0-stat"><div class="s0-stat-num">1 st</div><div class="s0-stat-label">Gratis mönster</div></div>
-        <div class="s0-stat"><div class="s0-stat-num">499 kr</div><div class="s0-stat-label">Full rapport</div></div>
-      </div>
     </div>
   </div>
 
@@ -1213,21 +1175,25 @@
   // --- Step 0: Welcome ---
   document.getElementById('btnStep0').addEventListener('click', function() {
     show(1);
+    try { smlBeacon('sml_start_klick'); } catch(e) {}
   });
 
   // --- Step 1 (1a): Identity ---
   document.getElementById('btnStep1').addEventListener('click', function() {
     show(2);
+    try { smlBeacon('sml_intro_steg', {steg: 1}); } catch(e) {}
   });
 
   // --- Step 2 (1b): Behavior ---
   document.getElementById('btnStep2').addEventListener('click', function() {
     show(3);
+    try { smlBeacon('sml_intro_steg', {steg: 2}); } catch(e) {}
   });
 
   // --- Step 3 (1c): Communication ---
   document.getElementById('btnStep3').addEventListener('click', function() {
     show(4);
+    try { smlBeacon('sml_intro_steg', {steg: 3}); } catch(e) {}
   });
 
   // --- Step 4: Checkboxes ---
@@ -1245,7 +1211,10 @@
     checkboxes[c].addEventListener('change', checkConsent);
   }
   btnStep4.addEventListener('click', function() {
-    if (!btnStep4.disabled) show(5);
+    if (!btnStep4.disabled) {
+      show(5);
+      try { smlBeacon('sml_intro_steg', {steg: 4}); } catch(e) {}
+    }
   });
 
   // --- Step 5: Quiz ---
@@ -1281,6 +1250,7 @@
 
   document.getElementById('btnStep5').addEventListener('click', function() {
     show(6);
+    try { smlBeacon('sml_intro_steg', {steg: 5}); } catch(e) {}
   });
 
   // --- Step 6: Situation (fritext) ---
@@ -1290,6 +1260,7 @@
   btnStep6.addEventListener('click', function() {
     selectedSituation = situationTextEl.value.trim();
     show(7);
+    try { smlBeacon('sml_epost_efterfragad'); } catch(e) {}
   });
 
   // --- Step 7: Name + email ---
@@ -1306,7 +1277,10 @@
   emailEl.addEventListener('input', checkStep7);
 
   btnStep7.addEventListener('click', function() {
-    if (!btnStep7.disabled) show(8);
+    if (!btnStep7.disabled) {
+      show(8);
+      try { smlBeacon('sml_epost_angiven'); } catch(e) {}
+    }
   });
 
   // --- Step 8: Before questions ---
@@ -1336,6 +1310,7 @@
         if (qStart) {
           times['q' + num] = Date.now() - qStart;
         }
+        try { smlBeacon('sml_fraga_besvarad', {fraga: num}); } catch(e) {}
         if (num < 5) {
           show(num + 9);
         } else {
@@ -1392,6 +1367,7 @@
   var btnSubmit = document.getElementById('btnSubmit');
   btnSubmit.addEventListener('click', function() {
     if (btnSubmit.disabled) return;
+    try { smlBeacon('sml_profil_klar'); } catch(e) {}
     btnSubmit.disabled = true;
     btnSubmit.innerHTML = '<span class="spinner"></span> Sparar dina svar...';
 
@@ -1457,5 +1433,6 @@
 
 })();
 </script>
+<script src="/beacon.js"></script>
 </body>
 </html>
