@@ -4,19 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Språkprofil — Språkmönsterlabbet</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --font-head: 'Crimson Pro', Georgia, serif;
+    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --accent: #FFA047;
+    --text: #1a1a1a;
+    --text-secondary: #555;
+    --bg: #ffffff;
+    --border: #e5e5e5;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    background: #F5F3EE;
-    color: #141210;
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3 {
-    font-family: 'Crimson Pro', Georgia, serif;
+    font-family: var(--font-head);
   }
 
   /* FADE IN */
@@ -32,114 +42,158 @@
 
   /* SHARED WRAP */
   .wrap {
-    max-width: 720px;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 64px 24px 80px;
+    padding: 0 24px;
+  }
+
+  /* ── BUTTONS ── */
+  .btn-primary {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    background: #FFA047;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: rgba(255,160,71,0.85); }
+  .btn-primary:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
+  /* Section-label / eyebrow */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #FFA047;
+    margin-bottom: 16px;
   }
 
   /* ── STEP 0: LANDING ── */
-  #step0 { background: #F5F3EE; }
-  #step0 .wrap { max-width: 720px; }
+  #step0 { background: #ffffff; }
 
   .s0-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 720px;
+    max-width: 1080px;
     margin: 0 auto;
     padding: 20px 24px;
   }
   .s0-nav a { text-decoration: none; }
 
-  .s0-eyebrow {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: #8A929E;
-    margin-bottom: 16px;
+  /* Hero grid */
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+    padding-top: 48px;
+    padding-bottom: 64px;
   }
 
+  .hero-left .section-label { margin-bottom: 16px; }
+
   .s0-h1 {
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 48px;
-    font-weight: 400;
-    line-height: 1.1;
+    font-family: var(--font-head);
+    font-size: 62px;
+    font-weight: 600;
+    line-height: 1.05;
     letter-spacing: -0.02em;
     color: #141210;
     margin-bottom: 20px;
   }
 
   .s0-body {
-    font-size: 17px;
+    font-size: 1.1rem;
     font-weight: 400;
-    line-height: 1.65;
-    color: #8A929E;
-    max-width: 560px;
+    line-height: 1.75;
+    color: #555;
+    max-width: 540px;
     margin-bottom: 36px;
-  }
-
-  .btn-primary {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    background: #FFA047;
-    color: #141210;
-    border: none;
-    border-radius: 0 10px 0 10px;
-    padding: 16px 36px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.15s;
-    display: inline-block;
-  }
-  .btn-primary:hover { background: #ffb06a; transform: translateY(-1px); }
-  .btn-primary:active { transform: translateY(0); }
-  .btn-primary:disabled {
-    background: #E2E2E2;
-    color: #8A929E;
-    cursor: not-allowed;
-    transform: none;
   }
 
   .s0-micro {
     font-size: 13px;
-    color: #8A929E;
+    color: #5F5E5A;
     margin-top: 12px;
   }
 
-  /* CARDS */
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-    margin: 56px 0 48px;
-  }
-  .info-card {
-    background: #FFFFFF;
-    border-radius: 0 10px 0 10px;
-    padding: 28px 24px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  }
-  .info-card-number {
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 36px;
-    font-weight: 400;
-    color: #141210;
-    margin-bottom: 8px;
-  }
-  .info-card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #141210;
-    margin-bottom: 6px;
-  }
-  .info-card-text {
-    font-size: 14px;
-    color: #8A929E;
-    line-height: 1.55;
+  .hero-right img {
+    width: 100%;
+    height: 420px;
+    object-fit: cover;
+    border-radius: 12px;
   }
 
+  /* ── FORKLARINGSBANDET ── */
+  .forklaringsband {
+    background: #fafaf8;
+    padding: 80px 0;
+  }
+  .forklaringsband .wrap { max-width: 1080px; }
+
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    margin-top: 0;
+  }
+
+  .hf-fact {
+    border-top: 2px solid #FFA047;
+    padding-top: 16px;
+  }
+  .hf-fact-num {
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: #141210;
+    line-height: 1;
+  }
+  .hf-fact-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #141210;
+    margin-top: 12px;
+  }
+  .hf-fact-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #555;
+    margin-top: 6px;
+  }
+
+  /* ── DARK PUFF ── */
+  .dark-puff {
+    background: #1F1A14;
+    padding: 40px 0;
+  }
+  .dark-puff .wrap { max-width: 1080px; }
+  .dark-puff-grid {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 2rem;
+    align-items: center;
+  }
+  .dark-puff h3 {
+    font-family: var(--font-head);
+    font-size: 24px;
+    font-weight: 600;
+    color: #f5f2ec;
+    margin-bottom: 8px;
+  }
+  .dark-puff .dark-puff-sub {
+    font-size: 15px;
+    color: rgba(245,242,236,0.7);
+  }
+
+  /* ── CTA REPEAT + FOOTER (step0) ── */
   .s0-footer {
     text-align: center;
     padding: 32px 24px;
@@ -148,40 +202,79 @@
   }
 
   /* ── STEPS 1-4: QUESTIONS ── */
-  .page-questions { background: #FFFFFF; }
-  .page-questions .wrap { max-width: 640px; }
+  .page-questions { background: #fafaf8; }
 
-  .q-progress {
-    font-size: 13px;
+  .q-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 20px 24px;
+  }
+  .q-topbar img { height: 28px; }
+
+  .q-progress-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .q-bars {
+    display: flex;
+    gap: 4px;
+  }
+  .q-bar {
+    width: 24px;
+    height: 3px;
+    background: #e2ddd8;
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .q-bar.active {
+    background: #FFA047;
+  }
+  .q-bar-label {
+    font-size: 12px;
     color: #8A929E;
-    margin-bottom: 32px;
-    letter-spacing: 0.02em;
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+
+  .q-card {
+    background: #ffffff;
+    border: 1px solid #ebebeb;
+    border-radius: 0 10px 0 10px;
+    padding: 34px 32px;
+    max-width: 640px;
+    margin: 0 auto;
   }
 
   .q-text {
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 28px;
-    font-weight: 400;
+    font-family: var(--font-head);
+    font-size: 27px;
+    font-weight: 600;
     line-height: 1.25;
     color: #141210;
-    margin-bottom: 32px;
+    border-left: 3px solid #FFA047;
+    padding-left: 18px;
+    margin-bottom: 28px;
   }
 
   .choice-cards {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
   .choice-card {
-    background: #FFFFFF;
-    border: 1px solid #E2E2E2;
+    border: 1px solid #e2ddd8;
     border-radius: 0 10px 0 10px;
-    padding: 24px;
+    padding: 18px 22px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     font-size: 16px;
-    line-height: 1.55;
+    line-height: 1.6;
     color: #141210;
+    background: transparent;
   }
   .choice-card:hover {
     border-color: #FFA047;
@@ -191,68 +284,89 @@
     background: rgba(255, 160, 71, 0.06);
   }
 
-  /* ── STEP 5: EMAIL ── */
-  .page-email { background: #FFFFFF; }
-  .page-email .wrap { max-width: 540px; }
-
-  .page-email h1 {
-    font-size: 36px;
-    font-weight: 400;
-    color: #141210;
-    margin-bottom: 12px;
+  .q-footnote {
+    text-align: center;
+    font-size: 13px;
+    color: #5F5E5A;
+    max-width: 640px;
+    margin: 16px auto 0;
+    padding: 0 24px;
   }
-  .page-email .sub {
-    font-size: 16px;
-    color: #8A929E;
-    margin-bottom: 32px;
+
+  /* ── STEP 5: EMAIL ── */
+  .page-email { background: #fafaf8; }
+
+  .hf-form {
+    background: #f7f6f3;
+    border: 1px solid rgba(20,18,16,0.14);
+    border-radius: 0 10px 0 10px;
+    padding: 2rem;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+  .hf-form h1 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 600;
+    color: #141210;
+    margin-bottom: 8px;
+  }
+  .hf-form .sub {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 24px;
   }
 
   .field-group { margin-bottom: 20px; }
   .field-group label {
     display: block;
-    font-size: 14px;
-    font-weight: 500;
-    color: #141210;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5F5E5A;
     margin-bottom: 6px;
   }
   .field-group input[type="text"],
   .field-group input[type="email"] {
     width: 100%;
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 16px;
+    font-family: var(--font-body);
+    font-size: 14px;
     color: #141210;
-    border: 1px solid #E2E2E2;
+    border: 1px solid rgba(20,18,16,0.14);
     border-radius: 0 10px 0 10px;
-    padding: 14px 16px;
-    background: #FFFFFF;
-    transition: border-color 0.2s;
+    height: 46px;
+    padding: 0 14px;
+    background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
   }
   .field-group input:focus {
     border-color: #FFA047;
+    box-shadow: 0 0 0 3px rgba(255,160,71,0.18);
   }
 
-  .cb-row {
+  .hf-form-check {
     display: flex;
     align-items: flex-start;
     gap: 10px;
     margin-bottom: 14px;
     cursor: pointer;
   }
-  .cb-row input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+  .hf-form-check input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
     margin-top: 3px;
     accent-color: #FFA047;
     flex-shrink: 0;
     cursor: pointer;
   }
-  .cb-row span {
-    font-size: 14px;
-    color: #141210;
+  .hf-form-check span {
+    font-size: 13px;
+    color: #555;
     line-height: 1.5;
   }
-  .cb-row span a {
+  .hf-form-check span a {
     color: #FFA047;
     text-decoration: underline;
   }
@@ -272,78 +386,99 @@
   }
   .error-msg.visible { display: block; }
 
+  .hf-form-submit {
+    width: 100%;
+    padding: 14px;
+    background: #FFA047;
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    border: none;
+    border-radius: 0 10px 0 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .hf-form-submit:hover { background: rgba(255,160,71,0.85); }
+  .hf-form-submit:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+  }
+
   /* ── STEP 6: RESULT ── */
-  #step6 { background: #F5F3EE; }
-  #step6 .wrap { max-width: 720px; }
+  #step6 { background: #ffffff; }
+  #step6 .wrap {
+    max-width: 720px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+  }
 
   .result-eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #8A929E;
-    margin-bottom: 12px;
+    color: #FFA047;
+    margin-bottom: 16px;
   }
 
   .result-h1 {
-    font-family: 'Crimson Pro', Georgia, serif;
-    font-size: 36px;
-    font-weight: 400;
+    font-family: var(--font-head);
+    font-size: 2rem;
+    font-weight: 700;
     color: #141210;
     margin-bottom: 12px;
-    line-height: 1.2;
+    line-height: 1.25;
   }
 
   .result-score {
-    font-size: 16px;
-    color: #8A929E;
+    font-size: 1.1rem;
+    color: #555;
     margin-bottom: 32px;
   }
 
-  .result-card {
-    background: #FFFFFF;
-    border-radius: 0 10px 0 10px;
-    padding: 32px;
-    margin-bottom: 32px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  }
-  .result-card p {
+  .result-text-area p {
     font-size: 16px;
     line-height: 1.7;
-    color: #141210;
+    color: var(--text);
     margin-bottom: 16px;
   }
-  .result-card p:last-child { margin-bottom: 0; }
+  .result-text-area p:last-child { margin-bottom: 0; }
 
   .reservation-box {
-    background: #F5F3EE;
-    border-radius: 0 10px 0 10px;
-    padding: 20px 24px;
+    border-left: 3px solid #FFA047;
+    padding: 24px 28px;
+    background: #fafaf8;
+    border-radius: 0 8px 8px 0;
     margin-top: 24px;
+    margin-bottom: 48px;
     font-size: 14px;
-    color: #8A929E;
+    color: #555;
+    font-family: var(--font-head);
+    font-style: italic;
     line-height: 1.6;
   }
 
   .cta-section {
-    background: #FFFFFF;
-    border-radius: 0 10px 0 10px;
-    padding: 32px;
-    margin-bottom: 48px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     text-align: center;
+    margin-bottom: 48px;
+    padding: 32px 0;
   }
   .cta-section h3 {
-    font-size: 24px;
-    font-weight: 400;
+    font-family: var(--font-head);
+    font-size: 1.3rem;
+    font-weight: 700;
     color: #141210;
     margin-bottom: 12px;
   }
   .cta-section p {
     font-size: 15px;
-    color: #8A929E;
-    line-height: 1.6;
+    color: #555;
+    line-height: 1.7;
     margin-bottom: 24px;
+    max-width: 540px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   /* MOT ALEXANDER */
@@ -369,8 +504,8 @@
   }
   .alexander-section p {
     font-size: 15px;
-    color: #8A929E;
-    line-height: 1.65;
+    color: #555;
+    line-height: 1.7;
     margin-bottom: 8px;
   }
   .alexander-links {
@@ -382,7 +517,7 @@
   }
   .alexander-links a.btn-link {
     font-size: 14px;
-    color: #8A929E;
+    color: #555;
     text-decoration: none;
     transition: color 0.2s;
   }
@@ -391,8 +526,8 @@
   /* TEASER */
   .teaser-link {
     display: block;
-    border: 1px solid #E2E2E2;
-    border-radius: 0 10px 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
     padding: 24px 28px;
     text-decoration: none;
     color: inherit;
@@ -402,10 +537,10 @@
   .teaser-link:hover { border-color: #FFA047; }
   .teaser-link .teaser-eyebrow {
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #8A929E;
+    color: #FFA047;
   }
   .teaser-link h3 {
     font-size: 20px;
@@ -415,8 +550,8 @@
   }
   .teaser-link p {
     font-size: 14px;
-    color: #8A929E;
-    line-height: 1.55;
+    color: #555;
+    line-height: 1.7;
     margin: 0 0 8px;
   }
   .teaser-link .teaser-arrow {
@@ -441,8 +576,8 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(20,18,16,0.3);
-    border-top-color: #141210;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     vertical-align: middle;
@@ -452,14 +587,24 @@
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
-    .s0-h1 { font-size: 36px; }
-    .cards-grid { grid-template-columns: 1fr; }
-    .q-text { font-size: 24px; }
-    .result-h1 { font-size: 28px; }
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      padding-top: 32px;
+      padding-bottom: 48px;
+    }
+    .hero-right { order: 2; }
+    .hero-right img { height: 260px; }
+    .s0-h1 { font-size: 32px; }
+    .fact-grid { grid-template-columns: 1fr; }
+    .dark-puff-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .q-text { font-size: 22px; }
+    .result-h1 { font-size: 24px; }
     .alexander-section { flex-direction: column; align-items: center; text-align: center; }
     .alexander-links { justify-content: center; }
     .s0-nav { padding: 16px 20px; }
-    .wrap { padding: 48px 20px 64px; }
+    .q-topbar { padding: 16px 20px; }
+    .q-card { padding: 24px 20px; }
   }
 </style>
 </head>
@@ -472,35 +617,67 @@
   <div class="s0-nav">
     <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:20px;"></a>
   </div>
-  <div class="wrap" style="padding-top:40px;">
-    <div class="s0-eyebrow">SPRÅKMÖNSTERLABBET</div>
-    <h1 class="s0-h1">Du säger en sak. De hör en annan.</h1>
-    <p class="s0-body">Sju språkmönster påverkar hur du formulerar dig och hur andra tar emot det. Fyra frågor räcker för att visa ett av dem.</p>
-    <button class="btn-primary" id="btnStart">Gör din språkprofil</button>
-    <div class="s0-micro">Fyra frågor, ungefär två minuter.</div>
 
-    <div class="cards-grid">
-      <div class="info-card">
-        <div class="info-card-number">1</div>
-        <div class="info-card-title">Hur, inte vem</div>
-        <div class="info-card-text">Språkmönster beskriver hur du kommunicerar. Inte vem du är eller vad du gör.</div>
+  <!-- HERO -->
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-left">
+        <div class="section-label">SPRÅKMÖNSTERLABBET</div>
+        <h1 class="s0-h1">Du säger en sak. De hör en annan.</h1>
+        <p class="s0-body">Sju språkmönster påverkar hur du formulerar dig och hur andra tar emot det. Fyra frågor räcker för att visa ett av dem.</p>
+        <button class="btn-primary" id="btnStart">Gör din språkprofil</button>
+        <div class="s0-micro">Fyra frågor, ungefär två minuter.</div>
       </div>
-      <div class="info-card">
-        <div class="info-card-number">2</div>
-        <div class="info-card-title">Fler sätt att möta</div>
-        <div class="info-card-text">En ledare som känner igen språkmönster kan möta fler människor på fler sätt.</div>
+      <div class="hero-right">
+        <img src="https://assets.holmbergfriends.com/bildarkiv/23.jpg" alt="Två personer i samtal under en workshop">
       </div>
-      <div class="info-card">
-        <div class="info-card-number">3</div>
-        <div class="info-card-title">Under grammatiken</div>
-        <div class="info-card-text">Grammatik är reglerna för hur vi säger saker. Språkmönster är strukturen bakom det vi förstår.</div>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-bottom:48px;">
-      <button class="btn-primary" id="btnStart2">Gör din språkprofil</button>
     </div>
   </div>
+
+  <!-- FÖRKLARINGSBANDET -->
+  <div class="forklaringsband">
+    <div class="wrap">
+      <div class="section-label">Vad språkmönster är</div>
+      <div class="fact-grid">
+        <div class="hf-fact">
+          <div class="hf-fact-num">1</div>
+          <div class="hf-fact-title">Hur, inte vem</div>
+          <div class="hf-fact-text">Språkmönster beskriver hur du kommunicerar. Inte vem du är eller vad du gör.</div>
+        </div>
+        <div class="hf-fact">
+          <div class="hf-fact-num">2</div>
+          <div class="hf-fact-title">Fler sätt att möta</div>
+          <div class="hf-fact-text">En ledare som känner igen språkmönster kan möta fler människor på fler sätt.</div>
+        </div>
+        <div class="hf-fact">
+          <div class="hf-fact-num">3</div>
+          <div class="hf-fact-title">Under grammatiken</div>
+          <div class="hf-fact-text">Grammatik är reglerna för hur vi säger saker. Språkmönster är strukturen bakom det vi förstår.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MÖRK PUFF -->
+  <div class="dark-puff">
+    <div class="wrap">
+      <div class="dark-puff-grid">
+        <div>
+          <h3>Det första mönstret handlar om hur du tar dig an en uppgift.</h3>
+          <div class="dark-puff-sub">Vissa söker rätt ordning. Andra söker en väg till.</div>
+        </div>
+        <div>
+          <button class="btn-primary" id="btnStart3">Gör din språkprofil</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPEAT CTA -->
+  <div style="text-align:center;padding:48px 24px;">
+    <button class="btn-primary" id="btnStart2">Gör din språkprofil</button>
+  </div>
+
   <div class="s0-footer">&copy; 2026 holmberg &amp; friends</div>
 </div>
 
@@ -508,13 +685,27 @@
      STEP 1 — FRÅGA 1
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step1">
-  <div class="wrap">
-    <div class="q-progress">Fråga 1 av 4</div>
-    <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
-    <div class="choice-cards">
-      <div class="choice-card" data-fraga="1" data-svar="Procedur">Tar reda på hur det brukar göras och i vilken ordning.</div>
-      <div class="choice-card" data-fraga="1" data-svar="Alternativ">Ser efter vilka olika vägar som finns att lösa det.</div>
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar" data-bar="2"></div>
+        <div class="q-bar" data-bar="3"></div>
+        <div class="q-bar" data-bar="4"></div>
+      </div>
+      <span class="q-bar-label">1 av 4</span>
     </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="1" data-svar="Procedur">Tar reda på hur det brukar göras och i vilken ordning.</div>
+        <div class="choice-card" data-fraga="1" data-svar="Alternativ">Ser efter vilka olika vägar som finns att lösa det.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
   </div>
 </div>
 
@@ -522,13 +713,27 @@
      STEP 2 — FRÅGA 2
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step2">
-  <div class="wrap">
-    <div class="q-progress">Fråga 2 av 4</div>
-    <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
-    <div class="choice-cards">
-      <div class="choice-card" data-fraga="2" data-svar="Alternativ">Jag lyfter flera vägar. Det finns sällan bara ett rätt svar.</div>
-      <div class="choice-card" data-fraga="2" data-svar="Procedur">Jag föreslår en ordning. Först det här, sedan det här.</div>
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar" data-bar="3"></div>
+        <div class="q-bar" data-bar="4"></div>
+      </div>
+      <span class="q-bar-label">2 av 4</span>
     </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="2" data-svar="Alternativ">Jag lyfter flera vägar. Det finns sällan bara ett rätt svar.</div>
+        <div class="choice-card" data-fraga="2" data-svar="Procedur">Jag föreslår en ordning. Först det här, sedan det här.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
   </div>
 </div>
 
@@ -536,13 +741,27 @@
      STEP 3 — FRÅGA 3
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step3">
-  <div class="wrap">
-    <div class="q-progress">Fråga 3 av 4</div>
-    <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
-    <div class="choice-cards">
-      <div class="choice-card" data-fraga="3" data-svar="Procedur">Det var en naturlig fortsättning. Stegen ledde dit.</div>
-      <div class="choice-card" data-fraga="3" data-svar="Alternativ">Det var ett av flera alternativ jag valde mellan.</div>
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar" data-bar="4"></div>
+      </div>
+      <span class="q-bar-label">3 av 4</span>
     </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="3" data-svar="Procedur">Det var en naturlig fortsättning. Stegen ledde dit.</div>
+        <div class="choice-card" data-fraga="3" data-svar="Alternativ">Det var ett av flera alternativ jag valde mellan.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
   </div>
 </div>
 
@@ -550,13 +769,27 @@
      STEP 4 — FRÅGA 4
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step4">
-  <div class="wrap">
-    <div class="q-progress">Fråga 4 av 4</div>
-    <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div>
-    <div class="choice-cards">
-      <div class="choice-card" data-fraga="4" data-svar="Alternativ">Jag ger flera ingångar och låter dem välja.</div>
-      <div class="choice-card" data-fraga="4" data-svar="Procedur">Jag tar det i ordning, ett steg i taget.</div>
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+      </div>
+      <span class="q-bar-label">4 av 4</span>
     </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="4" data-svar="Alternativ">Jag ger flera ingångar och låter dem välja.</div>
+        <div class="choice-card" data-fraga="4" data-svar="Procedur">Jag tar det i ordning, ett steg i taget.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
   </div>
 </div>
 
@@ -564,33 +797,47 @@
      STEP 5 — NAMN + E-POST + SAMTYCKE
      ══════════════════════════════════════════════ -->
 <div class="page page-email" id="step5">
-  <div class="wrap">
-    <h1>Dina fyra svar är inne.</h1>
-    <p class="sub">Fyll i namn och e-post så visar vi ditt mönster.</p>
-
-    <div id="errorMsg" class="error-msg"></div>
-
-    <div class="field-group">
-      <label for="firstName">Förnamn</label>
-      <input type="text" id="firstName" placeholder="Ditt förnamn" autocomplete="given-name">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+      </div>
+      <span class="q-bar-label">4 av 4</span>
     </div>
-    <div class="field-group">
-      <label for="email">E-postadress</label>
-      <input type="email" id="email" placeholder="namn@exempel.se" autocomplete="email">
-    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="hf-form">
+      <h1>Dina fyra svar är inne.</h1>
+      <p class="sub">Fyll i namn och e-post så visar vi ditt mönster.</p>
 
-    <div class="consent-area">
-      <label class="cb-row">
-        <input type="checkbox" id="consent-cb">
-        <span>Jag samtycker till att mina svar sparas enligt <a href="/integritetspolicy.html">integritetspolicyn</a>.</span>
-      </label>
-      <label class="cb-row">
-        <input type="checkbox" id="nyhetsbrev-opt">
-        <span>Intresserad av ledarskap? Få vårt nyhetsbrev med trender, tips och verktyg.</span>
-      </label>
-    </div>
+      <div id="errorMsg" class="error-msg"></div>
 
-    <button class="btn-primary" id="btnShowResult" disabled>Visa mitt resultat</button>
+      <div class="field-group">
+        <label for="firstName">Förnamn</label>
+        <input type="text" id="firstName" placeholder="Ditt förnamn" autocomplete="given-name">
+      </div>
+      <div class="field-group">
+        <label for="email">E-postadress</label>
+        <input type="email" id="email" placeholder="namn@exempel.se" autocomplete="email">
+      </div>
+
+      <div class="consent-area">
+        <label class="hf-form-check">
+          <input type="checkbox" id="consent-cb">
+          <span>Jag samtycker till att mina svar sparas enligt <a href="/integritetspolicy.html">integritetspolicyn</a>.</span>
+        </label>
+        <label class="hf-form-check">
+          <input type="checkbox" id="nyhetsbrev-opt">
+          <span>Intresserad av ledarskap? Få vårt nyhetsbrev med trender, tips och verktyg.</span>
+        </label>
+      </div>
+
+      <button class="hf-form-submit" id="btnShowResult" disabled>Visa mitt resultat</button>
+    </div>
   </div>
 </div>
 
@@ -603,11 +850,9 @@
     <h1 class="result-h1" id="resultTitle"></h1>
     <div class="result-score" id="resultScore"></div>
 
-    <div class="result-card">
-      <div id="resultText"></div>
-      <div class="reservation-box">
-        Fyra frågor ger en indikation, inte en slutsats. Dina mönster kan se annorlunda ut i andra sammanhang. Du är inte dina mönster.
-      </div>
+    <div class="result-text-area" id="resultText"></div>
+    <div class="reservation-box">
+      Fyra frågor ger en indikation, inte en slutsats. Dina mönster kan se annorlunda ut i andra sammanhang. Du är inte dina mönster.
     </div>
 
     <div class="cta-section">
@@ -730,6 +975,7 @@
   }
   document.getElementById('btnStart').addEventListener('click', onStart);
   document.getElementById('btnStart2').addEventListener('click', onStart);
+  document.getElementById('btnStart3').addEventListener('click', onStart);
 
   // ── STEPS 1-4: CHOICE CARDS ──
   var allCards = document.querySelectorAll('.choice-card');
