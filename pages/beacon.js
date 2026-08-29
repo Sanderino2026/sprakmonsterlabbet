@@ -33,7 +33,7 @@
       };
       var body = JSON.stringify(payload);
       if (navigator.sendBeacon) {
-        navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
+        navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'text/plain' }));
       } else {
         fetch(ENDPOINT, { method: 'POST', body: body, headers: { 'Content-Type': 'application/json' }, keepalive: true }).catch(function() {});
       }
