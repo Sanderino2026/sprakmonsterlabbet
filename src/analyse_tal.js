@@ -1,6 +1,6 @@
 import { ANALYSE_TAL_PROMPT } from './prompts/analyse_tal_prompt.js';
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 4000;
 
 // ── POST /api/analyse-tal ───────────────────────────────────────

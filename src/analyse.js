@@ -2,7 +2,7 @@ import { requireUsage } from './usage.js';
 import { saveAnalysis } from './airtable.js';
 import { ANALYSE_SYSTEM_PROMPT } from './prompts/analyse_prompt.js';
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 1000;
 
 export async function handleAnalyseText(request, user, env) {

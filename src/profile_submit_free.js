@@ -22,35 +22,26 @@ async function analyseFreeText(text, env) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2000,
         system: STANDALONE_ANALYSE_PROMPT,
         messages: [{ role: 'user', content: `Analysera språkmönstren i:\n\n"${text}"` }],
       }),
     });
-
     if (!res.ok) {
       console.error('[analyseFreeText] API-fel:', res.status);
       return null;
     }
-
     const data = await res.json().catch(() => null);
     const raw = data?.content?.[0]?.text ?? null;
     if (!raw) return null;
 
     const cleaned = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(cleaned);
-    if (!Array.isArray(parsed.patterns)) return null;
-
-    // Find the Förståelse pattern
-    const forstaelse = parsed.patterns.find(p => p.category === 'Förståelse');
-    if (!forstaelse) return null;
-
-    const dominant = forstaelse.dominant;
-    if (dominant === 'Procedur' || dominant === 'Alternativ') {
-      return dominant;
-    }
-    return null; // Blandad or unknown = 0 points
+    const forstaelse = parsed.patterns?.find(p => p.category === 'Förståelse');
+    const dominant = forstaelse?.dominant;
+    if (dominant === 'Procedur' || dominant === 'Alternativ') return dominant;
+    return null;
   } catch (err) {
     console.error('[analyseFreeText] Fel:', err);
     return null;

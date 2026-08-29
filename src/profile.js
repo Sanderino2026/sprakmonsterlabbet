@@ -2,7 +2,7 @@ import { requireUsage } from './usage.js';
 import { saveProfile } from './airtable.js';
 import { PROFILE_SYSTEM_PROMPT } from './prompts/profile_prompt.js';
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 1000;
 const MIN_ANSWERS = 4;
 

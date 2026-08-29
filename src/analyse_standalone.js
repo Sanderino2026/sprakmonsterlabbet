@@ -1,7 +1,7 @@
 import { findUserByRecordId, createGuestRecord, decrementAnalysis, saveAnalysis } from './airtable.js';
 import { STANDALONE_ANALYSE_PROMPT } from './prompts/analyse_standalone_prompt.js';
 
-const MODEL = 'claude-sonnet-4-20250514';
+const MODEL = 'claude-sonnet-4-6';
 const MAX_TOKENS = 1000;
 
 // ── POST /api/analyse-text-standalone ────────────────────────────
