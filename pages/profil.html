@@ -405,9 +405,9 @@
     cursor: not-allowed;
   }
 
-  /* ── STEP 6: RESULT ── */
-  #step6 { background: #ffffff; }
-  #step6 .wrap {
+  /* ── STEP 11: RESULT ── */
+  #step11 { background: #ffffff; }
+  #step11 .wrap {
     max-width: 720px;
     padding-top: 80px;
     padding-bottom: 80px;
@@ -585,6 +585,37 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  .q-card textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    color: #141210;
+    background: #fff;
+    border: 1px solid rgba(20,18,16,0.14);
+    border-radius: 0 10px 0 10px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.6;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .q-card textarea:focus {
+    border-color: #FFA047;
+    box-shadow: 0 0 0 3px rgba(255,160,71,0.18);
+  }
+  .char-counter {
+    font-size: 13px;
+    color: #8A929E;
+    margin-top: 8px;
+  }
+  .char-counter.ok { color: #2E7D32; }
+  .q-help-text {
+    font-size: 14px;
+    color: #5F5E5A;
+    margin-bottom: 16px;
+  }
+
   /* ── MOBILE ── */
   @media (max-width: 768px) {
     .hero-grid {
@@ -624,9 +655,9 @@
       <div class="hero-left">
         <div class="section-label">SPRÅKMÖNSTERLABBET</div>
         <h1 class="s0-h1">Du säger en sak. De hör en annan.</h1>
-        <p class="s0-body">Sju språkmönster påverkar hur du formulerar dig och hur andra tar emot det. Fyra frågor räcker för att visa ett av dem.</p>
+        <p class="s0-body">Sju språkmönster påverkar hur du formulerar dig och hur andra tar emot det. Nio frågor räcker för att visa ett av dem.</p>
         <button class="btn-primary" id="btnStart">Gör din språkprofil</button>
-        <div class="s0-micro">Fyra frågor, ungefär två minuter.</div>
+        <div class="s0-micro">Nio frågor, ungefär tre minuter.</div>
       </div>
       <div class="hero-right">
         <img src="https://assets.holmbergfriends.com/bildarkiv/23.jpg" alt="Två personer i samtal under en workshop">
@@ -682,7 +713,7 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     STEP 1 — FRÅGA 1
+     STEP 1 — FRITEXT
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step1">
   <div class="q-topbar">
@@ -693,16 +724,23 @@
         <div class="q-bar" data-bar="2"></div>
         <div class="q-bar" data-bar="3"></div>
         <div class="q-bar" data-bar="4"></div>
+        <div class="q-bar" data-bar="5"></div>
+        <div class="q-bar" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
       </div>
-      <span class="q-bar-label">1 av 4</span>
+      <span class="q-bar-label">1 av 9</span>
     </div>
   </div>
   <div style="padding: 24px 0 80px;">
     <div class="q-card">
-      <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
-      <div class="choice-cards">
-        <div class="choice-card" data-fraga="1" data-svar="Procedur">Tar reda på hur det brukar göras och i vilken ordning.</div>
-        <div class="choice-card" data-fraga="1" data-svar="Alternativ">Ser efter vilka olika vägar som finns att lösa det.</div>
+      <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
+      <div class="q-help-text">Skriv fritt, ett par meningar räcker.</div>
+      <textarea id="freeTextArea" placeholder=""></textarea>
+      <div class="char-counter" id="charCounter">0 / 40 tecken</div>
+      <div style="margin-top:20px;text-align:right;">
+        <button class="btn-primary" id="btnFreeNext" disabled>Nästa</button>
       </div>
     </div>
     <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
@@ -721,16 +759,21 @@
         <div class="q-bar active" data-bar="2"></div>
         <div class="q-bar" data-bar="3"></div>
         <div class="q-bar" data-bar="4"></div>
+        <div class="q-bar" data-bar="5"></div>
+        <div class="q-bar" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
       </div>
-      <span class="q-bar-label">2 av 4</span>
+      <span class="q-bar-label">2 av 9</span>
     </div>
   </div>
   <div style="padding: 24px 0 80px;">
     <div class="q-card">
-      <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
+      <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
       <div class="choice-cards">
-        <div class="choice-card" data-fraga="2" data-svar="Alternativ">Jag lyfter flera vägar. Det finns sällan bara ett rätt svar.</div>
-        <div class="choice-card" data-fraga="2" data-svar="Procedur">Jag föreslår en ordning. Först det här, sedan det här.</div>
+        <div class="choice-card" data-fraga="2" data-svar="Procedur">Tar reda på hur det brukar göras och i vilken ordning.</div>
+        <div class="choice-card" data-fraga="2" data-svar="Alternativ">Ser efter vilka olika vägar som finns att lösa det.</div>
       </div>
     </div>
     <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
@@ -749,16 +792,21 @@
         <div class="q-bar active" data-bar="2"></div>
         <div class="q-bar active" data-bar="3"></div>
         <div class="q-bar" data-bar="4"></div>
+        <div class="q-bar" data-bar="5"></div>
+        <div class="q-bar" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
       </div>
-      <span class="q-bar-label">3 av 4</span>
+      <span class="q-bar-label">3 av 9</span>
     </div>
   </div>
   <div style="padding: 24px 0 80px;">
     <div class="q-card">
-      <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
+      <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
       <div class="choice-cards">
-        <div class="choice-card" data-fraga="3" data-svar="Procedur">Det var en naturlig fortsättning. Stegen ledde dit.</div>
-        <div class="choice-card" data-fraga="3" data-svar="Alternativ">Det var ett av flera alternativ jag valde mellan.</div>
+        <div class="choice-card" data-fraga="3" data-svar="Alternativ">Jag lyfter flera vägar. Det finns sällan bara ett rätt svar.</div>
+        <div class="choice-card" data-fraga="3" data-svar="Procedur">Jag föreslår en ordning. Först det här, sedan det här.</div>
       </div>
     </div>
     <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
@@ -777,16 +825,21 @@
         <div class="q-bar active" data-bar="2"></div>
         <div class="q-bar active" data-bar="3"></div>
         <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar" data-bar="5"></div>
+        <div class="q-bar" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
       </div>
-      <span class="q-bar-label">4 av 4</span>
+      <span class="q-bar-label">4 av 9</span>
     </div>
   </div>
   <div style="padding: 24px 0 80px;">
     <div class="q-card">
       <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div>
       <div class="choice-cards">
-        <div class="choice-card" data-fraga="4" data-svar="Alternativ">Jag ger flera ingångar och låter dem välja.</div>
         <div class="choice-card" data-fraga="4" data-svar="Procedur">Jag tar det i ordning, ett steg i taget.</div>
+        <div class="choice-card" data-fraga="4" data-svar="Alternativ">Jag ger flera ingångar och låter dem välja.</div>
       </div>
     </div>
     <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
@@ -794,9 +847,9 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     STEP 5 — NAMN + E-POST + SAMTYCKE
+     STEP 5 — FRÅGA 5
      ══════════════════════════════════════════════ -->
-<div class="page page-email" id="step5">
+<div class="page page-questions" id="step5">
   <div class="q-topbar">
     <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
     <div class="q-progress-bar">
@@ -805,13 +858,183 @@
         <div class="q-bar active" data-bar="2"></div>
         <div class="q-bar active" data-bar="3"></div>
         <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
       </div>
-      <span class="q-bar-label">4 av 4</span>
+      <span class="q-bar-label">5 av 9</span>
+    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Något går fel mitt i ett arbete. Vad är din första impuls?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="5" data-svar="Alternativ">Jag letar efter en annan väg runt problemet.</div>
+        <div class="choice-card" data-fraga="5" data-svar="Procedur">Jag går tillbaka och kollar var det gick snett i processen.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     STEP 6 — FRÅGA 6
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step6">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar active" data-bar="6"></div>
+        <div class="q-bar" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
+      </div>
+      <span class="q-bar-label">6 av 9</span>
+    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Du har ont om tid. Hur gör du?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="6" data-svar="Procedur">Jag följer planen och prioriterar bort det som inte ryms.</div>
+        <div class="choice-card" data-fraga="6" data-svar="Alternativ">Jag hittar ett annat sätt som går snabbare.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     STEP 7 — FRÅGA 7
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step7">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar active" data-bar="6"></div>
+        <div class="q-bar active" data-bar="7"></div>
+        <div class="q-bar" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
+      </div>
+      <span class="q-bar-label">7 av 9</span>
+    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">En medarbetare löser en uppgift på ett annat sätt än du hade gjort. Vad tänker du?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="7" data-svar="Alternativ">Bra att det finns fler sätt. Det kan ge nya insikter.</div>
+        <div class="choice-card" data-fraga="7" data-svar="Procedur">Jag undrar varför de inte följde det sätt som brukar fungera.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     STEP 8 — FRÅGA 8
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step8">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar active" data-bar="6"></div>
+        <div class="q-bar active" data-bar="7"></div>
+        <div class="q-bar active" data-bar="8"></div>
+        <div class="q-bar" data-bar="9"></div>
+      </div>
+      <span class="q-bar-label">8 av 9</span>
+    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Något ska göras om från grunden. Vad börjar du med?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="8" data-svar="Procedur">Jag kartlägger stegen och sätter en ordning.</div>
+        <div class="choice-card" data-fraga="8" data-svar="Alternativ">Jag samlar idéer och ser vilka möjligheter som finns.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     STEP 9 — FRÅGA 9
+     ══════════════════════════════════════════════ -->
+<div class="page page-questions" id="step9">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar active" data-bar="6"></div>
+        <div class="q-bar active" data-bar="7"></div>
+        <div class="q-bar active" data-bar="8"></div>
+        <div class="q-bar active" data-bar="9"></div>
+      </div>
+      <span class="q-bar-label">9 av 9</span>
+    </div>
+  </div>
+  <div style="padding: 24px 0 80px;">
+    <div class="q-card">
+      <div class="q-text">Du beskriver för någon hur du kom fram till ett beslut. Hur låter det?</div>
+      <div class="choice-cards">
+        <div class="choice-card" data-fraga="9" data-svar="Alternativ">Jag berättar vilka alternativ jag vägde mot varandra.</div>
+        <div class="choice-card" data-fraga="9" data-svar="Procedur">Jag går igenom stegen jag tog, i ordning.</div>
+      </div>
+    </div>
+    <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     STEP 10 — NAMN + E-POST + SAMTYCKE
+     ══════════════════════════════════════════════ -->
+<div class="page page-email" id="step10">
+  <div class="q-topbar">
+    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
+    <div class="q-progress-bar">
+      <div class="q-bars">
+        <div class="q-bar active" data-bar="1"></div>
+        <div class="q-bar active" data-bar="2"></div>
+        <div class="q-bar active" data-bar="3"></div>
+        <div class="q-bar active" data-bar="4"></div>
+        <div class="q-bar active" data-bar="5"></div>
+        <div class="q-bar active" data-bar="6"></div>
+        <div class="q-bar active" data-bar="7"></div>
+        <div class="q-bar active" data-bar="8"></div>
+        <div class="q-bar active" data-bar="9"></div>
+      </div>
+      <span class="q-bar-label">9 av 9</span>
     </div>
   </div>
   <div style="padding: 24px 0 80px;">
     <div class="hf-form">
-      <h1>Dina fyra svar är inne.</h1>
+      <h1>Dina nio svar är inne.</h1>
       <p class="sub">Fyll i namn och e-post så visar vi ditt mönster.</p>
 
       <div id="errorMsg" class="error-msg"></div>
@@ -842,9 +1065,9 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
-     STEP 6 — RESULTAT
+     STEP 11 — RESULTAT
      ══════════════════════════════════════════════ -->
-<div class="page" id="step6">
+<div class="page" id="step11">
   <div class="wrap">
     <div class="result-eyebrow">DITT RESULTAT</div>
     <h1 class="result-h1" id="resultTitle"></h1>
@@ -852,7 +1075,7 @@
 
     <div class="result-text-area" id="resultText"></div>
     <div class="reservation-box">
-      Fyra frågor ger en indikation, inte en slutsats. Dina mönster kan se annorlunda ut i andra sammanhang. Du är inte dina mönster.
+      Åtta frågor och en text ger en indikation, inte en slutsats. Mönstret kan se annorlunda ut i ett annat sammanhang, och du är inte dina mönster.
     </div>
 
     <div class="cta-section">
@@ -943,19 +1166,30 @@
   ];
 
   // ── PEDAGOGICAL TEXTS ──
-  var FORSTAELSE_PROCEDUR_TEXT = '<p>Procedurmönster i kommunikationen innebär att du naturligt söker efter den rätta vägen. Det finns en logik, en ordning, ett sätt att göra saker som fungerar — och när du hittat det vill du följa det. Det ger trygghet, effektivitet och reproducerbarhet.</p>'
-    + '<p>De vars kommunikation signalerar ett procedurmönster är ofta de som får saker att faktiskt hända — de som tar en komplex process och gör den hanterbar, repeterbar och skalbar. De är ovärderliga i miljöer där kvalitet, säkerhet eller konsistens är kritiskt. Men de kan ibland uppleva kommunikation med alternativmönster som rörig — och bli frustrerade när \u201Cdet sätt vi alltid gjort det på\u201D ifrågasätts utan god anledning.</p>'
-    + '<p>I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation med procedurmönster förklarar naturligt i sekvenser: \u201CFörst gör vi det här, sedan det här, till slut det här.\u201D</p>';
+  var RAMNING_TEXT = '<p>De flesta analyser vill säga något om vem du är eller vad du gör. Det här gör varken eller. Identitet, beteende och kommunikation är tre olika saker, och det här handlar bara om det tredje. Det visar vilken sorts kommunikation du föredrog i just den situation du svarade utifrån. En annan situation kan ge ett annat mönster.</p>';
 
-  var FORSTAELSE_ALTERNATIV_TEXT = '<p>Alternativmönster i kommunikationen innebär att du naturligt söker efter möjliga vägar. Det finns sällan bara ett sätt — det finns flera, och valet mellan dem är en del av det intressanta. Regler och processer är utgångspunkter, inte slutpunkter.</p>'
-    + '<p>De vars kommunikation signalerar ett alternativmönster är ofta de som hittar lösningar ingen annan tänkt på — de som ser en annan väg när den uppenbara är blockerad. Men de kan ibland upplevas som att de aldrig slutför, att de alltid vill ändra planen, att de inte respekterar strukturer som faktiskt finns av goda skäl.</p>'
-    + '<p>I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation med alternativmönster förklarar naturligt associativt: \u201CDet här hänger ihop med det här, och det påminner mig om det här, och det öppnar upp för det här.\u201D</p>';
+  var FORSTAELSE_PROCEDUR_TEXT = RAMNING_TEXT
+    + '<h2 class="result-h1" style="margin-top:32px;">Dina svar lutar åt procedur.</h2>'
+    + '<p>Du beskriver saker i ordning. När du berättar varför du gör något kommer stegen först och slutsatsen sist. Du söker det rätta sättet snarare än ett annat sätt.</p>'
+    + '<p>Det gör dig trygg att följa. Människor vet var de har dig och vad som händer härnäst. I lägen som kräver noggrannhet, upprepning eller överlämning är du den som håller ihop det.</p>'
+    + '<p>Det kostar när något behöver göras om från grunden. Då kan ordningen bli ett hinder, och den som tänker i alternativ uppfattar dig som låst även när du bara är metodisk.</p>'
+    + '<p>Nästa gång någon lägger fram en lös idé, låt bli att fråga hur de tänkt genomföra den. Fråga vad de ser för möjligheter. Du får mer av dem, och de hör dig lättare efteråt.</p>';
 
-  var FORSTAELSE_MIXED_TEXT = '<p>Det vi tittar på här är inte hur du tänker — det är hur ditt tänkande kommuniceras. Strukturerat eller associativt. Steg för steg eller möjlighet för möjlighet.</p>'
-    + '<p>Dina svar visar en jämn fördelning mellan Procedur och Alternativ. Det kan betyda att du rör dig flexibelt mellan de två — eller att kontexten avgör. Fyra frågor ger en indikation, inte en slutsats.</p>';
+  var FORSTAELSE_ALTERNATIV_TEXT = RAMNING_TEXT
+    + '<h2 class="result-h1" style="margin-top:32px;">Dina svar lutar åt alternativ.</h2>'
+    + '<p>Du beskriver saker som val. När du berättar varför du gör något kommer möjligheterna först. Du söker en väg som fungerar snarare än den ordning som gäller.</p>'
+    + '<p>Det gör att du öppnar rum. I lägen som är fastlåsta eller helt nya är du den som ser att det finns fler sätt än det som redan provats.</p>'
+    + '<p>Det kostar hos den som behöver veta stegen i förväg. För dem kan riktningen verka ändras, även när du bara utforskar. Det du menar som öppenhet hörs som otydlighet.</p>'
+    + '<p>Nästa gång du lägger fram något, säg ordningen högt även om den är självklar för dig. Först det här, sedan det här. Det kostar dig tio sekunder och ger den som behöver stegen något att hålla i.</p>';
+
+  var FORSTAELSE_MIXED_TEXT = RAMNING_TEXT
+    + '<h2 class="result-h1" style="margin-top:32px;">Dina svar fördelar sig jämnt.</h2>'
+    + '<p>Fem åt vardera hållet. Det kan betyda att du växlar beroende på situation, att frågorna träffade olika delar av ditt arbete, eller att underlaget är för litet. Med åtta frågor och en kort text går de inte att skilja åt.</p>'
+    + '<p>Det är inte ett sämre resultat. Det är ett mindre bestämt.</p>';
 
   // ── STATE ──
   var answers = []; // [{fraga: N, svar: 'Procedur'|'Alternativ'}, ...]
+  var freeText = '';
   var current = 0;
 
   // ── NAVIGATION ──
@@ -977,7 +1211,32 @@
   document.getElementById('btnStart2').addEventListener('click', onStart);
   document.getElementById('btnStart3').addEventListener('click', onStart);
 
-  // ── STEPS 1-4: CHOICE CARDS ──
+  // ── STEP 1: FREE TEXT ──
+  var freeTextArea = document.getElementById('freeTextArea');
+  var charCounter = document.getElementById('charCounter');
+  var btnFreeNext = document.getElementById('btnFreeNext');
+
+  freeTextArea.addEventListener('input', function() {
+    var len = freeTextArea.value.trim().length;
+    charCounter.textContent = len + ' / 40 tecken';
+    if (len >= 40) {
+      charCounter.classList.add('ok');
+      btnFreeNext.disabled = false;
+    } else {
+      charCounter.classList.remove('ok');
+      btnFreeNext.disabled = true;
+    }
+  });
+
+  btnFreeNext.addEventListener('click', function() {
+    if (btnFreeNext.disabled) return;
+    freeText = freeTextArea.value.trim();
+    try { smlBeacon('sml_fritext_ifylld'); } catch(e) {}
+    try { smlBeacon('sml_fraga_besvarad', { fraga: 1 }); } catch(e) {}
+    show(2);
+  });
+
+  // ── STEPS 2-9: CHOICE CARDS ──
   var allCards = document.querySelectorAll('.choice-card');
   for (var ci = 0; ci < allCards.length; ci++) {
     (function(card) {
@@ -1002,33 +1261,33 @@
 
         // Auto-advance after 300ms
         setTimeout(function() {
-          if (fraga < 4) {
+          if (fraga < 9) {
             show(fraga + 1);
           } else {
             // All questions done, show email step
             try { smlBeacon('sml_epost_efterfragad'); } catch(e) {}
-            show(5);
+            show(10);
           }
         }, 300);
       });
     })(allCards[ci]);
   }
 
-  // ── STEP 5: EMAIL VALIDATION ──
+  // ── STEP 10: EMAIL VALIDATION ──
   var nameEl = document.getElementById('firstName');
   var emailEl = document.getElementById('email');
   var consentEl = document.getElementById('consent-cb');
   var btnResult = document.getElementById('btnShowResult');
 
-  function checkStep5() {
+  function checkStep10() {
     var nameOk = nameEl.value.trim().length > 0;
     var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim());
     var consentOk = consentEl.checked;
     btnResult.disabled = !(nameOk && emailOk && consentOk);
   }
-  nameEl.addEventListener('input', checkStep5);
-  emailEl.addEventListener('input', checkStep5);
-  consentEl.addEventListener('change', checkStep5);
+  nameEl.addEventListener('input', checkStep10);
+  emailEl.addEventListener('input', checkStep10);
+  consentEl.addEventListener('change', checkStep10);
 
   // ── SUBMIT ──
   btnResult.addEventListener('click', function() {
@@ -1053,6 +1312,7 @@
       first_name: firstName,
       email: email,
       nyhetsbrev_opt: nyhetsbrevChecked,
+      free_text: freeText,
       free_answers: answers
     };
 
@@ -1067,9 +1327,9 @@
     .then(function(r) {
       if (!r.ok) throw new Error(r.data.error || 'Okänt fel');
 
-      // Calculate result client-side
-      renderResult();
-      show(6);
+      // Render result using server data
+      renderResult(r.data);
+      show(11);
       try { smlBeacon('sml_monster_visat'); } catch(e) {}
 
       // Fire-and-forget lead POST
@@ -1100,29 +1360,34 @@
   });
 
   // ── RENDER RESULT ──
-  function renderResult() {
-    var procedur = 0;
-    var alternativ = 0;
-    for (var i = 0; i < answers.length; i++) {
-      if (answers[i].svar === 'Procedur') procedur++;
-      else alternativ++;
-    }
-
+  function renderResult(serverData) {
     var titleEl = document.getElementById('resultTitle');
     var scoreEl = document.getElementById('resultScore');
     var textEl = document.getElementById('resultText');
 
-    if (procedur > alternativ) {
-      titleEl.textContent = 'Dina svar lutar åt Procedur';
-      scoreEl.textContent = procedur + ' av 4 svar åt Procedur';
+    var proc, alt;
+    if (serverData && serverData.förståelse) {
+      proc = serverData.förståelse.procedur_total || 0;
+      alt = serverData.förståelse.alternativ_total || 0;
+    } else {
+      // Fallback: count binary answers only
+      proc = 0; alt = 0;
+      for (var i = 0; i < answers.length; i++) {
+        if (answers[i].svar === 'Procedur') proc++; else alt++;
+      }
+    }
+
+    if (proc > alt) {
+      titleEl.textContent = 'Dina svar lutar åt procedur.';
+      scoreEl.textContent = proc + ' av 10 poäng åt Procedur';
       textEl.innerHTML = FORSTAELSE_PROCEDUR_TEXT;
-    } else if (alternativ > procedur) {
-      titleEl.textContent = 'Dina svar lutar åt Alternativ';
-      scoreEl.textContent = alternativ + ' av 4 svar åt Alternativ';
+    } else if (alt > proc) {
+      titleEl.textContent = 'Dina svar lutar åt alternativ.';
+      scoreEl.textContent = alt + ' av 10 poäng åt Alternativ';
       textEl.innerHTML = FORSTAELSE_ALTERNATIV_TEXT;
     } else {
-      titleEl.textContent = 'Lika fördelat';
-      scoreEl.textContent = '2 av 4 svar åt Procedur, 2 av 4 åt Alternativ';
+      titleEl.textContent = 'Dina svar fördelar sig jämnt.';
+      scoreEl.textContent = proc + ' av 10 poäng åt vardera';
       textEl.innerHTML = FORSTAELSE_MIXED_TEXT;
     }
   }

@@ -59,29 +59,7 @@ Beslutsram är inte en fråga om självförtroende. Det är en fråga om var san
 
   förståelse: {
     titel: 'Förståelse',
-    text: `Det vi tittar på här är inte hur du tänker — det är hur ditt tänkande kommuniceras. Strukturerat eller associativt. Steg för steg eller möjlighet för möjlighet.
-
-Hur organiserar du information när du ska förstå något nytt?
-
-Tänk på senaste gången du fick ett nytt uppdrag. Vad var din första impuls?
-
-Ville du förstå hur — vilka steg som gäller, vilken ordning som är rätt, vad processen ser ut? Eller ville du förstå varför och vad — vilka möjligheter som finns, vilka vägar som är öppna, hur det här hänger ihop med allt annat du vet?
-
-Det är förståelsemönstrets kärna.
-
-Procedurmönster i kommunikationen innebär att du naturligt söker efter den rätta vägen. Det finns en logik, en ordning, ett sätt att göra saker som fungerar — och när du hittat det vill du följa det. Det ger trygghet, effektivitet och reproducerbarhet.
-
-Alternativmönster i kommunikationen innebär att du naturligt söker efter möjliga vägar. Det finns sällan bara ett sätt — det finns flera, och valet mellan dem är en del av det intressanta. Regler och processer är utgångspunkter, inte slutpunkter.
-
-Båda skapar värde. Båda är nödvändiga.
-
-De vars kommunikation signalerar ett procedurmönster är ofta de som får saker att faktiskt hända — de som tar en komplex process och gör den hanterbar, repeterbar och skalbar. De är ovärderliga i miljöer där kvalitet, säkerhet eller konsistens är kritiskt. Men de kan ibland uppleva kommunikation med alternativmönster som rörig — och bli frustrerade när 'det sätt vi alltid gjort det på' ifrågasätts utan god anledning.
-
-De vars kommunikation signalerar ett alternativmönster är ofta de som hittar lösningar ingen annan tänkt på — de som ser en annan väg när den uppenbara är blockerad. Men de kan ibland upplevas som att de aldrig slutför, att de alltid vill ändra planen, att de inte respekterar strukturer som faktiskt finns av goda skäl.
-
-I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation med procedurmönster förklarar naturligt i sekvenser: 'Först gör vi det här, sedan det här, till slut det här.' Kommunikation med alternativmönster förklarar naturligt associativt: 'Det här hänger ihop med det här, och det påminner mig om det här, och det öppnar upp för det här.'
-
-Förståelsemönster handlar inte om intelligens eller kreativitet. Det handlar om hur kommunikationen naturligt organiserar information — och hur den sedan låter när den når fram till någon annan.`,
+    text: `De flesta analyser vill säga något om vem du är eller vad du gör. Det här gör varken eller. Identitet, beteende och kommunikation är tre olika saker, och det här handlar bara om det tredje. Det visar vilken sorts kommunikation du föredrog i just den situation du svarade utifrån. En annan situation kan ge ett annat mönster.`,
   },
 
   sinneskanal: {
