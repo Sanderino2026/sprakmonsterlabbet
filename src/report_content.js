@@ -63,7 +63,7 @@ Beslutsram är inte en fråga om självförtroende. Det är en fråga om var san
   },
 
   sinneskanal: {
-    titel: 'Sinneskanal',
+    titel: 'Sinneskommunikationskanal',
     text: `Det vi tittar på här är inte vilket sinne du använder mest — det är vilket sinne som dominerar språket du väljer när du beskriver världen för andra.
 
 Vilket sinne dominerar ditt sätt att ta in och beskriva världen?
@@ -130,7 +130,7 @@ Den med ett proaktivt mönster upplever ofta kommunikation med reaktivt mönster
   },
 
   detaljnivå: {
-    titel: 'Detaljnivå',
+    titel: 'Omfång',
     text: `Det vi tittar på här är inte hur noggrann du är — det är på vilken höjd kommunikationen naturligt landar. Översikt eller precision.
 
 Ser du skogen eller träden — och vilket väljer du att kommunicera?
