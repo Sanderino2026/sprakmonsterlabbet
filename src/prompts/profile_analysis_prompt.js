@@ -34,7 +34,7 @@ Svar: ${answers.q2}
 Signalord Intern: jag vet, jag känner, enligt mig, jag bestämmer, min känsla
 Signalord Extern: feedback, andra säger, bekräftelse, mäts, resultat utifrån
 
-FRÅGA 3 — Sinneskanal (Syn/Hörsel/Känsel):
+FRÅGA 3 — Sinneskommunikationskanal (Syn/Hörsel/Känsel):
 "Hur vet du att någon annan har gjort ett bra jobb?"
 Svar: ${answers.q3}
 
@@ -73,7 +73,7 @@ Tydliga steg → Procedur
 Variation → Alternativ
 Nya vägar → Alternativ
 
-Sinneskanal:
+Sinneskommunikationskanal:
 Överblick → Syn
 Klarhet → Syn
 Dialog → Hörsel
@@ -87,11 +87,11 @@ Självständighet → Intern
 Bekräftelse → Extern
 Feedback → Extern
 
-Detaljnivå:
-Stora linjer → Helhet
-Visionen → Helhet
-Precision → Detalj
-Noggrannhet → Detalj
+Omfång:
+Stora linjer → Generell
+Visionen → Generell
+Precision → Specifik
+Noggrannhet → Specifik
 
 SVARSTIDER (indikativ data för Proaktiv/Reaktiv):
 ${JSON.stringify(response_times_ms)}
@@ -100,10 +100,10 @@ Genomsnittlig svarstid under 8 sekunder = Proaktiv-signal
 Genomsnittlig svarstid över 15 sekunder = Reaktiv-signal
 Däremellan = Neutral
 
-DETALJNIVÅ (meta-mönster):
+OMFÅNG (meta-mönster):
 Analysera svarens struktur tvärs alla fem frågor:
-- Korta, övergripande svar = Helhet
-- Långa, detaljerade svar med exempel = Detalj
+- Korta, övergripande svar = Generell
+- Långa, detaljerade svar med exempel = Specifik
 
 Returnera EXAKT denna JSON-struktur:
 
@@ -129,7 +129,7 @@ Returnera EXAKT denna JSON-struktur:
     "evidens": ["..."],
     "ordval_bekräftning": true | false
   },
-  "sinneskanal": {
+  "sinneskommunikationskanal": {
     "signal": "Syn" | "Hörsel" | "Känsel",
     "styrka": "Tydlig" | "Trolig" | "Möjlig" | "Otillräcklig data",
     "evidens": ["..."]
@@ -139,8 +139,8 @@ Returnera EXAKT denna JSON-struktur:
     "styrka": "Tydlig" | "Trolig" | "Möjlig" | "Otillräcklig data",
     "evidens": ["..."]
   },
-  "detaljnivå": {
-    "signal": "Helhet" | "Detalj",
+  "omfång": {
+    "signal": "Generell" | "Specifik",
     "styrka": "Tydlig" | "Trolig" | "Möjlig" | "Otillräcklig data",
     "observation": "kort beskrivning av svarsmönstret"
   },

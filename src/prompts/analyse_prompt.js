@@ -11,7 +11,7 @@ Du ska analysera text utifrån dessa språkmönster:
 1. Motivationsriktning: Till / Ifrån
 2. Beslutsram: Intern / Extern
 3. Förändringsrelation: Likhet / Likhet med undantag / Skillnad med undantag / Skillnad
-4. Detaljnivå: Helhet / Detalj
+4. Omfång: Generell / Specifik
 5. Handlingsstil: Proaktiv / Reaktiv
 6. Förståelse: Alternativ / Procedur
 7. Sinneskommunikationskanaler: Syn / Hörsel / Känsel

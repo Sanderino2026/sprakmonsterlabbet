@@ -12,7 +12,7 @@ DE FEM MÖNSTREN OCH DERAS POLER:
    Procedur: orsak-verkan, steg, "för att", specifik väg
    Alternativ: möjligheter, val, flexibilitet, flera vägar
 
-3. Sinneskanal — tre poler:
+3. Sinneskommunikationskanal — tre poler:
    Syn: ser, tydligt, bild, perspektiv, visar, framgår
    Hörsel: hör, säger, berättar, kommunicerar, uttrycker, resonerar
    Känsel: känner, konkret, hanterbart, grepp om, solid, stabilt
@@ -22,9 +22,9 @@ DE FEM MÖNSTREN OCH DERAS POLER:
    Extern: andra säger, bekräftelse, mäts, resultat utifrån, fakta visar
    VIKTIGT: Personlig levd erfarenhet som grund för auktoritet ("Min pappa omkom", "Jag vet vad det betyder", "jag själv har upplevt") är INTERN — talaren hämtar sin legitimitet inifrån, från egen erfarenhet, inte från externa källor. Extern = hänvisning till ANDRAS bedömningar, statistik, institutioner, press.
 
-5. Detaljnivå — binärt:
-   Helhet: övergripande, abstrakta resonemang, stora penseldrag
-   Detalj: specifika namn, siffror, datum, konkreta exempel
+5. Omfång — binärt:
+   Generell: övergripande, abstrakta resonemang, stora penseldrag
+   Specifik: specifika namn, siffror, datum, konkreta exempel
 
 REGLER:
 - Extrahera VARJE spann som signalerar en pol. Var uttömmande — missa inga.
@@ -59,7 +59,7 @@ Returnera EXAKT JSON enligt detta schema, utan markdown:
       "tolkning": "..."
     },
     {
-      "category": "Sinneskanal",
+      "category": "Sinneskommunikationskanal",
       "spann": [{"text": "...", "pol": "Syn"}, {"text": "...", "pol": "Känsel"}],
       "beskrivning": "...",
       "tolkning": "..."
@@ -71,8 +71,8 @@ Returnera EXAKT JSON enligt detta schema, utan markdown:
       "tolkning": "..."
     },
     {
-      "category": "Detaljnivå",
-      "spann": [{"text": "...", "pol": "Helhet"}, {"text": "...", "pol": "Detalj"}],
+      "category": "Omfång",
+      "spann": [{"text": "...", "pol": "Generell"}, {"text": "...", "pol": "Specifik"}],
       "beskrivning": "...",
       "tolkning": "..."
     }

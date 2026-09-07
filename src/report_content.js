@@ -84,8 +84,8 @@ I kommunikation syns detta tydligast i hur vi förklarar saker. Kommunikation me
 Förståelsemönster handlar inte om intelligens eller kreativitet. Det handlar om hur kommunikationen naturligt organiserar information — och hur den sedan låter när den når fram till någon annan.`,
   },
 
-  sinneskanal: {
-    titel: 'Sinneskanal',
+  sinneskommunikationskanal: {
+    titel: 'Sinneskommunikationskanal',
     text: `Det vi tittar på här är inte vilket sinne du använder mest — det är vilket sinne som dominerar språket du väljer när du beskriver världen för andra.
 
 Vilket sinne dominerar ditt sätt att ta in och beskriva världen?
@@ -96,7 +96,7 @@ Någon säger: 'Jag ser vad du menar.' En annan säger: 'Det låter rätt.' En t
 
 Tre människor. Samma situation. Tre helt olika sätt att processa den.
 
-Det är sinneskanalen.
+Det är sinneskommunikationskanalen.
 
 De vars kommunikation signalerar ett synmönster tänker i bilder och använder visuella metaforer naturligt. De läser av kroppsspråk, ansiktsuttryck och rumslig dynamik. De märker när något ser rätt ut — eller inte. De förstår bäst när de kan se det.
 
@@ -104,11 +104,11 @@ De vars kommunikation signalerar ett hörselsmönster är känsliga för rytm, t
 
 De vars kommunikation signalerar ett känselmönster — och här är det viktigt att förstå vad känsel faktiskt betyder i det här sammanhanget — reagerar på det konkreta, det fysiska, det hanterbara. Det handlar inte primärt om emotion. Det handlar om förnimmelse. De vill greppa situationen. De förstår bäst när det känns solitt.
 
-I praktiken skapar sinneskanaler en av de vanligaste kommunikationsklyftorna på arbetsplatser — utan att någon förstår varför.
+I praktiken skapar sinneskommunikationskanaler en av de vanligaste kommunikationsklyftorna på arbetsplatser — utan att någon förstår varför.
 
 En kommunikation med synmönster håller en presentation full av bilder och diagram. Den med hörselsmönster önskar att hen fick höra det förklarat istället. Den med känselmönster vill ha ett konkret exempel att hålla i.
 
-Att känna till sin primära sinneskanal ger dig ett av de mest praktiska verktygen för kommunikation som finns. Nästa gång du märker att du och en kollega pratar förbi varandra — lyssna på vilka sinnesord de använder. Svara i samma kanal. Skillnaden kan vara påtaglig.`,
+Att känna till sin primära sinneskommunikationskanal ger dig ett av de mest praktiska verktygen för kommunikation som finns. Nästa gång du märker att du och en kollega pratar förbi varandra — lyssna på vilka sinnesord de använder. Svara i samma kanal. Skillnaden kan vara påtaglig.`,
   },
 
   förändringsrelation: {
@@ -151,17 +151,17 @@ I snabbrörliga miljöer med hög osäkerhet är proaktiv kommunikation ofta en 
 Den med ett proaktivt mönster upplever ofta kommunikation med reaktivt mönster som långsam. Den med ett reaktivt mönster upplever ofta kommunikation med proaktivt mönster som förhastad. Ingen av dem har fel — de är optimerade för olika hastigheter.`,
   },
 
-  detaljnivå: {
-    titel: 'Detaljnivå',
+  omfång: {
+    titel: 'Omfång',
     text: `Det vi tittar på här är inte hur noggrann du är — det är på vilken höjd kommunikationen naturligt landar. Översikt eller precision.
 
 Ser du skogen eller träden — och vilket väljer du att kommunicera?
 
-De vars kommunikation signalerar ett helhetsmönster kommunicerar naturligt på konceptnivå. De ser sammanhang, riktning och syfte. De är effektiva på att kommunicera vision och prioriteringar. Men de kan ibland kommunicera för lite för dem som behöver förstå hur för att känna sig trygga.
+De vars kommunikation signalerar ett generellt mönster kommunicerar naturligt på konceptnivå. De ser sammanhang, riktning och syfte. De är effektiva på att kommunicera vision och prioriteringar. Men de kan ibland kommunicera för lite för dem som behöver förstå hur för att känna sig trygga.
 
-De vars kommunikation signalerar ett detaljmönster kommunicerar naturligt på operativ nivå. De ser steg, undantag och nyanser. De är effektiva på att kommunicera precision och noggrannhet. Men de kan ibland kommunicera för mycket för dem som behöver förstå varför för att känna sig engagerade.
+De vars kommunikation signalerar ett specifikt mönster kommunicerar naturligt på operativ nivå. De ser steg, undantag och nyanser. De är effektiva på att kommunicera precision och noggrannhet. Men de kan ibland kommunicera för mycket för dem som behöver förstå varför för att känna sig engagerade.
 
-I möten syns detta omedelbart. Kommunikation på helhetsplanet presenterar tre punkter och vill gå vidare. Kommunikation på detaljplanet vill förstå varje punkt ordentligt innan den är redo att gå vidare.
+I möten syns detta omedelbart. Kommunikation på det generella planet presenterar tre punkter och vill gå vidare. Kommunikation på det specifika planet vill förstå varje punkt ordentligt innan den är redo att gå vidare.
 
 Det mest kraftfulla är när man medvetet kan röra sig mellan de två — zooma ut för att sätta riktning, zooma in för att säkerställa kvalitet. Men det kräver att man först förstår var man naturligt befinner sig.`,
   },
@@ -183,6 +183,6 @@ export const utmaningar = {
   'Skillnad': 'Att värdera det som fungerar och fortsätta med det. Din förmåga att se vad som förändrats är ovärderlig — men det finns ett värde i kontinuitet som lätt förbises.',
   'Proaktiv': 'Att ge utrymme åt dem som behöver tid att tänka. Din handlingsorientering är en styrka — men snabba beslut kan upplevas som att du inte lyssnat färdigt.',
   'Reaktiv': 'Att inte vänta för länge när situationen kräver snabbt handlande. Din reflekterande stil ger djup — men i vissa lägen efterfrågas beslutsamhet.',
-  'Helhet': 'Att ge tillräcklig kontext till dem som behöver detaljer för att känna sig trygga. Din helhetsfokus är effektiv — men den som vill förstå hur riskerar att tappas.',
-  'Detalj': 'Att kommunicera huvudbudskapet utan att det drunknar i detaljer. Din noggrannhet är värdefull — men i snabba sammanhang efterfrågas ofta det enkla.',
+  'Generell': 'Att ge tillräcklig kontext till dem som behöver detaljer för att känna sig trygga. Din helhetsfokus är effektiv — men den som vill förstå hur riskerar att tappas.',
+  'Specifik': 'Att kommunicera huvudbudskapet utan att det drunknar i detaljer. Din noggrannhet är värdefull — men i snabba sammanhang efterfrågas ofta det enkla.',
 };
