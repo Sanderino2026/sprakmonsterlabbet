@@ -521,46 +521,47 @@
 
     var html = '';
 
-    // EYEBROW + SECTION
+    // RUBRIK — dynamisk baserat på signal
+    var isAlt = signal && signal.toLowerCase().indexOf('alternativ') !== -1;
+    var rubrik = isAlt ? 'Du b\u00f6rjar i m\u00f6jligheterna' : 'Du b\u00f6rjar i ordningen';
+
+    // Storleksklass ist\u00e4llet f\u00f6r exakta tal
+    var pct = ((skala - 1) / 9 * 100);
+    var storleksklass = '';
+    if (pct <= 55) storleksklass = 'J\u00e4mnt f\u00f6rdelat';
+    else if (pct <= 65) storleksklass = '\u00d6vervikt \u00e5t ' + (isAlt ? 'alternativ' : 'procedur');
+    else if (pct <= 80) storleksklass = 'Tydlig \u00f6vervikt \u00e5t ' + (isAlt ? 'alternativ' : 'procedur');
+    else if (pct <= 90) storleksklass = 'Stark \u00f6vervikt \u00e5t ' + (isAlt ? 'alternativ' : 'procedur');
+    else storleksklass = 'N\u00e4stan uteslutande ' + (isAlt ? 'alternativ' : 'procedur');
+
     html += '<div class="eyebrow">F\u00d6RST\u00c5ELSE \u00b7 DITT GRATISM\u00d6NSTER</div>';
     html += '<div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">';
     html += '<img src="assets/omslag/omslag-3-knut.svg" alt="" style="width:52px;height:52px;flex-shrink:0;">';
-    html += '<div class="section-title">Hur du f\u00f6rst\u00e5r</div>';
+    html += '<div class="section-title">' + esc(rubrik) + '</div>';
     html += '</div>';
+    html += '<p style="font-size:14px;color:var(--color-text-light);margin-bottom:4px;">' + esc(storleksklass) + '</p>';
     html += '<div class="section-divider"></div>';
 
-    // Block A — Om mönstret
-    html += '<div class="block-om">';
-    html += '<div class="block-label">OM M\u00d6NSTRET</div>';
-    html += textToHtml(pedText);
-    html += '</div>';
-
-    // Pattern reveal
-    if (signal) {
-      html += '<div class="pattern-reveal">DITT M\u00d6NSTER: ' + esc(signal) + '</div>';
-    }
-
-    // Block B — Personlig analys
-    html += '<div class="block-resultat">';
-    html += textToHtml(analys);
-
-    // Scale visualization
-    var pct = ((skala - 1) / 9 * 100).toFixed(1);
-    var badge = '';
-    if (styrka === 'Tydlig') badge = '<span class="strength-tydlig">Tydlig</span>';
-    else if (styrka === 'Trolig') badge = '<span class="strength-trolig">Trolig</span>';
-    else if (styrka === 'M\u00f6jlig') badge = '<span class="strength-mojlig">M\u00f6jlig</span>';
-
+    // Skalstavern utan siffror
     html += '<div class="viz-card">';
     html += '<div class="scale-labels"><span>PROCEDUR</span><span>ALTERNATIV</span></div>';
     html += '<div class="scale-track">';
-    html += '<div class="scale-fill" style="width:' + pct + '%"></div>';
-    html += '<div class="scale-thumb" style="left:' + pct + '%"></div>';
+    html += '<div class="scale-fill" style="width:' + pct.toFixed(1) + '%"></div>';
+    html += '<div class="scale-thumb" style="left:' + pct.toFixed(1) + '%"></div>';
     html += '</div>';
-    html += '<div class="scale-value">' + skala + ' / 10 \u00b7 ' + badge + '</div>';
+    html += '<div class="scale-value">' + esc(storleksklass) + '</div>';
     html += '</div>';
 
-    html += '</div>'; // block-resultat
+    // Block A — Om m\u00f6nstret
+    html += '<div class="block-om">';
+    html += '<div class="block-label"><img src="assets/piktogram/omfang-generell.svg" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:8px;opacity:0.5;">OM M\u00d6NSTRET</div>';
+    html += textToHtml(pedText);
+    html += '</div>';
+
+    // Block B — Personlig analys med sektionsrubriker
+    html += '<div class="block-resultat">';
+    html += textToHtml(analys);
+    html += '</div>';
 
     // SELL SECTION (inline)
     html += '<div class="sell-separator"></div>';

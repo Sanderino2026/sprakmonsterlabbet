@@ -89,6 +89,15 @@ export async function handleGratisRapport(request, env) {
     // Hämta pedagogisk text
     const pedText = pedagogik.förståelse?.text || '';
 
+    // Storleksklass istället för exakta tal
+    const pctVal = ((skala - 1) / 9 * 100);
+    let storleksklass;
+    if (pctVal <= 55) storleksklass = 'Jämnt fördelat';
+    else if (pctVal <= 65) storleksklass = 'Övervikt';
+    else if (pctVal <= 80) storleksklass = 'Tydlig övervikt';
+    else if (pctVal <= 90) storleksklass = 'Stark övervikt';
+    else storleksklass = 'Nästan uteslutande';
+
     return {
       status: 200,
       body: {
@@ -98,8 +107,8 @@ export async function handleGratisRapport(request, env) {
         pedagogik_text: pedText,
         förståelse: {
           signal,
-          styrka,
           skala,
+          storleksklass,
           analys: analysText,
         },
       },
@@ -111,25 +120,35 @@ export async function handleGratisRapport(request, env) {
 }
 
 async function generateShortAnalysis(name, signal, styrka, skala, situation, env) {
+  const isAlt = signal && signal.toLowerCase().includes('alternativ');
+  const storleksklass = skala <= 5.5 ? 'jämnt fördelat' : skala <= 6.5 ? 'övervikt' : skala <= 8 ? 'tydlig övervikt' : skala <= 9 ? 'stark övervikt' : 'nästan uteslutande';
+
   const systemPrompt = `Du är en kommunikationsanalytiker för Språkmönsterlabbet. Skriv en generös, personlig analys av respondentens förståelsemönster. Det här är INTE en teaser — det är en fullständig analys av EN dimension.
+
+FORMAT — exakt fyra stycken med dessa rubriker (skriv rubrikerna som ## Markdown):
+## Vad det ger dig
+## Vad det kostar
+## När ni krockar
+## En sak att pröva
 
 REGLER:
 - Kommunikationen är alltid subjektet, aldrig personen. Skriv "din kommunikation signalerar..." INTE "du är..."
 - Inramning: "du och den du pratar mest med". Visa vad som händer när två personer med samma läge möts, och vad som händer när de har olika lägen.
 - Förklara vad Procedur och Alternativ BETYDER i praktiken: hur det syns i ett möte, i ett mejl, i ett beslutssamtal.
-- Beskriv vad som händer när två Procedur-personer samtalar (effektivt men riskerar att missa alternativ) och när Procedur möter Alternativ (friktion som kan bli produktiv).
-- Avsluta med en konkret reflektion: "Nästa gång du märker att ett samtal fastnar — tänk på om ni pratar i samma förståelseläge."
+- "Vad det kostar": den blinda fläcken — vad mönstret gör svårt.
+- "När ni krockar": vad som händer när Procedur möter Alternativ (friktion som kan bli produktiv).
+- "En sak att pröva": en konkret reflektion, inte ett råd.
+- BÖRJA ALDRIG med en rubrik som upprepar signalen ("Du börjar i möjligheterna" eller liknande) — huvudrubriken sätts av frontenden.
+- Inga exakta tal, inga poäng, inga procent. Använd "tydlig övervikt", "stark övervikt" etc.
 - 400–500 ord. Varm, professionell ton.
 - Referera sammanhanget: ${situation}`;
 
   const userPrompt = `Respondent: ${name}
 Mönster: Förståelse
-Signal: ${signal}
-Styrka: ${styrka}
-Skala: ${skala}/10
+Signal: ${signal} (${storleksklass})
 Sammanhang: ${situation}
 
-Skriv en generös analys (~400-500 ord) av detta förståelsemönster. Inramning: "du och den du pratar mest med".`;
+Skriv fyra stycken med rubrikerna: Vad det ger dig, Vad det kostar, När ni krockar, En sak att pröva. 400-500 ord.`;
 
   try {
     const res = await fetch(CLAUDE_API, {
