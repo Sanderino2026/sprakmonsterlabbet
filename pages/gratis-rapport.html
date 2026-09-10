@@ -559,8 +559,13 @@
     html += '</div>';
 
     // Block B — Personlig analys med sektionsrubriker
+    // Strippa bort eventuell rubrik som AI:n la till trots instruktion
+    var cleanAnalys = analys;
+    if (cleanAnalys) {
+      cleanAnalys = cleanAnalys.replace(/^#+ .+\n+/, '');
+    }
     html += '<div class="block-resultat">';
-    html += textToHtml(analys);
+    html += textToHtml(cleanAnalys);
     html += '</div>';
 
     // SELL SECTION (inline)

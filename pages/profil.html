@@ -1226,6 +1226,7 @@
       free_answers: answers
     };
 
+    // Navigera direkt till väntsidan — API-anropet körs i bakgrunden
     fetch(API + '/api/profile/submit-free', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1235,12 +1236,13 @@
       return res.json().then(function(d) { return { ok: res.ok, data: d }; });
     })
     .then(function(r) {
-      if (!r.ok) throw new Error(r.data.error || 'Okänt fel');
+      if (!r.ok) throw new Error(r.data.error || 'Ok\u00e4nt fel');
 
-      renderResult(r.data);
-      show(11);
-      try { smlBeacon('sml_monster_visat'); } catch(e) {}
+      // Spara profile_id f\u00f6r polling p\u00e5 v\u00e4ntsidan
+      sessionStorage.setItem('sml_profile_id', r.data.profile_id || '');
+      sessionStorage.setItem('sml_namn', firstName);
 
+      // Lead-registrering i bakgrunden
       try {
         fetch(LEAD_URL, {
           method: 'POST',
@@ -1250,7 +1252,7 @@
             epost: email,
             namn: firstName,
             kalla: 'sml',
-            anteckning: 'Gratis språkprofil — förståelse',
+            anteckning: 'Gratis spr\u00e5kprofil \u2014 f\u00f6rst\u00e5else',
             utm_source: sessionStorage.getItem('sml_utm_source') || 'sml',
             utm_medium: sessionStorage.getItem('sml_utm_medium') || 'organic',
             utm_campaign: sessionStorage.getItem('sml_utm_campaign') || 'sml-profil',
@@ -1258,9 +1260,12 @@
           })
         }).catch(function() {});
       } catch(e) {}
+
+      // Navigera till v\u00e4ntsidan
+      window.location.href = '/vantar';
     })
     .catch(function(err) {
-      errEl.textContent = 'Något gick fel: ' + err.message;
+      errEl.textContent = 'N\u00e5got gick fel: ' + err.message;
       errEl.classList.add('visible');
       btnResult.disabled = false;
       btnResult.textContent = 'Visa mitt resultat';
