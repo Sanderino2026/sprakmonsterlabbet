@@ -441,14 +441,12 @@
       <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Motivationsriktning</li>
       <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Beslutsram</li>
       <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Sinneskommunikationskanal</li>
-      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Förändringsrelation</li>
-      <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Handlingsstil</li>
       <li class="gr-nav-item"><span class="gr-nav-lock">&middot;</span> Omfång</li>
     </ul>
     <div class="gr-sidebar-cta" id="sidebarCta" style="display:none;">
       <div class="gr-cta-text">Lås upp hela rapporten</div>
-      <div class="gr-cta-price">499 kr</div>
-      <div class="gr-cta-meta">Engångsbetalning</div>
+      <div class="gr-cta-price" id="ctaPrice">199 kr</div>
+      <div class="gr-cta-meta" id="ctaMeta">Kampanjpris via partiledarserien &middot; t.o.m. 30 september</div>
       <button class="gr-cta-btn" id="sidebarBuyBtn">KÖP HELA RAPPORTEN</button>
       <div class="gr-cta-stripe">Säker betalning via Stripe</div>
     </div>
@@ -607,13 +605,15 @@
     html += '\u00b7 Motivationsriktning \u2014 vad som driver din kommunikation<br>';
     html += '\u00b7 Beslutsram \u2014 var du h\u00e4mtar din tyngd<br>';
     html += '\u00b7 Sinneskommunikationskanal \u2014 vilket sinne som dominerar ditt spr\u00e5k<br>';
-    html += '\u00b7 Din relation till f\u00f6r\u00e4ndring<br>';
-    html += '\u00b7 Handlingsstil och omf\u00e5ng<br>';
+    html += '\u00b7 Omf\u00e5ng \u2014 hur brett eller specifikt du kommunicerar<br>';
     html += '\u00b7 En helhetsbild av hur dina m\u00f6nster samspelar';
     html += '</div>';
 
-    html += '<div class="sell-price">499 kr</div>';
-    html += '<div class="sell-price-meta">Eng\u00e5ngsbetalning. Rapporten levereras direkt till din e-post.</div>';
+    var now = new Date();
+    var kampanj = now < new Date('2026-10-01');
+    html += '<div class="sell-price">' + (kampanj ? '199 kr' : '499 kr') + '</div>';
+    if (kampanj) html += '<div class="sell-price-meta">Kampanjpris via partiledarserien \u00b7 t.o.m. 30 september. Ordinarie 499 kr.</div>';
+    else html += '<div class="sell-price-meta">Eng\u00e5ngsbetalning. Rapporten levereras direkt till din e-post.</div>';
     html += '<button class="sell-btn" id="buyBtn">K\u00d6P HELA RAPPORTEN</button>';
     html += '<div class="sell-stripe-note">S\u00e4ker betalning via Stripe</div>';
     html += '</div>';
@@ -640,8 +640,6 @@
         .then(function(data) {
           if (data.ok && data.url) {
             sessionStorage.setItem('checkout_profile_id', profileId);
-            sessionStorage.removeItem('gift_to_name');
-            sessionStorage.removeItem('gift_to_email');
             window.location.href = data.url;
           } else {
             btn.disabled = false;

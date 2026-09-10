@@ -161,46 +161,6 @@ export async function rateAnalysis(analysisRecordId, rating, env) {
   ).bind(rating, analysisRecordId).run();
 }
 
-// ── Övningar (exercises) ─────────────────────────────────────────────
-
-export async function getRandomExercise(env) {
-  const row = await env.SML_DB.prepare(
-    "SELECT * FROM exercise WHERE status = 'active' AND source_type = 'curated' ORDER BY RANDOM() LIMIT 1"
-  ).first();
-  if (!row) return null;
-  return mapExercise(row);
-}
-
-export async function getExerciseById(recordId, env) {
-  const row = await env.SML_DB.prepare(
-    'SELECT * FROM exercise WHERE id = ?'
-  ).bind(recordId).first();
-  if (!row) return null;
-  return mapExercise(row);
-}
-
-function mapExercise(r) {
-  return {
-    exercise_id: r.id,
-    source_type: r.source_type ?? 'curated',
-    category: r.category ?? null,
-    pattern_category: r.pattern_category ?? null,
-    pattern_signal: r.pattern_signal ?? null,
-    text: r.text_content ?? '',
-    question: r.question ?? '',
-    options: [r.option_1, r.option_2, r.option_3, r.option_4].filter(Boolean),
-    correct_index: r.correct_index ?? 0,
-    explanation: r.explanation ?? '',
-  };
-}
-
-export async function saveExerciseAttempt(userId, exerciseId, selectedIndex, isCorrect, env) {
-  const id = generateId();
-  await env.SML_DB.prepare(
-    'INSERT INTO exercise_attempt (id, anvandare_id, exercise_id, selected_index, correct) VALUES (?, ?, ?, ?, ?)'
-  ).bind(id, userId, exerciseId, selectedIndex, isCorrect ? 1 : 0).run();
-}
-
 // ── Betalning ────────────────────────────────────────────────────────
 
 const PRICE_CONFIG = {

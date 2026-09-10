@@ -1,6 +1,5 @@
 import { updateUserAfterPayment, updateGuestAfterPayment, saveToLeadsTable } from './airtable.js';
 import { handleReportGenerate } from './report_generate.js';
-import { handleGiftReport } from './gift_report.js';
 
 const ONE_TIME_PRICE_ID = 'price_1T9j6zQc0eK2st18E4ezJAo0';
 const RAPPORT_FULL_PRICE_ID = 'price_1TE6FFHrTws6MQZqOiYLRzGE';
@@ -9,7 +8,7 @@ const RAPPORT_ALUMNI_PRICE_ID = 'price_1TE9RZHrTws6MQZqVEhOtaY0';
 // ── POST /api/stripe/checkout ──────────────────────────────────────
 export async function handleStripeCheckout(request, env) {
   const body = await request.json().catch(() => null);
-  const { priceId, email, guest_id, profile_id, price_type, gift_to_name, gift_to_email, gift_from_name } = body ?? {};
+  const { priceId, email, guest_id, profile_id, price_type } = body ?? {};
 
   if (!priceId) {
     return { status: 400, body: { ok: false, error: 'missing_params' } };
@@ -45,15 +44,6 @@ export async function handleStripeCheckout(request, env) {
   }
   if (guest_id) {
     params.append('metadata[guest_id]', guest_id);
-  }
-  if (gift_to_name) {
-    params.append('metadata[gift_to_name]', gift_to_name);
-  }
-  if (gift_to_email) {
-    params.append('metadata[gift_to_email]', gift_to_email);
-  }
-  if (gift_from_name) {
-    params.append('metadata[gift_from_name]', gift_from_name);
   }
 
   try {
@@ -121,37 +111,8 @@ export async function handleStripeWebhook(request, env) {
     console.log('[webhook] price_type från metadata:', priceType ?? '(saknas)');
     console.log('[webhook] profile_id från metadata:', profileId ?? '(saknas)');
 
-    // Present-köp: skicka presentmail istället för rapport
-    const giftToEmail = session.metadata?.gift_to_email;
-    const giftToName = session.metadata?.gift_to_name;
-    const giftFromName = session.metadata?.gift_from_name;
-
-    if (giftToEmail && (priceType === 'rapport_full' || priceType === 'rapport_alumni') && profileId) {
-      console.log('[webhook] Present-köp — skickar presentmail till:', giftToEmail);
-      try {
-        await handleGiftReport(env, {
-          profile_id: profileId,
-          gift_to_name: giftToName || 'Mottagare',
-          gift_to_email: giftToEmail,
-          gift_from_name: giftFromName || 'Någon',
-        });
-        console.log('[webhook] Presentmail skickat till:', giftToEmail);
-      } catch (err) {
-        console.error('[webhook] handleGiftReport fel:', err);
-      }
-      // Spara present-mottagaren som lead
-      try {
-        await saveToLeadsTable(env, {
-          email: giftToEmail,
-          name: giftToName || undefined,
-          source: 'gift',
-        });
-      } catch (err) {
-        console.error('[webhook] saveToLeadsTable fel:', err);
-      }
-    }
-    // Rapport-köp (ej present): generera och skicka fullständig rapport
-    else if ((priceType === 'rapport_full' || priceType === 'rapport_alumni') && profileId) {
+    // Rapport-köp: generera och skicka fullständig rapport
+    if ((priceType === 'rapport_full' || priceType === 'rapport_alumni') && profileId) {
       console.log('[webhook] Rapport-köp — genererar rapport för profile_id:', profileId);
       try {
         const fakeRequest = { json: async () => ({ profile_id: profileId }) };

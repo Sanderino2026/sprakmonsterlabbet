@@ -111,13 +111,15 @@ export async function handleGratisRapport(request, env) {
 }
 
 async function generateShortAnalysis(name, signal, styrka, skala, situation, env) {
-  const systemPrompt = `Du är en kommunikationsanalytiker för Språkmönsterlabbet. Skriv en kort, personlig analys av respondentens förståelsemönster.
+  const systemPrompt = `Du är en kommunikationsanalytiker för Språkmönsterlabbet. Skriv en generös, personlig analys av respondentens förståelsemönster. Det här är INTE en teaser — det är en fullständig analys av EN dimension.
 
 REGLER:
-- Kommunikationen är alltid subjektet, aldrig personen
-- Skriv "din kommunikation signalerar..." INTE "du är..."
-- Max 200 ord
-- Varm, professionell ton
+- Kommunikationen är alltid subjektet, aldrig personen. Skriv "din kommunikation signalerar..." INTE "du är..."
+- Inramning: "du och den du pratar mest med". Visa vad som händer när två personer med samma läge möts, och vad som händer när de har olika lägen.
+- Förklara vad Procedur och Alternativ BETYDER i praktiken: hur det syns i ett möte, i ett mejl, i ett beslutssamtal.
+- Beskriv vad som händer när två Procedur-personer samtalar (effektivt men riskerar att missa alternativ) och när Procedur möter Alternativ (friktion som kan bli produktiv).
+- Avsluta med en konkret reflektion: "Nästa gång du märker att ett samtal fastnar — tänk på om ni pratar i samma förståelseläge."
+- 400–500 ord. Varm, professionell ton.
 - Referera sammanhanget: ${situation}`;
 
   const userPrompt = `Respondent: ${name}
@@ -127,7 +129,7 @@ Styrka: ${styrka}
 Skala: ${skala}/10
 Sammanhang: ${situation}
 
-Skriv en kort personlig analys (~200 ord) av detta förståelsemönster.`;
+Skriv en generös analys (~400-500 ord) av detta förståelsemönster. Inramning: "du och den du pratar mest med".`;
 
   try {
     const res = await fetch(CLAUDE_API, {
@@ -139,7 +141,7 @@ Skriv en kort personlig analys (~200 ord) av detta förståelsemönster.`;
       },
       body: JSON.stringify({
         model: MODEL,
-        max_tokens: 500,
+        max_tokens: 1000,
         system: systemPrompt,
         messages: [{ role: 'user', content: userPrompt }],
       }),

@@ -1,25 +1,15 @@
 import { handleLogin, handleVerify, handleLogout, getSessionUser } from './auth.js';
 import { handleUsage } from './usage.js';
-import { handleAnalyseText } from './analyse.js';
-import { handleAnalyseTextStandalone } from './analyse_standalone.js';
 import { handleProfile } from './profile.js';
-import { handleGetExercise, handleAnswer } from './training.js';
-import { handleSendAnalysis } from './send_analysis.js';
 import { handleStripeCheckout, handleStripeWebhook } from './stripe.js';
 import { handleFeedback, handleFeedbackReport } from './feedback.js';
 import { handleProfileSubmit } from './profile_submit.js';
 import { handleFreeProfileSubmit } from './profile_submit_free.js';
-import { findUserByRecordId, rateAnalysis } from './airtable.js';
 import { handleReportGenerate, handleGetReport, handleReportByProfile } from './report_generate.js';
 import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 import { handleGdprRadera } from './gdpr_radera.js';
 import { handleGdprExport } from './gdpr_export.js';
-import { handleTestBeslutsram } from './test_beslutsram.js';
-import { handleTestForstaelse } from './test_forstaelse.js';
-import { handleTestOmfang } from './test_omfang.js';
-import { handleTestSinneskanalV2 } from './test_sinneskanal_v2.js';
-import { handleTestSinneskanalV3 } from './test_sinneskanal_v3.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -131,41 +121,11 @@ export default {
     // ── Skyddade endpoints — kräver inloggning ───────────────────
     const user = await getSessionUser(request, env);
 
-    // ── /api/analyses-status ─────────────────────────────────────
-    if (path === '/api/analyses-status' && method === 'GET') {
-      // Inloggad användare
-      if (user) {
-        return reply({ ok: true, remaining_analyses: user.remaining_analyses, access_type: user.access_type });
-      }
-      // Fördröj Airtable-anropet efter betalning så webhook hinner landa
-      if (url.searchParams.get('after_payment') === '1') {
-        await new Promise(r => setTimeout(r, 1500));
-      }
-      // Anonym besökare med guest_id query-param
-      const guestId = url.searchParams.get('guest_id');
-      if (guestId) {
-        const record = await findUserByRecordId(guestId, env);
-        if (record) {
-          return reply({ ok: true, remaining_analyses: record.remaining_analyses, access_type: record.access_type });
-        }
-      }
-      // Ny besökare — returnera standardkvot
-      return reply({ ok: true, remaining_analyses: 3, access_type: null });
-    }
-
     // ── /api/usage ───────────────────────────────────────────────
     if (path === '/api/usage' && method === 'GET') {
       if (!user) return unauthorized();
       const result = await handleUsage(user);
       return reply(result.body, result.status);
-    }
-
-    // ── /api/analyses/rate ───────────────────────────────────────
-    if (path === '/api/analyses/rate' && method === 'POST') {
-      const { analysis_record_id, rating } = await request.json().catch(() => ({}));
-      if (!analysis_record_id || !rating) return reply({ error: 'Saknar data' }, 400);
-      await rateAnalysis(analysis_record_id, rating, env);
-      return reply({ success: true }, 200);
     }
 
     // ── /api/feedback ────────────────────────────────────────────
@@ -216,12 +176,6 @@ export default {
       return reply(result.body, result.status);
     }
 
-    // ── /api/send-analysis ───────────────────────────────────────
-    if (path === '/api/send-analysis' && method === 'POST') {
-      const result = await handleSendAnalysis(request, env);
-      return reply(result.body, result.status);
-    }
-
     // ── /api/stripe/checkout ─────────────────────────────────────
     if (path === '/api/stripe/checkout' && method === 'POST') {
       const result = await handleStripeCheckout(request, env);
@@ -234,52 +188,9 @@ export default {
       return reply(result.body, result.status);
     }
 
-    // ── /api/test-beslutsram (temporär) ────────────────────────────
-    if (path === '/api/test-beslutsram' && method === 'POST') {
-      const result = await handleTestBeslutsram(request, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/test-forstaelse (temporär) ─────────────────────────────
-    if (path === '/api/test-forstaelse' && method === 'POST') {
-      const result = await handleTestForstaelse(request, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/test-omfang (temporär) ─────────────────────────────────
-    if (path === '/api/test-omfang' && method === 'POST') {
-      const result = await handleTestOmfang(request, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/test-sinneskanal-v2 (temporär) ────────────────────────
-    if (path === '/api/test-sinneskanal-v2' && method === 'POST') {
-      const result = await handleTestSinneskanalV2(request, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/test-sinneskanal-v3 (temporär) ────────────────────────
-    if (path === '/api/test-sinneskanal-v3' && method === 'POST') {
-      const result = await handleTestSinneskanalV3(request, env);
-      return reply(result.body, result.status);
-    }
-
     // ── /api/analyse-tal ──────────────────────────────────────────
     if (path === '/api/analyse-tal' && method === 'POST') {
       const result = await handleAnalyseTal(request, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/analyse-text-standalone ─────────────────────────────
-    if (path === '/api/analyse-text-standalone' && method === 'POST') {
-      const result = await handleAnalyseTextStandalone(request, env);
-      return reply(result.body, result.status, result.cookie ?? null);
-    }
-
-    // ── /api/analyse-text ────────────────────────────────────────
-    if (path === '/api/analyse-text' && method === 'POST') {
-      if (!user) return unauthorized();
-      const result = await handleAnalyseText(request, user, env);
       return reply(result.body, result.status);
     }
 
@@ -287,20 +198,6 @@ export default {
     if (path === '/api/profile' && method === 'POST') {
       if (!user) return unauthorized();
       const result = await handleProfile(request, user, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/training/exercise ───────────────────────────────────
-    if (path === '/api/training/exercise' && method === 'GET') {
-      if (!user) return unauthorized();
-      const result = await handleGetExercise(request, user, env);
-      return reply(result.body, result.status);
-    }
-
-    // ── /api/training/answer ─────────────────────────────────────
-    if (path === '/api/training/answer' && method === 'POST') {
-      if (!user) return unauthorized();
-      const result = await handleAnswer(request, user, env);
       return reply(result.body, result.status);
     }
 

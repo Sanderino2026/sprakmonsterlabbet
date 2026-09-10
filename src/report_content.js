@@ -62,7 +62,7 @@ Beslutsram är inte en fråga om självförtroende. Det är en fråga om var san
     text: `De flesta analyser vill säga något om vem du är eller vad du gör. Det här gör varken eller. Identitet, beteende och kommunikation är tre olika saker, och det här handlar bara om det tredje. Det visar vilken sorts kommunikation du föredrog i just den situation du svarade utifrån. En annan situation kan ge ett annat mönster.`,
   },
 
-  sinneskanal: {
+  sinneskommunikationskanal: {
     titel: 'Sinneskommunikationskanal',
     text: `Det vi tittar på här är inte vilket sinne du använder mest — det är vilket sinne som dominerar språket du väljer när du beskriver världen för andra.
 
@@ -129,7 +129,7 @@ I snabbrörliga miljöer med hög osäkerhet är proaktiv kommunikation ofta en 
 Den med ett proaktivt mönster upplever ofta kommunikation med reaktivt mönster som långsam. Den med ett reaktivt mönster upplever ofta kommunikation med proaktivt mönster som förhastad. Ingen av dem har fel — de är optimerade för olika hastigheter.`,
   },
 
-  detaljnivå: {
+  omfång: {
     titel: 'Omfång',
     text: `Det vi tittar på här är inte hur noggrann du är — det är på vilken höjd kommunikationen naturligt landar. Översikt eller precision.
 
@@ -161,6 +161,6 @@ export const utmaningar = {
   'Skillnad': 'Att värdera det som fungerar och fortsätta med det. Din förmåga att se vad som förändrats är ovärderlig — men det finns ett värde i kontinuitet som lätt förbises.',
   'Proaktiv': 'Att ge utrymme åt dem som behöver tid att tänka. Din handlingsorientering är en styrka — men snabba beslut kan upplevas som att du inte lyssnat färdigt.',
   'Reaktiv': 'Att inte vänta för länge när situationen kräver snabbt handlande. Din reflekterande stil ger djup — men i vissa lägen efterfrågas beslutsamhet.',
-  'Helhet': 'Att ge tillräcklig kontext till dem som behöver detaljer för att känna sig trygga. Din helhetsfokus är effektiv — men den som vill förstå hur riskerar att tappas.',
-  'Detalj': 'Att kommunicera huvudbudskapet utan att det drunknar i detaljer. Din noggrannhet är värdefull — men i snabba sammanhang efterfrågas ofta det enkla.',
+  'Generell': 'Att ge tillräcklig kontext till dem som behöver detaljer för att känna sig trygga. Din helhetsfokus är effektiv — men den som vill förstå hur riskerar att tappas.',
+  'Specifik': 'Att kommunicera huvudbudskapet utan att det drunknar i detaljer. Din noggrannhet är värdefull — men i snabba sammanhang efterfrågas ofta det enkla.',
 };

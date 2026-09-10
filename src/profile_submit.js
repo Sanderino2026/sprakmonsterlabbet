@@ -1,6 +1,5 @@
 import { saveProfileResponse } from './airtable.js';
 import { runProfileAnalysis } from './profile_analyse.js';
-import { handleReportGenerate } from './report_generate.js';
 import { skickaSmlMail } from './sml_mail.js';
 
 function generateId() {
@@ -17,7 +16,7 @@ export async function handleProfileSubmit(request, env, ctx) {
     return { status: 400, body: { error: 'Ogiltig JSON' } };
   }
 
-  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms, gift_token, nyhetsbrev_opt, utm_source, utm_medium, utm_campaign } = body;
+  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms, nyhetsbrev_opt, utm_source, utm_medium, utm_campaign } = body;
 
   // Validera obligatoriska fält
   if (!first_name || !email || !answers || !word_clicks || !response_times_ms) {
@@ -42,14 +41,6 @@ export async function handleProfileSubmit(request, env, ctx) {
   }
 
   try {
-    // ── Present-flöde: gift_token finns ──
-    if (gift_token) {
-      return await handleGiftSubmit(env, ctx, {
-        gift_token, first_name, email, context, situation,
-        answers, word_clicks, word_data, response_times_ms,
-      });
-    }
-
     // ── Normalt flöde ──
     const profileId = await saveProfileResponse(env, {
       first_name,
@@ -116,90 +107,4 @@ export async function handleProfileSubmit(request, env, ctx) {
     console.error('[handleProfileSubmit] Fel:', err);
     return { status: 500, body: { error: 'Kunde inte spara svar' } };
   }
-}
-
-async function handleGiftSubmit(env, ctx, data) {
-  const { gift_token, first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms } = data;
-
-  // 1. Hitta Profiles-raden via gift_token (Report Token)
-  const giftRow = await env.SML_DB.prepare(
-    'SELECT * FROM profil WHERE rapport_token = ?'
-  ).bind(gift_token).first();
-
-  if (!giftRow) {
-    console.error('[handleGiftSubmit] Ingen profil hittad för gift_token:', gift_token);
-    return { status: 404, body: { error: 'Present-länk ej giltig' } };
-  }
-
-  const giftProfileId = giftRow.id;
-
-  // 2. Skapa/hitta User för mottagaren (via saveProfileResponse som vanligt)
-  const profileId = await saveProfileResponse(env, {
-    first_name,
-    email,
-    context: context || 'Arbete',
-    situation: situation || context || 'Arbete',
-    answers,
-    word_clicks,
-    word_data,
-    response_times_ms,
-  });
-
-  // 3. Hämta den nyskapade profilen för att få User-länken
-  const newProfileRow = await env.SML_DB.prepare(
-    'SELECT anvandare_id FROM profil WHERE id = ?'
-  ).bind(profileId).first();
-  const userId = newProfileRow?.anvandare_id;
-
-  // 4. Uppdatera present-profilen med svar, User-länk
-  let giftedByProfileId = null;
-  if (giftRow.svar_json) {
-    try {
-      const parsed = JSON.parse(giftRow.svar_json);
-      giftedByProfileId = parsed.gifted_by_profile_id || null;
-    } catch { /* ignore */ }
-  }
-
-  const answersJson = JSON.stringify({
-    answers,
-    word_clicks,
-    word_data,
-    response_times_ms,
-    context: context || 'Arbete',
-    situation: situation || context || 'Arbete',
-    gift: true,
-    gifted_by_profile_id: giftedByProfileId,
-    submitted_at: new Date().toISOString(),
-  });
-
-  await env.SML_DB.prepare(
-    'UPDATE profil SET svar_json = ?, anvandare_id = ? WHERE id = ?'
-  ).bind(answersJson, userId || '', giftProfileId).run();
-
-  // 5. Ta bort den extra profilen som saveProfileResponse skapade
-  if (profileId !== giftProfileId) {
-    await env.SML_DB.prepare(
-      'DELETE FROM profil WHERE id = ?'
-    ).bind(profileId).run();
-  }
-
-  // 6. Trigga analys + rapportgenerering asynkront
-  const giftFlow = async () => {
-    try {
-      await runProfileAnalysis(env, giftProfileId);
-      console.log('[handleGiftSubmit] Analys klar för:', giftProfileId);
-
-      const fakeRequest = { json: async () => ({ profile_id: giftProfileId }) };
-      const result = await handleReportGenerate(fakeRequest, env);
-      console.log('[handleGiftSubmit] Rapport genererad:', result.status);
-    } catch (err) {
-      console.error('[handleGiftSubmit] Fel i analys/rapport-kedjan:', err);
-    }
-  };
-
-  if (ctx && ctx.waitUntil) {
-    ctx.waitUntil(giftFlow());
-  }
-
-  return { status: 200, body: { success: true, profile_id: giftProfileId } };
 }

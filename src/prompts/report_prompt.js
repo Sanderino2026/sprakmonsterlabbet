@@ -158,7 +158,7 @@ Inga kommentarer. Direkt JSON.
     "i_förhandling": "~80 ord",
     "tips": "~60 ord"
   },
-  "sinneskanal": {
+  "sinneskommunikationskanal": {
     "vad_signalerar": "~100 ord — vad den primära kanalen konkret innebär i kommunikation",
     "med_syn": "~80 ord — hur kommunikation med synorienterade fungerar",
     "med_hörsel": "~80 ord — hur kommunikation med hörselorienterade fungerar",
@@ -180,10 +180,10 @@ Inga kommentarer. Direkt JSON.
     "med_motsatt_mönster": "~80 ord — Proaktiv möter Reaktiv, eller vice versa",
     "tips": "~60 ord"
   },
-  "detaljnivå": {
-    "vad_signalerar": "~100 ord — vad helhet/detalj-mönstret innebär i kommunikation",
-    "i_konflikt": "~80 ord — hur detaljnivån påverkar konflikt och missförstånd",
-    "med_motsatt_mönster": "~80 ord — Helhet möter Detalj",
+  "omfång": {
+    "vad_signalerar": "~100 ord — vad generell/specifik-mönstret innebär i kommunikation",
+    "i_konflikt": "~80 ord — hur omfånget påverkar konflikt och missförstånd",
+    "med_motsatt_mönster": "~80 ord — Generell möter Specifik",
     "tips": "~60 ord"
   },
   "helhetsbild": {
