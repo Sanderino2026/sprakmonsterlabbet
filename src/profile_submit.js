@@ -81,17 +81,6 @@ export async function handleProfileSubmit(request, env, ctx) {
       console.error('[handleProfileSubmit] Lead-registrering misslyckades:', e.message);
     }
 
-    // Skicka bekräftelsemail
-    try {
-      await skickaSmlMail({
-        mall_id: 'sml-svar-mottagna',
-        epost: email,
-        variabler: { fornamn: first_name },
-      });
-    } catch (mailErr) {
-      console.error('[handleProfileSubmit] Bekräftelsemail misslyckades:', mailErr);
-    }
-
     // Trigga Claude-analysen asynkront
     const backgroundWork = async () => {
       try {
@@ -108,9 +97,9 @@ export async function handleProfileSubmit(request, env, ctx) {
         // Skicka mail med länk till gratisrapporten
         const rapportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/gratis-rapport.html?token=${token}`;
         await skickaSmlMail({
-          mall_id: 'sml-gratisrapport-klar',
+          mall_id: 'sml-rapport-klar',
           epost: email,
-          variabler: { fornamn: first_name, rapport_url: rapportUrl },
+          variabler: { namn: first_name, rapport_url: rapportUrl },
         });
         console.log('[handleProfileSubmit] Gratisrapport-mail skickat till:', email);
       } catch (err) {
