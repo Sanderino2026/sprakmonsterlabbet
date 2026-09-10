@@ -1,4 +1,5 @@
 import { saveFeedback, findOrCreateLead, setRemainingAnalyses } from './airtable.js';
+import { skickaSmlMail } from './sml_mail.js';
 
 export async function handleFeedback(request, env) {
   const body = await request.json().catch(() => null);
@@ -21,33 +22,11 @@ export async function handleFeedback(request, env) {
     await findOrCreateLead(email, env);
     await setRemainingAnalyses(email, 10, env);
 
-    if (env.MAIL_PAUSAT === 'true') {
-      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Tack för din feedback — här är dina 10 analyser');
-    } else {
-    const resendRes = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${env.RESEND_API_KEY}`
-      },
-      body: JSON.stringify({
-        from: 'noreply@holmbergfriends.com',
-        to: email,
-        subject: 'Tack för din feedback — här är dina 10 analyser',
-        html: `
-          <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto; padding: 32px;">
-            <img src="https://images.squarespace-cdn.com/content/62d95e2df2666719f12b020f/69c7ba3c-da19-4b2e-a0d7-771a8cd9844a/glad.png?content-type=image%2Fpng" alt="Sprak" style="width:120px;display:block;margin:0 auto 24px auto;" />
-            <h2 style="text-align:center;">Tack!</h2>
-            <p>Du har nu fått 10 analyser på Språkmönsterlabbet som tack för din feedback.</p>
-            <p style="text-align:center;margin-top:32px;">
-              <a href="https://www.holmbergfriends.com/sprakmonsterlabbet-analys" style="background:#000;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;">Gå till labbet →</a>
-            </p>
-          </div>
-        `
-      })
+    await skickaSmlMail({
+      mall_id: 'sml-feedback-tack',
+      epost: email,
+      variabler: {},
     });
-    console.log('Resend svar:', resendRes.status, await resendRes.text());
-    }
   }
 
   return { status: 200, body: { success: true, message: 'Tack för din feedback!' } };

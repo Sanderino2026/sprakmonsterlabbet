@@ -15,6 +15,11 @@ import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 import { handleGdprRadera } from './gdpr_radera.js';
 import { handleGdprExport } from './gdpr_export.js';
+import { handleTestBeslutsram } from './test_beslutsram.js';
+import { handleTestForstaelse } from './test_forstaelse.js';
+import { handleTestOmfang } from './test_omfang.js';
+import { handleTestSinneskanalV2 } from './test_sinneskanal_v2.js';
+import { handleTestSinneskanalV3 } from './test_sinneskanal_v3.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -226,6 +231,36 @@ export default {
     // ── /api/stripe/webhook ──────────────────────────────────────
     if (path === '/api/stripe/webhook' && method === 'POST') {
       const result = await handleStripeWebhook(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/test-beslutsram (temporär) ────────────────────────────
+    if (path === '/api/test-beslutsram' && method === 'POST') {
+      const result = await handleTestBeslutsram(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/test-forstaelse (temporär) ─────────────────────────────
+    if (path === '/api/test-forstaelse' && method === 'POST') {
+      const result = await handleTestForstaelse(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/test-omfang (temporär) ─────────────────────────────────
+    if (path === '/api/test-omfang' && method === 'POST') {
+      const result = await handleTestOmfang(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/test-sinneskanal-v2 (temporär) ────────────────────────
+    if (path === '/api/test-sinneskanal-v2' && method === 'POST') {
+      const result = await handleTestSinneskanalV2(request, env);
+      return reply(result.body, result.status);
+    }
+
+    // ── /api/test-sinneskanal-v3 (temporär) ────────────────────────
+    if (path === '/api/test-sinneskanal-v3' && method === 'POST') {
+      const result = await handleTestSinneskanalV3(request, env);
       return reply(result.body, result.status);
     }
 

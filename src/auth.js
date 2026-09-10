@@ -1,4 +1,5 @@
 import { findUserByEmail, updateLastLogin } from './airtable.js';
+import { skickaSmlMail } from './sml_mail.js';
 
 const MAGIC_LINK_TTL = 900; // 15 minuter
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30; // 30 dagar
@@ -174,42 +175,11 @@ function formatAnalysResultHtml(result) {
 }
 
 async function sendMagicLink(email, name, link, analysResult, env) {
-  if (env.MAIL_PAUSAT === 'true') {
-    console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din inloggningslänk till Språkmonsterlabbet');
-    return;
-  }
-  try {
-    const analysHtml = formatAnalysResultHtml(analysResult);
-    const res = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Språkmonsterlabbet <noreply@holmbergfriends.com>',
-        to: email,
-        subject: 'Din inloggningslänk till Språkmonsterlabbet',
-        html: `
-        <div style="max-width:600px;font-family:Helvetica Neue,Helvetica,Arial,sans-serif;">
-          <p style="font-size:15px;color:#1C1C1C;">Hej ${name || ''},</p>
-          <p style="font-size:15px;color:#1C1C1C;">Klicka på länken nedan för att logga in på Språkmonsterlabbet.</p>
-          <p><a href="${link}" style="display:inline-block;padding:12px 24px;background:#000;color:#fff;text-decoration:none;font-size:14px;">Logga in</a></p>
-          <p style="color:#999;font-size:12px;margin-top:12px;">Länken gäller i 15 minuter. Om du inte begärde den kan du ignorera det här mailet.</p>
-          ${analysHtml}
-          <hr style="border:none;border-top:1px solid #eee;margin:32px 0">
-          <img src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/76cb7f2e-f305-45a3-8acf-2831d9d55ed9/ahab_logotype_svartvit_vansterstalld_dubbelrad.png" width="200" style="display:block;margin-bottom:16px;">
-          <p style="font-size:13px;color:#666;line-height:1.6;margin-bottom:16px;">Holmberg &amp; Vänner utbildar chefer och ledare i coachande ledarskap — med fokus på verklig förflyttning, inte bara kunskap. Sedan 20 år tillbaka hjälper vi organisationer att gå från strategi till faktiskt beteende. Mer än 3 500 ledare har gått våra program. NPS: +80.</p>
-          <a href="https://www.holmbergfriends.com/coachandeledarskap" style="font-size:14px;color:#000;">Läs mer om Coachande Ledarskap →</a>
-        </div>
-      `,
-      }),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => null);
-      console.error('[sendMagicLink] Resend fel:', res.status, JSON.stringify(data));
-    }
-  } catch (err) {
-    console.error('[sendMagicLink] Nätverksfel:', err);
-  }
+  const analysHtml = formatAnalysResultHtml(analysResult);
+  await skickaSmlMail({
+    mall_id: 'sml-magic-link',
+    epost: email,
+    variabler: { namn: name || '', lank: link, innehall_html: analysHtml },
+    tvinga: true,
+  });
 }

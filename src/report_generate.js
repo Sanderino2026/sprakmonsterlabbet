@@ -1,9 +1,9 @@
 import { buildReportPrompt } from './prompts/report_prompt.js';
 import { pedagogik, utmaningar } from './report_content.js';
+import { skickaSmlMail } from './sml_mail.js';
 
 const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
 const MODEL = 'claude-sonnet-4-6';
-const RESEND_API = 'https://api.resend.com/emails';
 
 export async function handleReportGenerate(request, env) {
   let body;
@@ -162,65 +162,14 @@ export async function handleReportGenerate(request, env) {
       'UPDATE profil SET profil_json = ?, rapport_token = ? WHERE id = ?'
     ).bind(combinedJson, token, profile_id).run();
 
-    // 12. Skicka e-post via Resend
+    // 12. Skicka e-post via skickaSmlMail
     const reportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/rapport.html?token=${token}`;
 
-    const emailHtml = `
-<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="margin:0;padding:0;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#f8f8f8;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f8f8;padding:40px 20px;">
-<tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">
-  <tr><td style="background:#534AB7;padding:32px 40px;">
-    <div style="font-family:Georgia,serif;font-size:22px;color:#ffffff;font-weight:300;">Språkmönsterlabbet</div>
-  </td></tr>
-  <tr><td style="padding:40px;">
-    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 16px;">Hej ${name},</p>
-    <p style="font-size:16px;color:#1C1C1C;line-height:1.6;margin:0 0 24px;">Din språkprofil är nu klar.</p>
-    <table cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
-    <tr><td style="background:#534AB7;border-radius:4px;padding:14px 28px;">
-      <a href="${reportUrl}" style="color:#ffffff;text-decoration:none;font-size:14px;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;">Läs din rapport →</a>
-    </td></tr>
-    </table>
-    <p style="font-size:14px;color:#5A5A5A;line-height:1.6;margin:0 0 8px;">
-      Rapporten är personlig och gäller dina kommunikationstendenser i det sammanhang du angav.
-      Vi rekommenderar att du reflekterar över den tillsammans med en kollega eller i ditt team.
-    </p>
-  </td></tr>
-  <tr><td style="padding:24px 40px;border-top:1px solid #E2E2E2;">
-    <p style="font-size:12px;color:#999999;margin:0;">holmberg &amp; friends</p>
-  </td></tr>
-</table>
-</td></tr>
-</table>
-</body>
-</html>`;
-
-    if (env.MAIL_PAUSAT === 'true') {
-      console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkprofil från Språkmönsterlabbet');
-      return { status: 200, body: { ok: true, paused: true } };
-    }
-
-    const resendRes = await fetch(RESEND_API, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${env.RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: 'noreply@holmbergfriends.com',
-        to: email,
-        subject: 'Din språkprofil från Språkmönsterlabbet',
-        html: emailHtml,
-      }),
+    await skickaSmlMail({
+      mall_id: 'sml-rapport-klar',
+      epost: email,
+      variabler: { namn: name, rapport_url: reportUrl },
     });
-
-    if (!resendRes.ok) {
-      const resendErr = await resendRes.text().catch(() => '');
-      console.error('[handleReportGenerate] Resend fel:', resendRes.status, resendErr);
-    }
 
     console.log('[handleReportGenerate] Rapport genererad för:', name, '→ token:', token);
 

@@ -1,6 +1,7 @@
 import { saveProfileResponse } from './airtable.js';
 import { runProfileAnalysis } from './profile_analyse.js';
 import { handleReportGenerate } from './report_generate.js';
+import { skickaSmlMail } from './sml_mail.js';
 
 function generateId() {
   const bytes = new Uint8Array(16);
@@ -16,7 +17,7 @@ export async function handleProfileSubmit(request, env, ctx) {
     return { status: 400, body: { error: 'Ogiltig JSON' } };
   }
 
-  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms, gift_token } = body;
+  const { first_name, email, context, situation, answers, word_clicks, word_data, response_times_ms, gift_token, nyhetsbrev_opt, utm_source, utm_medium, utm_campaign } = body;
 
   // Validera obligatoriska fält
   if (!first_name || !email || !answers || !word_clicks || !response_times_ms) {
@@ -61,25 +62,32 @@ export async function handleProfileSubmit(request, env, ctx) {
       response_times_ms,
     });
 
-    // Skicka bekräftelsemail
+    // Registrera lead i deep-thought
     try {
-      if (env.MAIL_PAUSAT === 'true') {
-        console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Dina svar är mottagna — din språkprofil');
-      } else {
-      await fetch('https://api.resend.com/emails', {
+      await fetch('https://deep-thought.holmbergfriends.com/api/sml-lead', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${env.RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'holmberg & friends <friends@holmbergfriends.com>',
-          to: email,
-          subject: 'Dina svar är mottagna — din språkprofil',
-          html: `<p>Hej ${first_name},</p><p>Tack för att du fyllt i din språkprofil. Vi analyserar dina svar och återkommer inom 2 arbetsdagar med din rapport.</p><p>/ holmberg & friends</p>`,
+          epost: email,
+          namn: first_name,
+          nyhetsbrev_opt: nyhetsbrev_opt === true,
+          handelse: 'sml-profil-inskickad',
+          utm: (utm_source || utm_medium || utm_campaign)
+            ? { source: utm_source, medium: utm_medium, campaign: utm_campaign }
+            : null,
         }),
       });
-      }
+    } catch (e) {
+      console.error('[handleProfileSubmit] Lead-registrering misslyckades:', e.message);
+    }
+
+    // Skicka bekräftelsemail
+    try {
+      await skickaSmlMail({
+        mall_id: 'sml-svar-mottagna',
+        epost: email,
+        variabler: { fornamn: first_name },
+      });
     } catch (mailErr) {
       console.error('[handleProfileSubmit] Bekräftelsemail misslyckades:', mailErr);
     }
@@ -99,24 +107,12 @@ export async function handleProfileSubmit(request, env, ctx) {
 
         // Skicka mail med länk till gratisrapporten
         const rapportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/gratis-rapport.html?token=${token}`;
-        if (env.MAIL_PAUSAT === 'true') {
-          console.log('[MAIL PAUSAT] Skulle ha skickat till:', email, '| Ämne: Din språkprofil är klar');
-        } else {
-        await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${env.RESEND_API_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            from: 'holmberg & friends <friends@holmbergfriends.com>',
-            to: email,
-            subject: 'Din språkprofil är klar',
-            html: `<p>Hej ${first_name},</p><p>Din språkprofil är nu klar. Klicka på länken nedan för att se ditt resultat:</p><p><a href="${rapportUrl}">${rapportUrl}</a></p><p>/ holmberg & friends</p>`,
-          }),
+        await skickaSmlMail({
+          mall_id: 'sml-gratisrapport-klar',
+          epost: email,
+          variabler: { fornamn: first_name, rapport_url: rapportUrl },
         });
         console.log('[handleProfileSubmit] Gratisrapport-mail skickat till:', email);
-        }
       } catch (err) {
         console.error('[handleProfileSubmit] Bakgrundsarbete misslyckades:', err);
       }
