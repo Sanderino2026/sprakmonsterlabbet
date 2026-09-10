@@ -4,6 +4,7 @@
 // Sammanvägd signal: binära (max 8p) + fritext (2p eller 0p).
 
 import { findUserByEmail } from './airtable.js';
+import { skickaSmlMail } from './sml_mail.js';
 import { STANDALONE_ANALYSE_PROMPT } from './prompts/analyse_standalone_prompt.js';
 
 function generateId() {
@@ -48,7 +49,7 @@ async function analyseFreeText(text, env) {
   }
 }
 
-export async function handleFreeProfileSubmit(request, env) {
+export async function handleFreeProfileSubmit(request, env, ctx) {
   let body;
   try {
     body = await request.json();
@@ -148,22 +149,44 @@ export async function handleFreeProfileSubmit(request, env) {
     });
 
     const profileId = generateId();
+    const rapportToken = crypto.randomUUID();
     await env.SML_DB.prepare(
-      'INSERT INTO profil (id, anvandare_id, svar_json, profil_json) VALUES (?, ?, ?, ?)'
-    ).bind(profileId, userId, svarJson, profilJson).run();
+      'INSERT INTO profil (id, anvandare_id, svar_json, profil_json, rapport_token) VALUES (?, ?, ?, ?, ?)'
+    ).bind(profileId, userId, svarJson, profilJson, rapportToken).run();
+
+    // Generera gratisrapport i bakgrunden via waitUntil
+    const backgroundWork = async () => {
+      try {
+        // Importera gratis_rapport-genereringen
+        const { handleGratisRapport } = await import('./gratis_rapport.js');
+        // Anropa den med en fake-request som har rätt token
+        const fakeUrl = `https://sprakmonsterlabbet.holmbergfriends.com/api/gratis-rapport?token=${rapportToken}`;
+        const fakeReq = new Request(fakeUrl);
+        const result = await handleGratisRapport(fakeReq, env);
+        console.log('[submit-free] Gratisrapport genererad:', result.status);
+
+        // Skicka rapportmail
+        const rapportUrl = `https://sprakmonsterlabbet.holmbergfriends.com/gratis-rapport?token=${rapportToken}`;
+        await skickaSmlMail({
+          mall_id: 'sml-rapport-klar',
+          epost: email,
+          variabler: { namn: first_name, rapport_url: rapportUrl },
+        });
+        console.log('[submit-free] Rapportmail skickat till:', email);
+      } catch (err) {
+        console.error('[submit-free] Bakgrundsarbete misslyckades:', err);
+      }
+    };
+
+    if (ctx && ctx.waitUntil) {
+      ctx.waitUntil(backgroundWork());
+    }
 
     return {
       status: 200,
       body: {
         success: true,
         profile_id: profileId,
-        förståelse: {
-          signal,
-          styrka,
-          procedur_total: totalProcedur,
-          alternativ_total: totalAlternativ,
-          ai_signal: aiSignal,
-        },
       },
     };
   } catch (err) {

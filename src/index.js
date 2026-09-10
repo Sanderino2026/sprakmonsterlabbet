@@ -166,7 +166,7 @@ export default {
 
     // ── /api/profile/submit-free ────────────────────────────────
     if (path === '/api/profile/submit-free' && method === 'POST') {
-      const result = await handleFreeProfileSubmit(request, env);
+      const result = await handleFreeProfileSubmit(request, env, ctx);
       return reply(result.body, result.status);
     }
 
