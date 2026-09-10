@@ -5,19 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Språkprofil — Språkmönsterlabbet</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-VariableFont_wght.ttf');font-weight:200 900;font-style:normal;}
+  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-Italic-VariableFont_wght.ttf');font-weight:200 900;font-style:italic;}
 
   :root {
     --font-display: 'Crimson Pro', Georgia, serif;
     --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --color-primary: #FFA047;
     --color-gold: #FFA047;
-    --color-text: #141210;
-    --color-text-light: rgba(20,18,16,0.5);
-    --color-text-subtle: rgba(20,18,16,0.35);
-    --color-border: rgba(20,18,16,0.08);
+    --color-text: #2B2B2B;
+    --color-text-light: rgba(43,43,43,0.5);
+    --color-text-subtle: rgba(43,43,43,0.4);
+    --color-border: rgba(43,43,43,0.08);
     --color-bg: #FFFFFF;
-    --color-bg-subtle: rgba(20,18,16,0.03);
+    --color-bg-subtle: rgba(43,43,43,0.025);
   }
 
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -104,7 +105,7 @@
     border-radius: 0 10px 0 10px;
     transition: background 0.2s;
   }
-  .btn-pdf:hover { background: #141210; color: #FFFFFF; }
+  .btn-pdf:hover { background: #2B2B2B; color: #FFFFFF; }
 
   /* ═══════════════════════════════════════ */
   /* LAYOUT: SIDEBAR + MAIN                  */
@@ -152,17 +153,17 @@
     border-left: 2px solid transparent;
   }
   .sidebar-item:hover {
-    color: #141210;
+    color: #2B2B2B;
     background: var(--color-bg-subtle);
   }
   .sidebar-item.active {
-    color: #141210;
+    color: #2B2B2B;
     border-left-color: #FFA047;
     font-weight: 500;
     background: rgba(255,160,71,0.1);
   }
   .sidebar-item.done {
-    color: rgba(20,18,16,0.5);
+    color: rgba(43,43,43,0.5);
   }
   .sidebar-dot {
     width: 6px;
@@ -226,8 +227,8 @@
   .nav-btn:disabled { opacity: 0; cursor: default; pointer-events: none; }
   .nav-btn-next {
     color: #FFFFFF;
-    background: #141210;
-    border-color: #141210;
+    background: #2B2B2B;
+    border-color: #2B2B2B;
     font-weight: 500;
   }
   .nav-btn-next:hover { background: #333; border-color: #333; color: #FFFFFF; }
@@ -344,7 +345,7 @@
     margin-bottom: 40px;
   }
   .block-om p {
-    color: rgba(20,18,16,0.65);
+    color: rgba(43,43,43,0.65);
     font-weight: 300;
     margin-bottom: 16px;
   }
@@ -368,7 +369,7 @@
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(20,18,16,0.35);
+    color: rgba(43,43,43,0.4);
     margin-bottom: 16px;
   }
   .block-label-accent {
@@ -424,7 +425,7 @@
   .scale-track {
     position: relative;
     height: 2px;
-    background: rgba(20,18,16,0.1);
+    background: rgba(43,43,43,0.1);
     border-radius: 1px;
     margin: 20px 0 8px;
   }
@@ -464,7 +465,7 @@
     text-transform: uppercase; letter-spacing: 0.08em; transition: all 0.15s;
   }
   .channel-chip.active { color: var(--color-primary); }
-  .channel-chip.inactive { color: rgba(20,18,16,0.25); }
+  .channel-chip.inactive { color: rgba(43,43,43,0.3); }
   .channel-icon { font-size: 24px; line-height: 1; margin-bottom: 8px; }
 
   /* Change segments */
@@ -475,7 +476,7 @@
   .change-seg.inactive .change-seg-bar { background: var(--color-border); }
   .change-seg-label { font-family: var(--font-body); font-size: 11px; font-weight: 400; display: none; }
   .change-seg.active .change-seg-label { display: block; color: var(--color-primary); margin-top: 10px; }
-  .change-seg.inactive .change-seg-label { color: rgba(20,18,16,0.25); }
+  .change-seg.inactive .change-seg-label { color: rgba(43,43,43,0.3); }
 
   /* Indicator row */
   .indicator-row { display: flex; align-items: center; gap: 0; }
@@ -484,7 +485,7 @@
     letter-spacing: 0.05em; padding: 3px 10px; border: 1px solid var(--color-primary);
     border-radius: 2px; color: var(--color-primary);
   }
-  .indicator-sep { color: rgba(20,18,16,0.25); margin: 0 12px; font-size: 12px; }
+  .indicator-sep { color: rgba(43,43,43,0.3); margin: 0 12px; font-size: 12px; }
   .indicator-desc { font-family: var(--font-body); font-size: 12px; font-weight: 400; color: var(--color-text-subtle); }
 
   /* ═══════════════════════════════════════ */
@@ -517,7 +518,7 @@
   .profile-card-kombination { margin-top: 40px; padding-top: 40px; border-top: 1px solid var(--color-border); text-align: center; }
   .profile-card-kombination-label { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 16px; }
   .profile-card-kombination-text { font-family: var(--font-body); font-size: 13px; font-weight: 300; font-style: italic; line-height: 1.75; color: var(--color-text); max-width: 600px; margin: 0 auto; }
-  .profile-card-footer { text-align: center; font-family: var(--font-body); font-size: 11px; color: rgba(20,18,16,0.25); margin-top: 56px; }
+  .profile-card-footer { text-align: center; font-family: var(--font-body); font-size: 11px; color: rgba(43,43,43,0.3); margin-top: 56px; }
 
   /* ═══════════════════════════════════════ */
   /* FEEDBACK                                */
@@ -535,7 +536,7 @@
   .fb-group { margin-bottom: 28px; }
   .fb-question { font-family: var(--font-body); font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; color: var(--color-text-subtle); margin-bottom: 10px; }
   .fb-stars { display: flex; gap: 8px; }
-  .fb-star { font-size: 28px; cursor: pointer; color: rgba(20,18,16,0.2); transition: color 0.1s; user-select: none; line-height: 1; }
+  .fb-star { font-size: 28px; cursor: pointer; color: rgba(43,43,43,0.2); transition: color 0.1s; user-select: none; line-height: 1; }
   .fb-star.active { color: var(--color-gold); }
   .fb-star:hover { color: var(--color-gold); }
   .fb-textarea {
@@ -554,11 +555,11 @@
   .fb-divider { height: 1px; background: var(--color-border); margin: 8px 0 28px; }
   .fb-submit {
     display: block; width: auto; margin: 0 auto; font-family: var(--font-body); font-size: 11px; font-weight: 500;
-    text-transform: uppercase; letter-spacing: 0.1em; background: #141210; color: #FFFFFF;
+    text-transform: uppercase; letter-spacing: 0.1em; background: #2B2B2B; color: #FFFFFF;
     border: none; padding: 14px 32px; border-radius: 0; cursor: pointer; transition: background 0.15s;
   }
   .fb-submit:hover { background: #333; }
-  .fb-submit:disabled { background: rgba(20,18,16,0.1); color: rgba(20,18,16,0.3); cursor: default; }
+  .fb-submit:disabled { background: rgba(43,43,43,0.1); color: rgba(43,43,43,0.3); cursor: default; }
   .fb-spinner { text-align: center; padding: 16px 0; display: none; }
   .fb-spinner.visible { display: block; }
   .fb-spinner-dot { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--color-border); border-top-color: var(--color-primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
@@ -844,8 +845,8 @@
       return buildScaleViz(rj, 'beslutsram');
     });
 
-    // ── SECTION 4: Kommunikation (sinneskanal) ──
-    panels += buildSinneskanalPanel(4, ped.sinneskanal, analys.sinneskanal, rj, utm);
+    // ── SECTION 4: Kommunikation (sinneskommunikationskanal) ──
+    panels += buildSinneskommunikationskanalPanel(4, ped.sinneskommunikationskanal, analys.sinneskommunikationskanal, rj, utm);
 
     // ── SECTION 5: Förändring ───────────────
     panels += buildFörändringsPanel(5, ped, analys, rj, utm);
@@ -853,8 +854,8 @@
     // ── SECTION 6: Handling ─────────────────
     panels += buildHandlingsstilPanel(6, ped, analys, rj, utm);
 
-    // ── SECTION 7: Detaljnivå ───────────────
-    panels += buildDetaljnivåPanel(7, ped, analys, rj, utm);
+    // ── SECTION 7: Omfång ───────────────
+    panels += buildOmfångPanel(7, ped, analys, rj, utm);
 
     // ── SECTION 8: Din profil ────────────
     panels += '<div class="section-panel">';
@@ -868,10 +869,10 @@
       { name: 'Motivationsriktning', key: 'motivationsriktning' },
       { name: 'Beslutsram', key: 'beslutsram' },
       { name: 'F\u00f6rst\u00e5else', key: 'f\u00f6rst\u00e5else' },
-      { name: 'Sinneskommunikationskanal', key: 'sinneskanal' },
+      { name: 'Sinneskommunikationskanal', key: 'sinneskommunikationskanal' },
       { name: 'F\u00f6r\u00e4ndringsrelation', key: 'f\u00f6r\u00e4ndringsrelation' },
       { name: 'Handlingsstil', key: 'handlingsstil' },
-      { name: 'Omf\u00e5ng', key: 'detaljniv\u00e5' }
+      { name: 'Omf\u00e5ng', key: 'omf\u00e5ng' }
     ];
     for (var i = 0; i < patterns.length; i++) {
       var p = patterns[i];
@@ -1026,9 +1027,9 @@
     return html;
   }
 
-  // ── Sinneskanal panel ──
-  function buildSinneskanalPanel(sectionIdx, ped, analysData, rj, utm) {
-    var signal = rj.sinneskanal && rj.sinneskanal.signal ? rj.sinneskanal.signal : '';
+  // ── Sinneskommunikationskanal panel ──
+  function buildSinneskommunikationskanalPanel(sectionIdx, ped, analysData, rj, utm) {
+    var signal = rj.sinneskommunikationskanal && rj.sinneskommunikationskanal.signal ? rj.sinneskommunikationskanal.signal : '';
     var html = '<div class="section-panel">';
     html += '<div class="section-title">Hur du tar in och hur du uttrycker dig till v\u00e4rlden</div>';
     html += '<div class="section-divider"></div>';
@@ -1193,18 +1194,18 @@
     return html;
   }
 
-  // ── Detaljnivå ──
-  function buildDetaljnivåPanel(sectionIdx, ped, analys, rj, utm) {
-    var dSignal = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.signal ? rj.detaljniv\u00e5.signal : '';
+  // ── Omfång ──
+  function buildOmfångPanel(sectionIdx, ped, analys, rj, utm) {
+    var dSignal = rj.omf\u00e5ng && rj.omf\u00e5ng.signal ? rj.omf\u00e5ng.signal : '';
 
     var html = '<div class="section-panel">';
     html += '<div class="section-title">De stora dragen, eller specifika detaljer</div>';
     html += '<div class="section-divider"></div>';
 
-    if (ped.detaljniv\u00e5 && ped.detaljniv\u00e5.text) {
+    if (ped.omf\u00e5ng && ped.omf\u00e5ng.text) {
       html += '<div class="block-om">';
       html += '<div class="block-label">OM M\u00d6NSTRET</div>';
-      html += textToHtml(ped.detaljniv\u00e5.text);
+      html += textToHtml(ped.omf\u00e5ng.text);
       html += '</div>';
     }
 
@@ -1216,22 +1217,22 @@
     }
     html += '<div class="block-resultat">';
     if (dSignal) html += buildDetailIndicator(rj);
-    if (analys.detaljnivå) {
-      if (analys.detaljnivå.vad_signalerar) {
+    if (analys.omfång) {
+      if (analys.omfång.vad_signalerar) {
         html += '<div class="section-subtitle">VAD KOMMUNIKATIONEN SIGNALERAR</div>';
-        html += textToHtml(analys.detaljnivå.vad_signalerar);
+        html += textToHtml(analys.omfång.vad_signalerar);
       }
-      if (analys.detaljnivå.i_konflikt) {
+      if (analys.omfång.i_konflikt) {
         html += '<div class="section-subtitle">I KONFLIKT</div>';
-        html += textToHtml(analys.detaljnivå.i_konflikt);
+        html += textToHtml(analys.omfång.i_konflikt);
       }
-      if (analys.detaljnivå.med_motsatt_mönster) {
+      if (analys.omfång.med_motsatt_mönster) {
         html += '<div class="section-subtitle">NÄR DU MÖTER MOTSATT MÖNSTER</div>';
-        html += textToHtml(analys.detaljnivå.med_motsatt_mönster);
+        html += textToHtml(analys.omfång.med_motsatt_mönster);
       }
-      if (analys.detaljnivå.tips) {
+      if (analys.omfång.tips) {
         html += '<div class="section-subtitle">KOMMUNIKATIONSTIPS</div>';
-        html += textToHtml(analys.detaljnivå.tips);
+        html += textToHtml(analys.omfång.tips);
       }
     }
     if (dSignal && utm[dSignal]) {
@@ -1367,14 +1368,14 @@
         var angle = (axes[a].angle * Math.PI) / 180;
         ringPoints.push((cx + r * Math.cos(angle)).toFixed(1) + ',' + (cy + r * Math.sin(angle)).toFixed(1));
       }
-      svg += '<polygon points="' + ringPoints.join(' ') + '" fill="none" stroke="rgba(20,18,16,0.12)" stroke-width="0.5"/>';
+      svg += '<polygon points="' + ringPoints.join(' ') + '" fill="none" stroke="rgba(43,43,43,0.12)" stroke-width="0.5"/>';
     }
 
     for (var i = 0; i < 6; i++) {
       var angle = (axes[i].angle * Math.PI) / 180;
       var x2 = cx + maxR * Math.cos(angle);
       var y2 = cy + maxR * Math.sin(angle);
-      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="rgba(20,18,16,0.12)" stroke-width="0.5"/>';
+      svg += '<line x1="' + cx + '" y1="' + cy + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) + '" stroke="rgba(43,43,43,0.12)" stroke-width="0.5"/>';
     }
 
     var dataPoints = [];
@@ -1398,7 +1399,7 @@
       var ly = cy + lblR * Math.sin(lblAngle);
       var anchor = 'middle';
       if (axes[l].angle >= 150 || axes[l].angle <= -150) anchor = 'end';
-      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="' + anchor + '" font-family="\'Crimson Pro\', serif" font-size="14" font-weight="400" fill="rgba(20,18,16,0.5)">' + axes[l].label + '</text>';
+      svg += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 5).toFixed(1) + '" text-anchor="' + anchor + '" font-family="\'Crimson Pro\', serif" font-size="14" font-weight="400" fill="rgba(43,43,43,0.5)">' + axes[l].label + '</text>';
     }
 
     svg += '</svg></div>';
@@ -1435,7 +1436,7 @@
   }
 
   function buildChannelViz(rj) {
-    var signal = rj.sinneskanal && rj.sinneskanal.signal || '';
+    var signal = rj.sinneskommunikationskanal && rj.sinneskommunikationskanal.signal || '';
     var channels = [
       { name: 'Syn', icon: '\ud83d\udc41' },
       { name: 'H\u00f6rsel', icon: '\ud83d\udc42' },
@@ -1483,8 +1484,8 @@
   }
 
   function buildDetailIndicator(rj) {
-    var signal = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.signal || '';
-    var obs = rj.detaljniv\u00e5 && rj.detaljniv\u00e5.observation || '';
+    var signal = rj.omf\u00e5ng && rj.omf\u00e5ng.signal || '';
+    var obs = rj.omf\u00e5ng && rj.omf\u00e5ng.observation || '';
     var html = '<div class="viz-card viz-card--compact"><div class="indicator-row">';
     html += '<span class="indicator-pill">' + esc(signal) + '</span>';
     if (obs) {

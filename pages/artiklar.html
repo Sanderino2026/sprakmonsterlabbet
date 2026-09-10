@@ -4,43 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Talanalyser — Språkmönsterlabbet</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --black: #141210; --dark: #141210; --mid: #8A929E; --muted: #8A929E;
-  --border: #E2E2E2; --bg: #FAFAFA; --white: #FFF;
-  --accent: #FFA047; --accent-hover: #FFA047;
-}
+@font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-VariableFont_wght.ttf');font-weight:200 900;font-style:normal;}
+@font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-Italic-VariableFont_wght.ttf');font-weight:200 900;font-style:italic;}
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:var(--white); color:var(--dark); font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+body { font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; background:#FFFFFF; color:#2B2B2B; font-size:16px; line-height:1.5; -webkit-font-smoothing:antialiased; }
 
-header { text-align:center; padding:64px 24px 40px; }
-.eyebrow { font-size:11px; font-weight:500; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
-header h1 { font-family:'Crimson Pro',Georgia,serif; font-size:40px; font-weight:300; letter-spacing:-0.03em; color:var(--black); margin-bottom:8px; }
-header p { font-size:15px; color:var(--mid); max-width:480px; margin:0 auto; }
+header { text-align:center; padding:56px 24px 8px; }
+header img.hero-icon { width:120px; margin:0 auto 24px; display:block; }
+.eyebrow { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:rgba(43,43,43,0.45); margin-bottom:12px; }
+header h1 { font-family:'Crimson Pro',Georgia,serif; font-size:40px; font-weight:500; letter-spacing:-0.01em; color:#2B2B2B; margin:0 0 12px; }
+header p { font-size:15px; color:rgba(43,43,43,0.5); max-width:480px; margin:0 auto; }
 
-.tal-list { max-width:640px; margin:0 auto; padding:0 24px 80px; }
-.tal-card { display:block; border:1px solid var(--border); padding:28px; margin-bottom:16px; text-decoration:none; color:inherit; transition:border-color 0.2s; border-radius:0 10px 0 10px; }
-.tal-card:hover { border-color:var(--black); }
-.tal-card-datum { font-size:12px; color:var(--muted); }
-.tal-card h2 { font-family:'Crimson Pro',Georgia,serif; font-size:24px; font-weight:300; color:var(--black); margin:4px 0; letter-spacing:-0.02em; }
-.tal-card-rubrik { font-family:'Crimson Pro',Georgia,serif; font-style:italic; font-size:16px; color:var(--accent); margin-bottom:8px; }
-.tal-card p { font-size:14px; color:var(--mid); line-height:1.55; }
-.tal-card-link { font-size:13px; font-weight:500; color:var(--accent); margin-top:12px; display:inline-block; }
+.tal-list { max-width:680px; margin:0 auto; padding:40px 24px 80px; }
+.tal-card { display:block; border:1px solid rgba(43,43,43,0.12); padding:28px; margin-bottom:16px; text-decoration:none; color:inherit; transition:border-color 0.2s; border-radius:0 10px 0 10px; }
+.tal-card:hover { border-color:#2B2B2B; }
+.tal-card-top { display:flex; align-items:center; gap:12px; margin-bottom:4px; }
+.tal-card-top img { width:20px; height:20px; opacity:0.5; }
+.tal-card-datum { font-size:12px; color:rgba(43,43,43,0.45); }
+.tal-card h2 { font-family:'Crimson Pro',Georgia,serif; font-size:24px; font-weight:500; color:#2B2B2B; margin:4px 0; letter-spacing:-0.01em; }
+.tal-card-rubrik { font-family:'Crimson Pro',Georgia,serif; font-style:italic; font-size:16px; color:#FFA047; margin-bottom:8px; }
+.tal-card p { font-size:14px; color:rgba(43,43,43,0.55); line-height:1.55; }
+.tal-card-link { font-size:13px; font-weight:700; color:#FFA047; margin-top:12px; display:inline-block; }
 
-.loading { text-align:center; padding:40px; color:var(--muted); font-size:14px; }
+.loading { text-align:center; padding:40px; color:rgba(43,43,43,0.45); font-size:14px; }
 .error { text-align:center; padding:40px; color:#c00; font-size:14px; }
 
-footer { text-align:center; padding:24px; font-size:12px; color:var(--muted); border-top:1px solid var(--border); }
-footer a { color:var(--mid); text-decoration:none; }
+footer { text-align:center; padding:24px; font-size:12px; color:rgba(43,43,43,0.45); border-top:1px solid rgba(43,43,43,0.1); }
+footer a { color:rgba(43,43,43,0.45); text-decoration:none; }
 </style>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"></head>
 <body>
 
 <header>
-  <p class="eyebrow">Språkmönsterlabbet</p>
+  <img class="hero-icon" src="assets/startsida/startsida-samtal-ren-blixt.svg" alt="">
+  <p class="eyebrow">Spr&aring;km&ouml;nsterlabbet</p>
   <h1>Talanalyser</h1>
-  <p>Kända svenska tal analyserade utifrån fem språkmönster. Varje citat ordagrant verifierat.</p>
+  <p>K&auml;nda svenska tal analyserade utifr&aring;n fem spr&aring;km&ouml;nster. Varje citat ordagrant verifierat.</p>
 </header>
 
 <div class="tal-list" id="tal-list">
@@ -48,7 +48,7 @@ footer a { color:var(--mid); text-decoration:none; }
 </div>
 
 <footer>
-  <a href="/">← Tillbaka till Språkmönsterlabbet</a>
+  <a href="/profil.html">&larr; Tillbaka till Spr&aring;km&ouml;nsterlabbet</a>
 </footer>
 
 <script>
@@ -60,18 +60,18 @@ footer a { color:var(--mid); text-decoration:none; }
     const data = await res.json();
     const tal = data.tal || [];
     if (tal.length === 0) {
-      container.innerHTML = '<div class="loading">Inga talanalyser publicerade ännu.</div>';
+      container.innerHTML = '<div class="loading">Inga talanalyser publicerade \u00e4nnu.</div>';
       return;
     }
     container.innerHTML = tal.map(function(t) {
       var inramning = (t.inramning || '').substring(0, 160);
       if ((t.inramning || '').length > 160) inramning += '...';
       return '<a href="https://holmbergfriends.com/inspiration/' + t.slug + '" class="tal-card" target="_blank">' +
-        '<span class="tal-card-datum">' + (t.datum || '') + '</span>' +
-        '<h2>' + t.talare + ' — ' + t.titel + '</h2>' +
+        '<div class="tal-card-top"><span class="tal-card-datum">' + (t.datum || '') + '</span></div>' +
+        '<h2>' + t.talare + ' \u2014 ' + t.titel + '</h2>' +
         '<p class="tal-card-rubrik">' + (t.rubrik || '') + '</p>' +
         '<p>' + inramning + '</p>' +
-        '<span class="tal-card-link">Läs analysen på holmbergfriends.com →</span>' +
+        '<span class="tal-card-link">L\u00e4s analysen p\u00e5 holmbergfriends.com \u2192</span>' +
       '</a>';
     }).join('');
   } catch(e) {

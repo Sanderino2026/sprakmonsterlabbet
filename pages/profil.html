@@ -4,16 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Språkprofil — Språkmönsterlabbet</title>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
+  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-VariableFont_wght.ttf');font-weight:200 900;font-style:normal;}
+  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-Italic-VariableFont_wght.ttf');font-weight:200 900;font-style:italic;}
+
   :root {
     --font-head: 'Crimson Pro', Georgia, serif;
     --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     --accent: #FFA047;
-    --text: #1a1a1a;
-    --text-secondary: #555;
-    --bg: #ffffff;
-    --border: #e5e5e5;
+    --text: #2B2B2B;
+    --text-secondary: rgba(43,43,43,0.65);
+    --text-muted: rgba(43,43,43,0.5);
+    --text-faint: rgba(43,43,43,0.4);
+    --bg: #FFFFFF;
+    --border: rgba(43,43,43,0.1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,9 +29,7 @@
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3 {
-    font-family: var(--font-head);
-  }
+  h1, h2, h3 { font-family: var(--font-head); }
 
   /* FADE IN */
   @keyframes fadeIn {
@@ -42,7 +44,7 @@
 
   /* SHARED WRAP */
   .wrap {
-    max-width: 1080px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 0 24px;
   }
@@ -50,18 +52,18 @@
   /* ── BUTTONS ── */
   .btn-primary {
     font-family: var(--font-body);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
     background: #FFA047;
     color: #fff;
     border: none;
     border-radius: 6px;
-    padding: 14px 32px;
+    padding: 15px 32px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
     display: inline-block;
   }
-  .btn-primary:hover { background: rgba(255,160,71,0.85); }
+  .btn-primary:hover { opacity: 0.85; }
   .btn-primary:disabled {
     opacity: 0.25;
     cursor: not-allowed;
@@ -71,76 +73,97 @@
   .section-label {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
     color: #FFA047;
     margin-bottom: 16px;
+  }
+
+  /* ── PROGRESS BAR (steps 1-10) ── */
+  .progress-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 200;
+  }
+  .progress-top-fill {
+    height: 100%;
+    background: #FFA047;
+    width: 0%;
+    transition: width 0.3s ease;
   }
 
   /* ── STEP 0: LANDING ── */
   #step0 { background: #ffffff; }
 
   .s0-nav {
-    max-width: 1080px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 20px 24px;
+    padding: 24px 24px;
   }
-  .s0-nav a { text-decoration: none; }
 
   /* Hero grid */
   .hero-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 56px;
     align-items: center;
     padding-top: 48px;
     padding-bottom: 64px;
   }
-
-  .hero-left .section-label { margin-bottom: 16px; }
+  .hero-left {
+    flex: 1 1 420px;
+    min-width: 0;
+  }
+  .hero-right {
+    flex: 1 1 320px;
+    min-width: 260px;
+    display: flex;
+    justify-content: center;
+  }
 
   .s0-h1 {
     font-family: var(--font-head);
-    font-size: 62px;
-    font-weight: 600;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    color: #141210;
+    font-size: 56px;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    color: var(--text);
     margin-bottom: 20px;
   }
 
   .s0-body {
-    font-size: 1.1rem;
-    font-weight: 400;
-    line-height: 1.75;
-    color: #555;
-    max-width: 540px;
-    margin-bottom: 36px;
+    font-size: 17px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 32px;
   }
 
   .s0-micro {
     font-size: 13px;
-    color: #5F5E5A;
-    margin-top: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
   }
 
   .hero-right img {
     width: 100%;
-    height: 420px;
-    object-fit: cover;
-    border-radius: 12px;
+    max-width: 360px;
   }
 
   /* ── FORKLARINGSBANDET ── */
   .forklaringsband {
-    background: #fafaf8;
-    padding: 80px 0;
+    background: #FAFAF8;
+    padding: 72px 0;
   }
-  .forklaringsband .wrap { max-width: 1080px; }
+  .forklaringsband .wrap { max-width: 1100px; }
 
   .fact-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 40px;
     margin-top: 0;
   }
@@ -151,58 +174,67 @@
   }
   .hf-fact-num {
     font-family: var(--font-head);
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
-    font-weight: 600;
-    color: #141210;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
     line-height: 1;
   }
   .hf-fact-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #141210;
-    margin-top: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 10px;
   }
   .hf-fact-text {
     font-size: 15px;
-    line-height: 1.7;
-    color: #555;
+    line-height: 1.65;
+    color: rgba(43,43,43,0.6);
     margin-top: 6px;
   }
 
   /* ── DARK PUFF ── */
   .dark-puff {
-    background: #1F1A14;
-    padding: 40px 0;
+    background: #2B2B2B;
+    padding: 56px 0;
   }
-  .dark-puff .wrap { max-width: 1080px; }
+  .dark-puff .wrap { max-width: 1100px; }
   .dark-puff-grid {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
     align-items: center;
+    justify-content: space-between;
+  }
+  .dark-puff-text {
+    flex: 1 1 380px;
+    min-width: 0;
   }
   .dark-puff h3 {
     font-family: var(--font-head);
-    font-size: 24px;
-    font-weight: 600;
-    color: #f5f2ec;
+    font-size: 26px;
+    font-weight: 500;
+    color: #F5F2EC;
     margin-bottom: 8px;
   }
   .dark-puff .dark-puff-sub {
     font-size: 15px;
-    color: rgba(245,242,236,0.7);
+    color: rgba(245,242,236,0.65);
   }
 
   /* ── CTA REPEAT + FOOTER (step0) ── */
   .s0-footer {
     text-align: center;
-    padding: 32px 24px;
+    padding: 28px 24px 40px;
     font-size: 12px;
-    color: #8A929E;
+    color: var(--text-faint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
   }
 
-  /* ── STEPS 1-4: QUESTIONS ── */
-  .page-questions { background: #fafaf8; }
+  /* ── STEPS 1-9: QUESTIONS ── */
+  .page-questions { background: #FAFAF8; min-height: 100vh; }
 
   .q-topbar {
     display: flex;
@@ -210,41 +242,22 @@
     align-items: center;
     max-width: 640px;
     margin: 0 auto;
-    padding: 20px 24px;
+    padding: 22px 24px;
+    gap: 16px;
   }
-  .q-topbar img { height: 28px; }
+  .q-topbar img { height: 20px; }
 
-  .q-progress-bar {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .q-bars {
-    display: flex;
-    gap: 4px;
-  }
-  .q-bar {
-    width: 24px;
-    height: 3px;
-    background: #e2ddd8;
-    border-radius: 2px;
-    transition: background 0.3s;
-  }
-  .q-bar.active {
-    background: #FFA047;
-  }
-  .q-bar-label {
-    font-size: 12px;
-    color: #8A929E;
-    margin-left: 4px;
+  .q-progress-label {
+    font-size: 13px;
+    color: var(--text-muted);
     white-space: nowrap;
   }
 
   .q-card {
     background: #ffffff;
-    border: 1px solid #ebebeb;
+    border: 1px solid var(--border);
     border-radius: 0 10px 0 10px;
-    padding: 34px 32px;
+    padding: 36px 32px;
     max-width: 640px;
     margin: 0 auto;
   }
@@ -252,9 +265,9 @@
   .q-text {
     font-family: var(--font-head);
     font-size: 27px;
-    font-weight: 600;
+    font-weight: 500;
     line-height: 1.25;
-    color: #141210;
+    color: var(--text);
     border-left: 3px solid #FFA047;
     padding-left: 18px;
     margin-bottom: 28px;
@@ -266,14 +279,14 @@
     gap: 12px;
   }
   .choice-card {
-    border: 1px solid #e2ddd8;
+    border: 1.5px solid rgba(43,43,43,0.18);
     border-radius: 0 10px 0 10px;
     padding: 18px 22px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
     font-size: 16px;
     line-height: 1.6;
-    color: #141210;
+    color: var(--text);
     background: transparent;
   }
   .choice-card:hover {
@@ -281,39 +294,39 @@
   }
   .choice-card.selected {
     border-color: #FFA047;
-    background: rgba(255, 160, 71, 0.06);
+    background: rgba(255, 160, 71, 0.08);
   }
 
   .q-footnote {
     text-align: center;
     font-size: 13px;
-    color: #5F5E5A;
+    color: var(--text-muted);
     max-width: 640px;
     margin: 16px auto 0;
     padding: 0 24px;
   }
 
-  /* ── STEP 5: EMAIL ── */
-  .page-email { background: #fafaf8; }
+  /* ── STEP 10: EMAIL ── */
+  .page-email { background: #FAFAF8; min-height: 100vh; }
 
   .hf-form {
-    background: #f7f6f3;
-    border: 1px solid rgba(20,18,16,0.14);
+    background: #F7F6F3;
+    border: 1px solid rgba(43,43,43,0.14);
     border-radius: 0 10px 0 10px;
-    padding: 2rem;
+    padding: 32px;
     max-width: 540px;
     margin: 0 auto;
   }
   .hf-form h1 {
     font-family: var(--font-head);
     font-size: 28px;
-    font-weight: 600;
-    color: #141210;
+    font-weight: 500;
+    color: var(--text);
     margin-bottom: 8px;
   }
   .hf-form .sub {
     font-size: 15px;
-    color: #555;
+    color: rgba(43,43,43,0.6);
     margin-bottom: 24px;
   }
 
@@ -324,7 +337,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #5F5E5A;
+    color: rgba(43,43,43,0.55);
     margin-bottom: 6px;
   }
   .field-group input[type="text"],
@@ -332,14 +345,15 @@
     width: 100%;
     font-family: var(--font-body);
     font-size: 14px;
-    color: #141210;
-    border: 1px solid rgba(20,18,16,0.14);
+    color: var(--text);
+    border: 1px solid rgba(43,43,43,0.14);
     border-radius: 0 10px 0 10px;
     height: 46px;
     padding: 0 14px;
     background: #fff;
     transition: border-color 0.2s, box-shadow 0.2s;
     outline: none;
+    box-sizing: border-box;
   }
   .field-group input:focus {
     border-color: #FFA047;
@@ -363,7 +377,7 @@
   }
   .hf-form-check span {
     font-size: 13px;
-    color: #555;
+    color: rgba(43,43,43,0.65);
     line-height: 1.5;
   }
   .hf-form-check span a {
@@ -372,7 +386,7 @@
   }
 
   .consent-area {
-    margin: 24px 0 32px;
+    margin: 24px 0 28px;
   }
 
   .error-msg {
@@ -395,11 +409,11 @@
     font-size: 14px;
     font-weight: 700;
     border: none;
-    border-radius: 0 10px 0 10px;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
   }
-  .hf-form-submit:hover { background: rgba(255,160,71,0.85); }
+  .hf-form-submit:hover { opacity: 0.85; }
   .hf-form-submit:disabled {
     opacity: 0.25;
     cursor: not-allowed;
@@ -409,37 +423,42 @@
   #step11 { background: #ffffff; }
   #step11 .wrap {
     max-width: 720px;
-    padding-top: 80px;
-    padding-bottom: 80px;
+    padding-top: 56px;
+    padding-bottom: 96px;
   }
 
   .result-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .result-eyebrow-text {
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: #FFA047;
-    margin-bottom: 16px;
   }
 
   .result-h1 {
     font-family: var(--font-head);
-    font-size: 2rem;
-    font-weight: 700;
-    color: #141210;
-    margin-bottom: 12px;
-    line-height: 1.25;
+    font-size: 34px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.2;
   }
 
   .result-score {
-    font-size: 1.1rem;
-    color: #555;
+    font-size: 16px;
+    color: var(--text-muted);
     margin-bottom: 32px;
   }
 
   .result-text-area p {
     font-size: 16px;
-    line-height: 1.7;
+    line-height: 1.75;
     color: var(--text);
     margin-bottom: 16px;
   }
@@ -447,13 +466,13 @@
 
   .reservation-box {
     border-left: 3px solid #FFA047;
-    padding: 24px 28px;
-    background: #fafaf8;
+    padding: 22px 26px;
+    background: #FAFAF8;
     border-radius: 0 8px 8px 0;
     margin-top: 24px;
     margin-bottom: 48px;
     font-size: 14px;
-    color: #555;
+    color: rgba(43,43,43,0.65);
     font-family: var(--font-head);
     font-style: italic;
     line-height: 1.6;
@@ -463,20 +482,22 @@
     text-align: center;
     margin-bottom: 48px;
     padding: 32px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
   .cta-section h3 {
     font-family: var(--font-head);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #141210;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
     margin-bottom: 12px;
   }
   .cta-section p {
     font-size: 15px;
-    color: #555;
+    color: rgba(43,43,43,0.6);
     line-height: 1.7;
     margin-bottom: 24px;
-    max-width: 540px;
+    max-width: 480px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -484,27 +505,32 @@
   /* MOT ALEXANDER */
   .alexander-section {
     display: flex;
+    flex-wrap: wrap;
     gap: 28px;
     align-items: flex-start;
     margin-bottom: 48px;
   }
-  .alexander-section img {
+  .alexander-section img.avatar {
     width: 110px;
     height: 110px;
     object-fit: cover;
     border-radius: 50%;
     flex-shrink: 0;
   }
+  .alexander-text {
+    flex: 1 1 280px;
+    min-width: 0;
+  }
   .alexander-section h3 {
     font-size: 22px;
-    font-weight: 300;
-    color: #141210;
+    font-weight: 400;
+    color: var(--text);
     margin-bottom: 12px;
     line-height: 1.3;
   }
   .alexander-section p {
     font-size: 15px;
-    color: #555;
+    color: rgba(43,43,43,0.6);
     line-height: 1.7;
     margin-bottom: 8px;
   }
@@ -517,22 +543,22 @@
   }
   .alexander-links a.btn-link {
     font-size: 14px;
-    color: #555;
+    color: rgba(43,43,43,0.55);
     text-decoration: none;
     transition: color 0.2s;
   }
-  .alexander-links a.btn-link:hover { color: #141210; }
+  .alexander-links a.btn-link:hover { color: var(--text); }
 
   /* TEASER */
   .teaser-link {
     display: block;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 1px solid rgba(43,43,43,0.12);
+    border-radius: 0 10px 0 10px;
     padding: 24px 28px;
     text-decoration: none;
     color: inherit;
     transition: border-color 0.2s;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
   }
   .teaser-link:hover { border-color: #FFA047; }
   .teaser-link .teaser-eyebrow {
@@ -545,26 +571,26 @@
   .teaser-link h3 {
     font-size: 20px;
     font-weight: 400;
-    color: #141210;
+    color: var(--text);
     margin: 6px 0 8px;
   }
   .teaser-link p {
     font-size: 14px;
-    color: #555;
-    line-height: 1.7;
+    color: rgba(43,43,43,0.6);
+    line-height: 1.6;
     margin: 0 0 8px;
   }
   .teaser-link .teaser-arrow {
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 700;
     color: #FFA047;
   }
 
   .site-footer {
     text-align: center;
-    padding: 24px;
+    padding: 20px 0;
     font-size: 12px;
-    color: #8A929E;
+    color: var(--text-faint);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -587,13 +613,13 @@
 
   .q-card textarea {
     width: 100%;
-    min-height: 100px;
+    min-height: 110px;
     padding: 12px 14px;
     font-family: var(--font-body);
     font-size: 16px;
-    color: #141210;
+    color: var(--text);
     background: #fff;
-    border: 1px solid rgba(20,18,16,0.14);
+    border: 1px solid rgba(43,43,43,0.14);
     border-radius: 0 10px 0 10px;
     outline: none;
     resize: vertical;
@@ -606,29 +632,56 @@
   }
   .char-counter {
     font-size: 13px;
-    color: #8A929E;
+    color: var(--text-faint);
     margin-top: 8px;
   }
-  .char-counter.ok { color: #2E7D32; }
+  .char-counter.ok { color: #3F7A4A; }
   .q-help-text {
     font-size: 14px;
-    color: #5F5E5A;
+    color: rgba(43,43,43,0.55);
     margin-bottom: 16px;
+  }
+
+  /* ── INTRO TEXT SECTION ── */
+  .intro-text-section {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+  }
+  .intro-text-section h2 {
+    font-family: var(--font-head);
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 0 0 12px;
+    line-height: 1.25;
+  }
+  .intro-text-section h3 {
+    font-family: var(--font-head);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin: 28px 0 10px;
+    line-height: 1.3;
+  }
+  .intro-text-section p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(43,43,43,0.65);
+    margin: 0 0 12px;
   }
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
     .hero-grid {
-      grid-template-columns: 1fr;
       gap: 32px;
       padding-top: 32px;
       padding-bottom: 48px;
     }
-    .hero-right { order: 2; }
-    .hero-right img { height: 260px; }
+    .hero-right img { max-width: 280px; }
     .s0-h1 { font-size: 32px; }
     .fact-grid { grid-template-columns: 1fr; }
-    .dark-puff-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .dark-puff-grid { flex-direction: column; gap: 1.5rem; }
     .q-text { font-size: 22px; }
     .result-h1 { font-size: 24px; }
     .alexander-section { flex-direction: column; align-items: center; text-align: center; }
@@ -641,12 +694,15 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"></head>
 <body>
 
+<!-- Progress bar (shown during steps 1-10) -->
+<div class="progress-top" id="progressTop" style="display:none;"><div class="progress-top-fill" id="progressTopFill"></div></div>
+
 <!-- ══════════════════════════════════════════════
      STEP 0 — LANDING (HERO)
      ══════════════════════════════════════════════ -->
 <div class="page active" id="step0">
   <div class="s0-nav">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:20px;"></a>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:20px;display:block;">
   </div>
 
   <!-- HERO -->
@@ -660,7 +716,7 @@
         <div class="s0-micro">Nio frågor, ungefär tre minuter.</div>
       </div>
       <div class="hero-right">
-        <img src="https://assets.holmbergfriends.com/bildarkiv/23.jpg" alt="Två personer i samtal under en workshop">
+        <img src="assets/omslag/omslag-1-blixt.svg" alt="En person talar, den andra reagerar">
       </div>
     </div>
   </div>
@@ -668,20 +724,20 @@
   <!-- FÖRKLARINGSBANDET -->
   <div class="forklaringsband">
     <div class="wrap">
-      <div class="section-label">Vad språkmönster är</div>
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(43,43,43,0.45);margin-bottom:32px;">Vad språkmönster är</div>
       <div class="fact-grid">
         <div class="hf-fact">
-          <div class="hf-fact-num">1</div>
+          <div class="hf-fact-num">01</div>
           <div class="hf-fact-title">Hur, inte vem</div>
           <div class="hf-fact-text">Språkmönster beskriver hur du kommunicerar. Inte vem du är eller vad du gör.</div>
         </div>
         <div class="hf-fact">
-          <div class="hf-fact-num">2</div>
+          <div class="hf-fact-num">02</div>
           <div class="hf-fact-title">Fler sätt att möta</div>
           <div class="hf-fact-text">En ledare som känner igen språkmönster kan möta fler människor på fler sätt.</div>
         </div>
         <div class="hf-fact">
-          <div class="hf-fact-num">3</div>
+          <div class="hf-fact-num">03</div>
           <div class="hf-fact-title">Under grammatiken</div>
           <div class="hf-fact-text">Grammatik är reglerna för hur vi säger saker. Språkmönster är strukturen bakom det vi förstår.</div>
         </div>
@@ -693,7 +749,7 @@
   <div class="dark-puff">
     <div class="wrap">
       <div class="dark-puff-grid">
-        <div>
+        <div class="dark-puff-text">
           <h3>Det första mönstret handlar om hur du tar dig an en uppgift.</h3>
           <div class="dark-puff-sub">Vissa söker rätt ordning. Andra söker en väg till.</div>
         </div>
@@ -705,35 +761,38 @@
   </div>
 
   <!-- REPEAT CTA -->
-  <div style="text-align:center;padding:48px 24px;">
+  <div style="text-align:center;padding:56px 24px;">
     <button class="btn-primary" id="btnStart2">Gör din språkprofil</button>
   </div>
 
-  <div class="s0-footer">&copy; 2026 holmberg &amp; friends</div>
+  <div class="s0-footer"><span>&copy; 2026</span><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:11px;opacity:0.6;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     STEP 1 — FRITEXT
+     STEP 1 — INTRO TEXT + FRITEXT
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step1">
   <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar" data-bar="2"></div>
-        <div class="q-bar" data-bar="3"></div>
-        <div class="q-bar" data-bar="4"></div>
-        <div class="q-bar" data-bar="5"></div>
-        <div class="q-bar" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">1 av 9</span>
-    </div>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
+    <span class="q-progress-label">1 av 9</span>
   </div>
-  <div style="padding: 24px 0 80px;">
+
+  <!-- INTRO TEXT -->
+  <div class="intro-text-section">
+    <h2>Det här är inget personlighetstest</h2>
+    <p>Vi mäter inte vem du är. Vi tittar på hur ditt språk rör sig.</p>
+    <p>Två personer kan säga exakt samma sak och ändå bygga meningen på helt olika sätt. Den ena beskriver ordningen: först det här, sedan det. Den andra beskriver valen: vi kan göra så här, eller så här. Ingen av dem har fel. Men om de sitter i samma möte kommer de att irritera sig på varandra utan att förstå varför.</p>
+    <p>Det är sådant vi letar efter.</p>
+    <h3>Så går det till</h3>
+    <p>Du får ett antal frågor. De är formulerade för att få dig att berätta — inte för att välja mellan färdiga svar. Det är i dina egna formuleringar mönstren syns.</p>
+    <p>Svara spontant. Skriv som du pratar. Tänk inte efter för länge och försök inte formulera dig snyggt — det är just det oredigerade som säger något. Ett svar du putsat på i fem minuter berättar mer om hur du redigerar än om hur du kommunicerar.</p>
+    <p>Det tar fem till sex minuter.</p>
+    <h3>Vad du får</h3>
+    <p>En rapport om ett av dina mönster: hur du tar in och organiserar information. Vad det gör lätt för dig, vad det kostar, och vad som händer när du pratar med någon som gör tvärtom.</p>
+    <p>Mönstren tillhör texten du skriver, inte dig som person. Skriver du något annat en annan dag kan resultatet bli ett annat. Det är inte en brist i metoden — det är vad metoden mäter.</p>
+  </div>
+
+  <div style="padding: 0 0 80px;">
     <div class="q-card">
       <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
       <div class="q-help-text">Skriv fritt, ett par meningar räcker.</div>
@@ -752,23 +811,10 @@
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step2">
   <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar" data-bar="3"></div>
-        <div class="q-bar" data-bar="4"></div>
-        <div class="q-bar" data-bar="5"></div>
-        <div class="q-bar" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">2 av 9</span>
-    </div>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
+    <span class="q-progress-label">2 av 9</span>
   </div>
-  <div style="padding: 24px 0 80px;">
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
       <div class="choice-cards">
@@ -785,23 +831,10 @@
      ══════════════════════════════════════════════ -->
 <div class="page page-questions" id="step3">
   <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar" data-bar="4"></div>
-        <div class="q-bar" data-bar="5"></div>
-        <div class="q-bar" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">3 av 9</span>
-    </div>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
+    <span class="q-progress-label">3 av 9</span>
   </div>
-  <div style="padding: 24px 0 80px;">
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
       <div class="choice-cards">
@@ -813,28 +846,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 4 — FRÅGA 4
-     ══════════════════════════════════════════════ -->
+<!-- STEP 4 -->
 <div class="page page-questions" id="step4">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar" data-bar="5"></div>
-        <div class="q-bar" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">4 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">4 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div>
       <div class="choice-cards">
@@ -846,28 +861,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 5 — FRÅGA 5
-     ══════════════════════════════════════════════ -->
+<!-- STEP 5 -->
 <div class="page page-questions" id="step5">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">5 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">5 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Något går fel mitt i ett arbete. Vad är din första impuls?</div>
       <div class="choice-cards">
@@ -879,28 +876,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 6 — FRÅGA 6
-     ══════════════════════════════════════════════ -->
+<!-- STEP 6 -->
 <div class="page page-questions" id="step6">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar active" data-bar="6"></div>
-        <div class="q-bar" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">6 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">6 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Du har ont om tid. Hur gör du?</div>
       <div class="choice-cards">
@@ -912,28 +891,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 7 — FRÅGA 7
-     ══════════════════════════════════════════════ -->
+<!-- STEP 7 -->
 <div class="page page-questions" id="step7">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar active" data-bar="6"></div>
-        <div class="q-bar active" data-bar="7"></div>
-        <div class="q-bar" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">7 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">7 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">En medarbetare löser en uppgift på ett annat sätt än du hade gjort. Vad tänker du?</div>
       <div class="choice-cards">
@@ -945,28 +906,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 8 — FRÅGA 8
-     ══════════════════════════════════════════════ -->
+<!-- STEP 8 -->
 <div class="page page-questions" id="step8">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar active" data-bar="6"></div>
-        <div class="q-bar active" data-bar="7"></div>
-        <div class="q-bar active" data-bar="8"></div>
-        <div class="q-bar" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">8 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">8 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Något ska göras om från grunden. Vad börjar du med?</div>
       <div class="choice-cards">
@@ -978,28 +921,10 @@
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     STEP 9 — FRÅGA 9
-     ══════════════════════════════════════════════ -->
+<!-- STEP 9 -->
 <div class="page page-questions" id="step9">
-  <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar active" data-bar="6"></div>
-        <div class="q-bar active" data-bar="7"></div>
-        <div class="q-bar active" data-bar="8"></div>
-        <div class="q-bar active" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">9 av 9</span>
-    </div>
-  </div>
-  <div style="padding: 24px 0 80px;">
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">9 av 9</span></div>
+  <div style="padding: 20px 24px 80px;">
     <div class="q-card">
       <div class="q-text">Du beskriver för någon hur du kom fram till ett beslut. Hur låter det?</div>
       <div class="choice-cards">
@@ -1016,23 +941,10 @@
      ══════════════════════════════════════════════ -->
 <div class="page page-email" id="step10">
   <div class="q-topbar">
-    <a href="https://holmbergfriends.com"><img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:28px;"></a>
-    <div class="q-progress-bar">
-      <div class="q-bars">
-        <div class="q-bar active" data-bar="1"></div>
-        <div class="q-bar active" data-bar="2"></div>
-        <div class="q-bar active" data-bar="3"></div>
-        <div class="q-bar active" data-bar="4"></div>
-        <div class="q-bar active" data-bar="5"></div>
-        <div class="q-bar active" data-bar="6"></div>
-        <div class="q-bar active" data-bar="7"></div>
-        <div class="q-bar active" data-bar="8"></div>
-        <div class="q-bar active" data-bar="9"></div>
-      </div>
-      <span class="q-bar-label">9 av 9</span>
-    </div>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
+    <span class="q-progress-label">9 av 9</span>
   </div>
-  <div style="padding: 24px 0 80px;">
+  <div style="padding: 20px 24px 80px;">
     <div class="hf-form">
       <h1>Dina nio svar är inne.</h1>
       <p class="sub">Fyll i namn och e-post så visar vi ditt mönster.</p>
@@ -1069,7 +981,11 @@
      ══════════════════════════════════════════════ -->
 <div class="page" id="step11">
   <div class="wrap">
-    <div class="result-eyebrow">DITT RESULTAT</div>
+    <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:20px;margin-bottom:40px;display:block;">
+
+    <div class="result-eyebrow">
+      <span class="result-eyebrow-text">DITT RESULTAT</span>
+    </div>
     <h1 class="result-h1" id="resultTitle"></h1>
     <div class="result-score" id="resultScore"></div>
 
@@ -1082,18 +998,18 @@
       <h3>Så låter du för dem du leder</h3>
       <p>Ditt första mönster visar hur du organiserar information. De sex andra visar vad människor omkring dig faktiskt uppfattar.</p>
       <button class="btn-primary" id="btnBuyProfile">Se hela profilen</button>
-      <div style="margin-top:12px;display:none;"><span id="profilePrice"></span></div><!-- pris hämtas vid rendering, aldrig hårdkodat -->
+      <div style="margin-top:12px;display:none;"><span id="profilePrice"></span></div>
     </div>
 
     <!-- Möt Alexander -->
     <div class="alexander-section">
-      <img src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/1773570214333-W5TL1UKXZN45GNZ4AJNX/PRESS_Alexander.holmberg_FOTO_Peter.Knutson.jpg" alt="Alexander Holmberg">
-      <div>
+      <img class="avatar" src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/1773570214333-W5TL1UKXZN45GNZ4AJNX/PRESS_Alexander.holmberg_FOTO_Peter.Knutson.jpg" alt="Alexander Holmberg">
+      <div class="alexander-text">
         <h3>Jag hör mönster innan jag hör åsikter.</h3>
         <p>Det är en yrkesskada efter 21 år som coach och utbildare. Orden människor väljer avslöjar hur de tänker, inte vad de tycker. Det är därför kommunikation inte är ett verktyg för ledarskap. Det är ledarskapet.</p>
         <p>Vill du prata mönster, ledarskap, eller se vad det här gör för din organisation? Boka ett möte med oss.</p>
         <div class="alexander-links">
-          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 28px;">Boka ett möte</a>
+          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 26px;">Boka ett möte</a>
           <a href="https://www.holmbergfriends.com?utm_source=sml" target="_blank" class="btn-link">Till holmbergfriends.com</a>
         </div>
       </div>
@@ -1107,22 +1023,9 @@
       <span class="teaser-arrow">Se analyserna &rarr;</span>
     </a>
 
-    <footer class="site-footer">Ett verktyg från <img src="https://assets.holmbergfriends.com/brand/holmberg-friends-logotyp.webp" alt="holmberg &amp; friends" style="height:14px;opacity:0.6;"></footer>
+    <footer class="site-footer"><span>Ett verktyg från</span><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:12px;opacity:0.6;"></footer>
   </div>
 </div>
-
-<!-- ORDVAL — bevarad för betalflödet, används inte i gratisflödet -->
-<!--
-<div id="ordval-step" style="display:none;">
-  <div class="wrap">
-    <div class="eyebrow">ORDVAL</div>
-    <h1>Välj de ord som känns mest relevanta</h1>
-    <div class="chips-grid" id="chipsGrid"></div>
-    <div class="chips-count" id="chipsCount">0 av 5 valda</div>
-    <button class="btn-primary" id="btnSubmitWords" disabled>Skicka</button>
-  </div>
-</div>
--->
 
 <script>
 (function() {
@@ -1149,20 +1052,20 @@
     { ord: 'Tydliga steg', dimension: 'förståelse', pol: 'Procedur' },
     { ord: 'Variation', dimension: 'förståelse', pol: 'Alternativ' },
     { ord: 'Nya vägar', dimension: 'förståelse', pol: 'Alternativ' },
-    { ord: 'Överblick', dimension: 'sinneskanal', pol: 'Syn' },
-    { ord: 'Klarhet', dimension: 'sinneskanal', pol: 'Syn' },
-    { ord: 'Dialog', dimension: 'sinneskanal', pol: 'Hörsel' },
-    { ord: 'Lyssna in', dimension: 'sinneskanal', pol: 'Hörsel' },
-    { ord: 'Magkänsla', dimension: 'sinneskanal', pol: 'Känsel' },
-    { ord: 'Driv', dimension: 'sinneskanal', pol: 'Känsel' },
+    { ord: 'Överblick', dimension: 'sinneskommunikationskanal', pol: 'Syn' },
+    { ord: 'Klarhet', dimension: 'sinneskommunikationskanal', pol: 'Syn' },
+    { ord: 'Dialog', dimension: 'sinneskommunikationskanal', pol: 'Hörsel' },
+    { ord: 'Lyssna in', dimension: 'sinneskommunikationskanal', pol: 'Hörsel' },
+    { ord: 'Magkänsla', dimension: 'sinneskommunikationskanal', pol: 'Känsel' },
+    { ord: 'Driv', dimension: 'sinneskommunikationskanal', pol: 'Känsel' },
     { ord: 'Egen övertygelse', dimension: 'beslutsram', pol: 'Intern' },
     { ord: 'Självständighet', dimension: 'beslutsram', pol: 'Intern' },
     { ord: 'Bekräftelse', dimension: 'beslutsram', pol: 'Extern' },
     { ord: 'Feedback', dimension: 'beslutsram', pol: 'Extern' },
-    { ord: 'Stora linjer', dimension: 'detaljnivå', pol: 'Helhet' },
-    { ord: 'Visionen', dimension: 'detaljnivå', pol: 'Helhet' },
-    { ord: 'Precision', dimension: 'detaljnivå', pol: 'Detalj' },
-    { ord: 'Noggrannhet', dimension: 'detaljnivå', pol: 'Detalj' }
+    { ord: 'Stora linjer', dimension: 'omfång', pol: 'Generell' },
+    { ord: 'Visionen', dimension: 'omfång', pol: 'Generell' },
+    { ord: 'Precision', dimension: 'omfång', pol: 'Specifik' },
+    { ord: 'Noggrannhet', dimension: 'omfång', pol: 'Specifik' }
   ];
 
   // ── PEDAGOGICAL TEXTS ──
@@ -1188,9 +1091,22 @@
     + '<p>Det är inte ett sämre resultat. Det är ett mindre bestämt.</p>';
 
   // ── STATE ──
-  var answers = []; // [{fraga: N, svar: 'Procedur'|'Alternativ'}, ...]
+  var answers = [];
   var freeText = '';
   var current = 0;
+
+  // ── PROGRESS BAR ──
+  function updateProgress(step) {
+    var bar = document.getElementById('progressTop');
+    var fill = document.getElementById('progressTopFill');
+    if (step >= 1 && step <= 10) {
+      bar.style.display = 'block';
+      var pct = step <= 9 ? Math.round((step / 9) * 100) : 100;
+      fill.style.width = pct + '%';
+    } else {
+      bar.style.display = 'none';
+    }
+  }
 
   // ── NAVIGATION ──
   function show(step) {
@@ -1199,6 +1115,7 @@
     var target = document.getElementById('step' + step);
     if (target) target.classList.add('active');
     current = step;
+    updateProgress(step);
     window.scrollTo(0, 0);
   }
 
@@ -1244,27 +1161,22 @@
         var fraga = parseInt(card.getAttribute('data-fraga'), 10);
         var svar = card.getAttribute('data-svar');
 
-        // Prevent re-answering
         for (var a = 0; a < answers.length; a++) {
           if (answers[a].fraga === fraga) return;
         }
 
-        // Visual selection
         var siblings = card.parentElement.querySelectorAll('.choice-card');
         for (var s = 0; s < siblings.length; s++) siblings[s].classList.remove('selected');
         card.classList.add('selected');
 
-        // Store answer
         answers.push({ fraga: fraga, svar: svar });
 
         try { smlBeacon('sml_fraga_besvarad', { fraga: fraga }); } catch(e) {}
 
-        // Auto-advance after 300ms
         setTimeout(function() {
           if (fraga < 9) {
             show(fraga + 1);
           } else {
-            // All questions done, show email step
             try { smlBeacon('sml_epost_efterfragad'); } catch(e) {}
             show(10);
           }
@@ -1297,11 +1209,9 @@
     var email = emailEl.value.trim();
     var nyhetsbrevChecked = document.getElementById('nyhetsbrev-opt').checked;
 
-    // Hide previous errors
     var errEl = document.getElementById('errorMsg');
     errEl.classList.remove('visible');
 
-    // Disable button
     btnResult.disabled = true;
     btnResult.innerHTML = '<span class="spinner"></span> Skickar...';
 
@@ -1327,12 +1237,10 @@
     .then(function(r) {
       if (!r.ok) throw new Error(r.data.error || 'Okänt fel');
 
-      // Render result using server data
       renderResult(r.data);
       show(11);
       try { smlBeacon('sml_monster_visat'); } catch(e) {}
 
-      // Fire-and-forget lead POST
       try {
         fetch(LEAD_URL, {
           method: 'POST',
@@ -1370,7 +1278,6 @@
       proc = serverData.förståelse.procedur_total || 0;
       alt = serverData.förståelse.alternativ_total || 0;
     } else {
-      // Fallback: count binary answers only
       proc = 0; alt = 0;
       for (var i = 0; i < answers.length; i++) {
         if (answers[i].svar === 'Procedur') proc++; else alt++;
