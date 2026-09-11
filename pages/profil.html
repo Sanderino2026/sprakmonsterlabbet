@@ -4,32 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Språkprofil — Språkmönsterlabbet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 <style>
-  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-VariableFont_wght.ttf');font-weight:200 900;font-style:normal;}
-  @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-Italic-VariableFont_wght.ttf');font-weight:200 900;font-style:italic;}
-
   :root {
-    --font-head: 'Crimson Pro', Georgia, serif;
-    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --accent: #FFA047;
-    --text: #2B2B2B;
-    --text-secondary: rgba(43,43,43,0.65);
-    --text-muted: rgba(43,43,43,0.5);
-    --text-faint: rgba(43,43,43,0.4);
-    --bg: #FFFFFF;
-    --border: rgba(43,43,43,0.1);
+    --font-head: 'Big Shoulders Display', sans-serif;
+    --font-body: 'Lora', Georgia, serif;
+    --accent: #D9481E;
+    --ink: #232323;
+    --paper: #F4F1EC;
+    --olive: #7A8B6F;
+    --text: #232323;
+    --text-secondary: rgba(35,35,35,0.65);
+    --text-muted: rgba(35,35,35,0.5);
+    --text-faint: rgba(35,35,35,0.4);
+    --bg: #F4F1EC;
+    --border: rgba(35,35,35,0.22);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     font-family: var(--font-body);
     background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
     font-size: 16px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
+    border-top: 5px solid var(--ink);
   }
-  h1, h2, h3 { font-family: var(--font-head); }
+  h1, h2, h3 {
+    font-family: var(--font-head);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
 
   /* FADE IN */
   @keyframes fadeIn {
@@ -44,21 +54,39 @@
 
   /* SHARED WRAP */
   .wrap {
-    max-width: 1100px;
+    max-width: 720px;
     margin: 0 auto;
     padding: 0 24px;
   }
 
+  /* ACCENT LINE */
+  .accent-line {
+    display: block;
+    width: 76px;
+    height: 3px;
+    background: var(--accent);
+    margin: 20px 0;
+  }
+
+  /* DASHED DIVIDER */
+  .dashed-divider {
+    border: none;
+    border-top: 1.5px dashed var(--border);
+    margin: 32px 0;
+  }
+
   /* ── BUTTONS ── */
   .btn-primary {
-    font-family: var(--font-body);
-    font-size: 15px;
+    font-family: var(--font-head);
+    font-size: 14px;
     font-weight: 700;
-    background: #FFA047;
-    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--ink);
+    color: var(--paper);
     border: none;
-    border-radius: 6px;
-    padding: 15px 32px;
+    border-radius: 0;
+    padding: 13px 24px;
     cursor: pointer;
     transition: opacity 0.2s;
     display: inline-block;
@@ -71,18 +99,19 @@
 
   /* Section-label / eyebrow */
   .section-label {
-    font-size: 11px;
+    font-family: var(--font-head);
+    font-size: 15px;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: #FFA047;
+    color: var(--ink);
     margin-bottom: 16px;
   }
 
   /* ── PROGRESS BAR (steps 1-10) ── */
   .progress-top {
     position: fixed;
-    top: 0;
+    top: 5px;
     left: 0;
     right: 0;
     height: 2px;
@@ -91,52 +120,50 @@
   }
   .progress-top-fill {
     height: 100%;
-    background: #FFA047;
+    background: var(--accent);
     width: 0%;
     transition: width 0.3s ease;
   }
 
   /* ── STEP 0: LANDING ── */
-  #step0 { background: #ffffff; }
+  #step0 { background: var(--paper); }
 
   .s0-nav {
-    max-width: 1100px;
+    max-width: 720px;
     margin: 0 auto;
-    padding: 24px 24px;
+    padding: 32px 24px;
   }
 
-  /* Hero grid */
-  .hero-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 56px;
-    align-items: center;
+  /* Hero */
+  .hero-section {
     padding-top: 48px;
     padding-bottom: 64px;
   }
-  .hero-left {
-    flex: 1 1 420px;
-    min-width: 0;
-  }
-  .hero-right {
-    flex: 1 1 320px;
-    min-width: 260px;
-    display: flex;
-    justify-content: center;
+
+  .s0-eyebrow {
+    font-family: var(--font-head);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 20px;
   }
 
   .s0-h1 {
     font-family: var(--font-head);
-    font-size: 56px;
-    font-weight: 500;
-    line-height: 1.08;
-    letter-spacing: -0.01em;
-    color: var(--text);
-    margin-bottom: 20px;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 0.98;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 0;
   }
 
   .s0-body {
-    font-size: 17px;
+    font-family: var(--font-body);
+    font-size: 18px;
     line-height: 1.7;
     color: var(--text-secondary);
     max-width: 520px;
@@ -144,60 +171,70 @@
   }
 
   .s0-micro {
-    font-size: 13px;
+    font-family: var(--font-body);
+    font-style: italic;
+    font-size: 14px;
     color: var(--text-muted);
-    margin-top: 14px;
+    display: inline;
+    margin-left: 16px;
   }
 
-  .hero-right img {
-    width: 100%;
-    max-width: 360px;
+  .hero-cta-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
   /* ── FORKLARINGSBANDET ── */
   .forklaringsband {
-    background: #FAFAF8;
-    padding: 72px 0;
+    padding: 56px 0;
+    border-top: 1.5px dashed var(--border);
+    border-bottom: 1.5px dashed var(--border);
   }
-  .forklaringsband .wrap { max-width: 1100px; }
+  .forklaringsband .wrap { max-width: 720px; }
 
   .fact-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 40px;
     margin-top: 0;
   }
 
   .hf-fact {
-    border-top: 2px solid #FFA047;
+    border-top: 1.5px dashed var(--border);
     padding-top: 16px;
   }
   .hf-fact-num {
     font-family: var(--font-head);
     font-size: 28px;
-    font-weight: 500;
-    color: var(--text);
+    font-weight: 700;
+    color: var(--ink);
     line-height: 1;
   }
   .hf-fact-title {
-    font-size: 17px;
+    font-family: var(--font-head);
+    font-size: 16px;
     font-weight: 700;
-    color: var(--text);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    color: var(--ink);
     margin-top: 10px;
   }
   .hf-fact-text {
+    font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.65;
-    color: rgba(43,43,43,0.6);
+    color: var(--text-secondary);
     margin-top: 6px;
   }
 
   /* ── DARK PUFF ── */
   .dark-puff {
-    background: #2B2B2B;
+    background: var(--ink);
     padding: 56px 0;
   }
-  .dark-puff .wrap { max-width: 1100px; }
+  .dark-puff .wrap { max-width: 720px; }
   .dark-puff-grid {
     display: flex;
     flex-wrap: wrap;
@@ -212,13 +249,22 @@
   .dark-puff h3 {
     font-family: var(--font-head);
     font-size: 26px;
-    font-weight: 500;
-    color: #F5F2EC;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--paper);
     margin-bottom: 8px;
+    line-height: 1.1;
   }
   .dark-puff .dark-puff-sub {
+    font-family: var(--font-body);
+    font-style: italic;
     font-size: 15px;
-    color: rgba(245,242,236,0.65);
+    color: rgba(244,241,236,0.65);
+  }
+  .dark-puff .btn-primary {
+    background: var(--paper);
+    color: var(--ink);
   }
 
   /* ── CTA REPEAT + FOOTER (step0) ── */
@@ -234,7 +280,7 @@
   }
 
   /* ── STEPS 1-9: QUESTIONS ── */
-  .page-questions { background: #FAFAF8; min-height: 100vh; }
+  .page-questions { background: var(--paper); min-height: 100vh; }
 
   .q-topbar {
     display: flex;
@@ -248,15 +294,19 @@
   .q-topbar img { height: 20px; }
 
   .q-progress-label {
+    font-family: var(--font-head);
     font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     color: var(--text-muted);
     white-space: nowrap;
   }
 
   .q-card {
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 0 10px 0 10px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     padding: 36px 32px;
     max-width: 640px;
     margin: 0 auto;
@@ -265,10 +315,12 @@
   .q-text {
     font-family: var(--font-head);
     font-size: 27px;
-    font-weight: 500;
-    line-height: 1.25;
-    color: var(--text);
-    border-left: 3px solid #FFA047;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.1;
+    color: var(--ink);
+    border-left: 3px solid var(--accent);
     padding-left: 18px;
     margin-bottom: 28px;
   }
@@ -279,26 +331,29 @@
     gap: 12px;
   }
   .choice-card {
-    border: 1.5px solid rgba(43,43,43,0.18);
-    border-radius: 0 10px 0 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     padding: 18px 22px;
     cursor: pointer;
     transition: border-color 0.2s, background 0.2s;
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.6;
-    color: var(--text);
+    color: var(--ink);
     background: transparent;
   }
   .choice-card:hover {
-    border-color: #FFA047;
+    border-color: var(--accent);
   }
   .choice-card.selected {
-    border-color: #FFA047;
-    background: rgba(255, 160, 71, 0.08);
+    border-color: var(--accent);
+    background: rgba(217, 72, 30, 0.08);
   }
 
   .q-footnote {
     text-align: center;
+    font-family: var(--font-body);
+    font-style: italic;
     font-size: 13px;
     color: var(--text-muted);
     max-width: 640px;
@@ -307,12 +362,12 @@
   }
 
   /* ── STEP 10: EMAIL ── */
-  .page-email { background: #FAFAF8; min-height: 100vh; }
+  .page-email { background: var(--paper); min-height: 100vh; }
 
   .hf-form {
-    background: #F7F6F3;
-    border: 1px solid rgba(43,43,43,0.14);
-    border-radius: 0 10px 0 10px;
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     padding: 32px;
     max-width: 540px;
     margin: 0 auto;
@@ -320,24 +375,28 @@
   .hf-form h1 {
     font-family: var(--font-head);
     font-size: 28px;
-    font-weight: 500;
-    color: var(--text);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
     margin-bottom: 8px;
   }
   .hf-form .sub {
+    font-family: var(--font-body);
     font-size: 15px;
-    color: rgba(43,43,43,0.6);
+    color: var(--text-secondary);
     margin-bottom: 24px;
   }
 
   .field-group { margin-bottom: 20px; }
   .field-group label {
     display: block;
+    font-family: var(--font-head);
     font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: rgba(43,43,43,0.55);
+    color: var(--text-muted);
     margin-bottom: 6px;
   }
   .field-group input[type="text"],
@@ -345,19 +404,18 @@
     width: 100%;
     font-family: var(--font-body);
     font-size: 14px;
-    color: var(--text);
-    border: 1px solid rgba(43,43,43,0.14);
-    border-radius: 0 10px 0 10px;
+    color: var(--ink);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     height: 46px;
     padding: 0 14px;
-    background: #fff;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    background: var(--paper);
+    transition: border-color 0.2s;
     outline: none;
     box-sizing: border-box;
   }
   .field-group input:focus {
-    border-color: #FFA047;
-    box-shadow: 0 0 0 3px rgba(255,160,71,0.18);
+    border-color: var(--accent);
   }
 
   .hf-form-check {
@@ -371,17 +429,17 @@
     width: 16px;
     height: 16px;
     margin-top: 3px;
-    accent-color: #FFA047;
+    accent-color: var(--accent);
     flex-shrink: 0;
     cursor: pointer;
   }
   .hf-form-check span {
     font-size: 13px;
-    color: rgba(43,43,43,0.65);
+    color: var(--text-secondary);
     line-height: 1.5;
   }
   .hf-form-check span a {
-    color: #FFA047;
+    color: var(--accent);
     text-decoration: underline;
   }
 
@@ -394,7 +452,7 @@
     background: #FFEBEE;
     color: #C62828;
     padding: 12px 16px;
-    border-radius: 0 10px 0 10px;
+    border-radius: 0;
     font-size: 14px;
     margin-bottom: 20px;
   }
@@ -402,14 +460,16 @@
 
   .hf-form-submit {
     width: 100%;
-    padding: 14px;
-    background: #FFA047;
-    color: #fff;
-    font-family: var(--font-body);
+    padding: 13px 24px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-head);
     font-size: 14px;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
     border: none;
-    border-radius: 6px;
+    border-radius: 0;
     cursor: pointer;
     transition: opacity 0.2s;
   }
@@ -420,7 +480,7 @@
   }
 
   /* ── STEP 11: RESULT ── */
-  #step11 { background: #ffffff; }
+  #step11 { background: var(--paper); }
   #step11 .wrap {
     max-width: 720px;
     padding-top: 56px;
@@ -434,46 +494,52 @@
     margin-bottom: 16px;
   }
   .result-eyebrow-text {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #FFA047;
+    color: var(--accent);
   }
 
   .result-h1 {
     font-family: var(--font-head);
     font-size: 34px;
-    font-weight: 500;
-    color: var(--text);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    line-height: 1.05;
+    color: var(--ink);
     margin-bottom: 10px;
-    line-height: 1.2;
   }
 
   .result-score {
+    font-family: var(--font-body);
+    font-style: italic;
     font-size: 16px;
     color: var(--text-muted);
     margin-bottom: 32px;
   }
 
   .result-text-area p {
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.75;
-    color: var(--text);
+    color: var(--ink);
     margin-bottom: 16px;
   }
   .result-text-area p:last-child { margin-bottom: 0; }
 
   .reservation-box {
-    border-left: 3px solid #FFA047;
+    border-left: 3px solid var(--accent);
     padding: 22px 26px;
-    background: #FAFAF8;
-    border-radius: 0 8px 8px 0;
+    background: transparent;
+    border-radius: 0;
     margin-top: 24px;
     margin-bottom: 48px;
     font-size: 14px;
-    color: rgba(43,43,43,0.65);
-    font-family: var(--font-head);
+    color: var(--text-secondary);
+    font-family: var(--font-body);
     font-style: italic;
     line-height: 1.6;
   }
@@ -482,19 +548,22 @@
     text-align: center;
     margin-bottom: 48px;
     padding: 32px 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
+    border-top: 1.5px dashed var(--border);
+    border-bottom: 1.5px dashed var(--border);
   }
   .cta-section h3 {
     font-family: var(--font-head);
     font-size: 22px;
-    font-weight: 500;
-    color: var(--text);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
     margin-bottom: 12px;
   }
   .cta-section p {
+    font-family: var(--font-body);
     font-size: 15px;
-    color: rgba(43,43,43,0.6);
+    color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: 24px;
     max-width: 480px;
@@ -514,7 +583,7 @@
     width: 110px;
     height: 110px;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 0;
     flex-shrink: 0;
   }
   .alexander-text {
@@ -523,14 +592,15 @@
   }
   .alexander-section h3 {
     font-size: 22px;
-    font-weight: 400;
-    color: var(--text);
+    font-weight: 700;
+    color: var(--ink);
     margin-bottom: 12px;
-    line-height: 1.3;
+    line-height: 1.1;
   }
   .alexander-section p {
+    font-family: var(--font-body);
     font-size: 15px;
-    color: rgba(43,43,43,0.6);
+    color: var(--text-secondary);
     line-height: 1.7;
     margin-bottom: 8px;
   }
@@ -542,48 +612,54 @@
     margin-top: 16px;
   }
   .alexander-links a.btn-link {
+    font-family: var(--font-body);
     font-size: 14px;
-    color: rgba(43,43,43,0.55);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
   }
-  .alexander-links a.btn-link:hover { color: var(--text); }
+  .alexander-links a.btn-link:hover { color: var(--ink); }
 
   /* TEASER */
   .teaser-link {
     display: block;
-    border: 1px solid rgba(43,43,43,0.12);
-    border-radius: 0 10px 0 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     padding: 24px 28px;
     text-decoration: none;
     color: inherit;
     transition: border-color 0.2s;
     margin-bottom: 40px;
   }
-  .teaser-link:hover { border-color: #FFA047; }
+  .teaser-link:hover { border-color: var(--accent); }
   .teaser-link .teaser-eyebrow {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #FFA047;
+    color: var(--accent);
   }
   .teaser-link h3 {
     font-size: 20px;
-    font-weight: 400;
-    color: var(--text);
+    font-weight: 700;
+    color: var(--ink);
     margin: 6px 0 8px;
   }
   .teaser-link p {
+    font-family: var(--font-body);
     font-size: 14px;
-    color: rgba(43,43,43,0.6);
+    color: var(--text-secondary);
     line-height: 1.6;
     margin: 0 0 8px;
   }
   .teaser-link .teaser-arrow {
+    font-family: var(--font-head);
     font-size: 13px;
     font-weight: 700;
-    color: #FFA047;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--accent);
   }
 
   .site-footer {
@@ -602,8 +678,8 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
+    border: 2px solid rgba(244,241,236,0.3);
+    border-top-color: var(--paper);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     vertical-align: middle;
@@ -617,28 +693,29 @@
     padding: 12px 14px;
     font-family: var(--font-body);
     font-size: 16px;
-    color: var(--text);
-    background: #fff;
-    border: 1px solid rgba(43,43,43,0.14);
-    border-radius: 0 10px 0 10px;
+    color: var(--ink);
+    background: var(--paper);
+    border: 1.5px solid var(--border);
+    border-radius: 0;
     outline: none;
     resize: vertical;
     line-height: 1.6;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition: border-color 0.15s;
   }
   .q-card textarea:focus {
-    border-color: #FFA047;
-    box-shadow: 0 0 0 3px rgba(255,160,71,0.18);
+    border-color: var(--accent);
   }
   .char-counter {
     font-size: 13px;
     color: var(--text-faint);
     margin-top: 8px;
   }
-  .char-counter.ok { color: #3F7A4A; }
+  .char-counter.ok { color: var(--olive); }
   .q-help-text {
+    font-family: var(--font-body);
+    font-style: italic;
     font-size: 14px;
-    color: rgba(43,43,43,0.55);
+    color: var(--text-muted);
     margin-bottom: 16px;
   }
 
@@ -651,42 +728,48 @@
   .intro-text-section h2 {
     font-family: var(--font-head);
     font-size: 28px;
-    font-weight: 500;
-    color: var(--text);
-    margin: 0 0 12px;
-    line-height: 1.25;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 0 0 0;
+    line-height: 1.1;
   }
   .intro-text-section h3 {
     font-family: var(--font-head);
     font-size: 22px;
-    font-weight: 500;
-    color: var(--text);
-    margin: 28px 0 10px;
-    line-height: 1.3;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.01em;
+    color: var(--ink);
+    margin: 28px 0 0;
+    line-height: 1.1;
+  }
+  .intro-text-section .accent-line {
+    margin: 12px 0 14px;
   }
   .intro-text-section p {
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.7;
-    color: rgba(43,43,43,0.65);
+    color: var(--text-secondary);
     margin: 0 0 12px;
   }
 
   /* ── MOBILE ── */
   @media (max-width: 768px) {
-    .hero-grid {
-      gap: 32px;
+    .hero-section {
       padding-top: 32px;
       padding-bottom: 48px;
     }
-    .hero-right img { max-width: 280px; }
-    .s0-h1 { font-size: 32px; }
+    .s0-h1 { font-size: 36px; }
     .fact-grid { grid-template-columns: 1fr; }
     .dark-puff-grid { flex-direction: column; gap: 1.5rem; }
     .q-text { font-size: 22px; }
     .result-h1 { font-size: 24px; }
     .alexander-section { flex-direction: column; align-items: center; text-align: center; }
     .alexander-links { justify-content: center; }
-    .s0-nav { padding: 16px 20px; }
+    .s0-nav { padding: 20px 20px; }
     .q-topbar { padding: 16px 20px; }
     .q-card { padding: 24px 20px; }
   }
@@ -707,16 +790,14 @@
 
   <!-- HERO -->
   <div class="wrap">
-    <div class="hero-grid">
-      <div class="hero-left">
-        <div class="section-label">SPRÅKMÖNSTERLABBET</div>
-        <h1 class="s0-h1">Du säger en sak. De hör en annan.</h1>
-        <p class="s0-body">Sju språkmönster påverkar hur du formulerar dig och hur andra tar emot det. Nio frågor räcker för att visa ett av dem.</p>
-        <button class="btn-primary" id="btnStart">Gör din språkprofil</button>
-        <div class="s0-micro">Nio frågor, ungefär tre minuter.</div>
-      </div>
-      <div class="hero-right">
-        <img src="assets/omslag/omslag-1-blixt.svg" alt="En person talar, den andra reagerar">
+    <div class="hero-section">
+      <div class="s0-eyebrow">SPRÅKMÖNSTERLABBET</div>
+      <h1 class="s0-h1">HUR LÅTER DU<br>NÅR DU FÖRKLARAR DIG?</h1>
+      <span class="accent-line"></span>
+      <p class="s0-body">Svara på några frågor med egna ord. Vi läser inte vad du tycker — vi läser hur du säger det.</p>
+      <div class="hero-cta-row">
+        <button class="btn-primary" id="btnStart">BÖRJA SVARA</button>
+        <span class="s0-micro">Ingen bedömning. Mönstret hör till texten, inte till dig.</span>
       </div>
     </div>
   </div>
@@ -724,21 +805,21 @@
   <!-- FÖRKLARINGSBANDET -->
   <div class="forklaringsband">
     <div class="wrap">
-      <div style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(43,43,43,0.45);margin-bottom:32px;">Vad språkmönster är</div>
+      <div style="font-family:var(--font-head);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:32px;">VAD SPRÅKMÖNSTER ÄR</div>
       <div class="fact-grid">
         <div class="hf-fact">
           <div class="hf-fact-num">01</div>
-          <div class="hf-fact-title">Hur, inte vem</div>
+          <div class="hf-fact-title">HUR, INTE VEM</div>
           <div class="hf-fact-text">Språkmönster beskriver hur du kommunicerar. Inte vem du är eller vad du gör.</div>
         </div>
         <div class="hf-fact">
           <div class="hf-fact-num">02</div>
-          <div class="hf-fact-title">Fler sätt att möta</div>
+          <div class="hf-fact-title">FLER SÄTT ATT MÖTA</div>
           <div class="hf-fact-text">En ledare som känner igen språkmönster kan möta fler människor på fler sätt.</div>
         </div>
         <div class="hf-fact">
           <div class="hf-fact-num">03</div>
-          <div class="hf-fact-title">Under grammatiken</div>
+          <div class="hf-fact-title">UNDER GRAMMATIKEN</div>
           <div class="hf-fact-text">Grammatik är reglerna för hur vi säger saker. Språkmönster är strukturen bakom det vi förstår.</div>
         </div>
       </div>
@@ -750,11 +831,11 @@
     <div class="wrap">
       <div class="dark-puff-grid">
         <div class="dark-puff-text">
-          <h3>Det första mönstret handlar om hur du tar dig an en uppgift.</h3>
+          <h3>DET FÖRSTA MÖNSTRET HANDLAR OM HUR DU TAR DIG AN EN UPPGIFT.</h3>
           <div class="dark-puff-sub">Vissa söker rätt ordning. Andra söker en väg till.</div>
         </div>
         <div>
-          <button class="btn-primary" id="btnStart3">Gör din språkprofil</button>
+          <button class="btn-primary" id="btnStart3">BÖRJA SVARA</button>
         </div>
       </div>
     </div>
@@ -762,7 +843,7 @@
 
   <!-- REPEAT CTA -->
   <div style="text-align:center;padding:56px 24px;">
-    <button class="btn-primary" id="btnStart2">Gör din språkprofil</button>
+    <button class="btn-primary" id="btnStart2">BÖRJA SVARA</button>
   </div>
 
   <div class="s0-footer"><span>&copy; 2026</span><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:11px;opacity:0.6;"></div>
@@ -774,32 +855,35 @@
 <div class="page page-questions" id="step1">
   <div class="q-topbar">
     <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
-    <span class="q-progress-label">1 av 9</span>
+    <span class="q-progress-label">1 AV 9</span>
   </div>
 
   <!-- INTRO TEXT -->
   <div class="intro-text-section">
-    <h2>Det här är inget personlighetstest</h2>
+    <h2>DET HÄR ÄR INGET PERSONLIGHETSTEST</h2>
+    <span class="accent-line"></span>
     <p>Vi mäter inte vem du är. Vi tittar på hur ditt språk rör sig.</p>
     <p>Två personer kan säga exakt samma sak och ändå bygga meningen på helt olika sätt. Den ena beskriver ordningen: först det här, sedan det. Den andra beskriver valen: vi kan göra så här, eller så här. Ingen av dem har fel. Men om de sitter i samma möte kommer de att irritera sig på varandra utan att förstå varför.</p>
     <p>Det är sådant vi letar efter.</p>
-    <h3>Så går det till</h3>
+    <h3>SÅ GÅR DET TILL</h3>
+    <span class="accent-line"></span>
     <p>Du får ett antal frågor. De är formulerade för att få dig att berätta — inte för att välja mellan färdiga svar. Det är i dina egna formuleringar mönstren syns.</p>
     <p>Svara spontant. Skriv som du pratar. Tänk inte efter för länge och försök inte formulera dig snyggt — det är just det oredigerade som säger något. Ett svar du putsat på i fem minuter berättar mer om hur du redigerar än om hur du kommunicerar.</p>
     <p>Det tar fem till sex minuter.</p>
-    <h3>Vad du får</h3>
+    <h3>VAD DU FÅR</h3>
+    <span class="accent-line"></span>
     <p>En rapport om ett av dina mönster: hur du tar in och organiserar information. Vad det gör lätt för dig, vad det kostar, och vad som händer när du pratar med någon som gör tvärtom.</p>
     <p>Mönstren tillhör texten du skriver, inte dig som person. Skriver du något annat en annan dag kan resultatet bli ett annat. Det är inte en brist i metoden — det är vad metoden mäter.</p>
   </div>
 
   <div style="padding: 0 0 80px;">
     <div class="q-card">
-      <div class="q-text">Varför valde du ditt nuvarande arbete?</div>
+      <div class="q-text">VARFÖR VALDE DU DITT NUVARANDE ARBETE?</div>
       <div class="q-help-text">Skriv fritt, ett par meningar räcker.</div>
       <textarea id="freeTextArea" placeholder=""></textarea>
       <div class="char-counter" id="charCounter">0 / 40 tecken</div>
       <div style="margin-top:20px;text-align:right;">
-        <button class="btn-primary" id="btnFreeNext" disabled>Nästa</button>
+        <button class="btn-primary" id="btnFreeNext" disabled>NÄSTA</button>
       </div>
     </div>
     <div class="q-footnote">Det finns inget rätt svar. Svaren beskriver hur du gör, inte hur du borde göra.</div>
@@ -812,11 +896,11 @@
 <div class="page page-questions" id="step2">
   <div class="q-topbar">
     <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
-    <span class="q-progress-label">2 av 9</span>
+    <span class="q-progress-label">2 AV 9</span>
   </div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Du får ett nytt uppdrag. Vad gör du först?</div>
+      <div class="q-text">DU FÅR ETT NYTT UPPDRAG. VAD GÖR DU FÖRST?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="2" data-svar="Procedur">Tar reda på hur det brukar göras och i vilken ordning.</div>
         <div class="choice-card" data-fraga="2" data-svar="Alternativ">Ser efter vilka olika vägar som finns att lösa det.</div>
@@ -832,11 +916,11 @@
 <div class="page page-questions" id="step3">
   <div class="q-topbar">
     <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
-    <span class="q-progress-label">3 av 9</span>
+    <span class="q-progress-label">3 AV 9</span>
   </div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">En kollega ber om råd inför ett viktigt beslut. Hur svarar du?</div>
+      <div class="q-text">EN KOLLEGA BER OM RÅD INFÖR ETT VIKTIGT BESLUT. HUR SVARAR DU?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="3" data-svar="Alternativ">Jag lyfter flera vägar. Det finns sällan bara ett rätt svar.</div>
         <div class="choice-card" data-fraga="3" data-svar="Procedur">Jag föreslår en ordning. Först det här, sedan det här.</div>
@@ -848,10 +932,10 @@
 
 <!-- STEP 4 -->
 <div class="page page-questions" id="step4">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">4 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">4 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Hur förklarar du något komplicerat för en kollega?</div>
+      <div class="q-text">HUR FÖRKLARAR DU NÅGOT KOMPLICERAT FÖR EN KOLLEGA?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="4" data-svar="Procedur">Jag tar det i ordning, ett steg i taget.</div>
         <div class="choice-card" data-fraga="4" data-svar="Alternativ">Jag ger flera ingångar och låter dem välja.</div>
@@ -863,10 +947,10 @@
 
 <!-- STEP 5 -->
 <div class="page page-questions" id="step5">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">5 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">5 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Något går fel mitt i ett arbete. Vad är din första impuls?</div>
+      <div class="q-text">NÅGOT GÅR FEL MITT I ETT ARBETE. VAD ÄR DIN FÖRSTA IMPULS?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="5" data-svar="Alternativ">Jag letar efter en annan väg runt problemet.</div>
         <div class="choice-card" data-fraga="5" data-svar="Procedur">Jag går tillbaka och kollar var det gick snett i processen.</div>
@@ -878,10 +962,10 @@
 
 <!-- STEP 6 -->
 <div class="page page-questions" id="step6">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">6 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">6 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Du har ont om tid. Hur gör du?</div>
+      <div class="q-text">DU HAR ONT OM TID. HUR GÖR DU?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="6" data-svar="Procedur">Jag följer planen och prioriterar bort det som inte ryms.</div>
         <div class="choice-card" data-fraga="6" data-svar="Alternativ">Jag hittar ett annat sätt som går snabbare.</div>
@@ -893,10 +977,10 @@
 
 <!-- STEP 7 -->
 <div class="page page-questions" id="step7">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">7 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">7 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">En medarbetare löser en uppgift på ett annat sätt än du hade gjort. Vad tänker du?</div>
+      <div class="q-text">EN MEDARBETARE LÖSER EN UPPGIFT PÅ ETT ANNAT SÄTT ÄN DU HADE GJORT. VAD TÄNKER DU?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="7" data-svar="Alternativ">Bra att det finns fler sätt. Det kan ge nya insikter.</div>
         <div class="choice-card" data-fraga="7" data-svar="Procedur">Jag undrar varför de inte följde det sätt som brukar fungera.</div>
@@ -908,10 +992,10 @@
 
 <!-- STEP 8 -->
 <div class="page page-questions" id="step8">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">8 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">8 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Något ska göras om från grunden. Vad börjar du med?</div>
+      <div class="q-text">NÅGOT SKA GÖRAS OM FRÅN GRUNDEN. VAD BÖRJAR DU MED?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="8" data-svar="Procedur">Jag kartlägger stegen och sätter en ordning.</div>
         <div class="choice-card" data-fraga="8" data-svar="Alternativ">Jag samlar idéer och ser vilka möjligheter som finns.</div>
@@ -923,10 +1007,10 @@
 
 <!-- STEP 9 -->
 <div class="page page-questions" id="step9">
-  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">9 av 9</span></div>
+  <div class="q-topbar"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends"><span class="q-progress-label">9 AV 9</span></div>
   <div style="padding: 20px 24px 80px;">
     <div class="q-card">
-      <div class="q-text">Du beskriver för någon hur du kom fram till ett beslut. Hur låter det?</div>
+      <div class="q-text">DU BESKRIVER FÖR NÅGON HUR DU KOM FRAM TILL ETT BESLUT. HUR LÅTER DET?</div>
       <div class="choice-cards">
         <div class="choice-card" data-fraga="9" data-svar="Alternativ">Jag berättar vilka alternativ jag vägde mot varandra.</div>
         <div class="choice-card" data-fraga="9" data-svar="Procedur">Jag går igenom stegen jag tog, i ordning.</div>
@@ -942,21 +1026,21 @@
 <div class="page page-email" id="step10">
   <div class="q-topbar">
     <img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends">
-    <span class="q-progress-label">9 av 9</span>
+    <span class="q-progress-label">9 AV 9</span>
   </div>
   <div style="padding: 20px 24px 80px;">
     <div class="hf-form">
-      <h1>Dina nio svar är inne.</h1>
+      <h1>DINA NIO SVAR ÄR INNE.</h1>
       <p class="sub">Fyll i namn och e-post så visar vi ditt mönster.</p>
 
       <div id="errorMsg" class="error-msg"></div>
 
       <div class="field-group">
-        <label for="firstName">Förnamn</label>
+        <label for="firstName">FÖRNAMN</label>
         <input type="text" id="firstName" placeholder="Ditt förnamn" autocomplete="given-name">
       </div>
       <div class="field-group">
-        <label for="email">E-postadress</label>
+        <label for="email">E-POSTADRESS</label>
         <input type="email" id="email" placeholder="namn@exempel.se" autocomplete="email">
       </div>
 
@@ -971,7 +1055,7 @@
         </label>
       </div>
 
-      <button class="hf-form-submit" id="btnShowResult" disabled>Visa mitt resultat</button>
+      <button class="hf-form-submit" id="btnShowResult" disabled>VISA MITT RESULTAT</button>
     </div>
   </div>
 </div>
@@ -989,15 +1073,17 @@
     <h1 class="result-h1" id="resultTitle"></h1>
     <div class="result-score" id="resultScore"></div>
 
+    <hr class="dashed-divider">
+
     <div class="result-text-area" id="resultText"></div>
     <div class="reservation-box">
       Åtta frågor och en text ger en indikation, inte en slutsats. Mönstret kan se annorlunda ut i ett annat sammanhang, och du är inte dina mönster.
     </div>
 
     <div class="cta-section">
-      <h3>Så låter du för dem du leder</h3>
+      <h3>SÅ LÅTER DU FÖR DEM DU LEDER</h3>
       <p>Ditt första mönster visar hur du organiserar information. De sex andra visar vad människor omkring dig faktiskt uppfattar.</p>
-      <button class="btn-primary" id="btnBuyProfile">Se hela profilen</button>
+      <button class="btn-primary" id="btnBuyProfile">SE HELA PROFILEN</button>
       <div style="margin-top:12px;display:none;"><span id="profilePrice"></span></div>
     </div>
 
@@ -1005,11 +1091,11 @@
     <div class="alexander-section">
       <img class="avatar" src="https://images.squarespace-cdn.com/content/v1/62d95e2df2666719f12b020f/1773570214333-W5TL1UKXZN45GNZ4AJNX/PRESS_Alexander.holmberg_FOTO_Peter.Knutson.jpg" alt="Alexander Holmberg">
       <div class="alexander-text">
-        <h3>Jag hör mönster innan jag hör åsikter.</h3>
+        <h3>JAG HÖR MÖNSTER INNAN JAG HÖR ÅSIKTER.</h3>
         <p>Det är en yrkesskada efter 21 år som coach och utbildare. Orden människor väljer avslöjar hur de tänker, inte vad de tycker. Det är därför kommunikation inte är ett verktyg för ledarskap. Det är ledarskapet.</p>
         <p>Vill du prata mönster, ledarskap, eller se vad det här gör för din organisation? Boka ett möte med oss.</p>
         <div class="alexander-links">
-          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 26px;">Boka ett möte</a>
+          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 26px;">BOKA ETT MÖTE</a>
           <a href="https://www.holmbergfriends.com?utm_source=sml" target="_blank" class="btn-link">Till holmbergfriends.com</a>
         </div>
       </div>
@@ -1017,10 +1103,10 @@
 
     <!-- Talanalyser teaser -->
     <a href="/artiklar.html" class="teaser-link">
-      <span class="teaser-eyebrow">Språkmönsterlabbet</span>
-      <h3>Talanalyser. Kända svenska tal i fem mönster.</h3>
+      <span class="teaser-eyebrow">SPRÅKMÖNSTERLABBET</span>
+      <h3>TALANALYSER. KÄNDA SVENSKA TAL I FEM MÖNSTER.</h3>
       <p>Palme, Schyman, Carl XVI Gustaf. Varje citat ordagrant verifierat mot källtexten.</p>
-      <span class="teaser-arrow">Se analyserna &rarr;</span>
+      <span class="teaser-arrow">SE ANALYSERNA &rarr;</span>
     </a>
 
     <footer class="site-footer"><span>Ett verktyg från</span><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:12px;opacity:0.6;"></footer>
@@ -1282,7 +1368,7 @@
 
     titleEl.textContent = 'Vi l\u00e4ser dina svar\u2026';
     scoreEl.textContent = '';
-    textEl.innerHTML = '<p style="color:rgba(43,43,43,0.5)">Det tar ungef\u00e4r en halv minut.</p>';
+    textEl.innerHTML = '<p style="color:rgba(35,35,35,0.5)">Det tar ungef\u00e4r en halv minut.</p>';
 
     // H\u00e4mta rapport_token via polling f\u00f6rst
     var tokenAttempts = 0;
@@ -1360,7 +1446,7 @@
       if (!text) return '';
       var html = text
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-        .replace(/^## (.+)$/gm, '<h3 style="margin:28px 0 8px;font-size:20px;font-weight:600;color:var(--color-text);">$1</h3>')
+        .replace(/^## (.+)$/gm, '<h3 class="result-section-heading">$1</h3>')
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.+?)\*/g, '<em>$1</em>');
       html = html.split('\n\n').map(function(b) {
@@ -1380,6 +1466,18 @@
 
 })();
 </script>
+<style>
+  /* Result section headings from streamed markdown */
+  .result-section-heading {
+    font-family: var(--font-head);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin: 28px 0 8px;
+  }
+</style>
 <script src="/beacon.js"></script>
 </body>
 </html>
