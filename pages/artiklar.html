@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Talanalyser — Språkmönsterlabbet</title>
+<title>Språkmönsteranalyser — Språkmönsterlabbet</title>
 <style>
 @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-VariableFont_wght.ttf');font-weight:200 900;font-style:normal;}
 @font-face{font-family:'Crimson Pro';src:url('assets/fonts/CrimsonPro-Italic-VariableFont_wght.ttf');font-weight:200 900;font-style:italic;}
@@ -16,66 +16,95 @@ header img.hero-icon { width:120px; margin:0 auto 24px; display:block; }
 header h1 { font-family:'Crimson Pro',Georgia,serif; font-size:40px; font-weight:500; letter-spacing:-0.01em; color:#2B2B2B; margin:0 0 12px; }
 header p { font-size:15px; color:rgba(43,43,43,0.5); max-width:480px; margin:0 auto; }
 
-.tal-list { max-width:680px; margin:0 auto; padding:40px 24px 80px; }
+.content { max-width:680px; margin:0 auto; padding:40px 24px 80px; }
+
+/* Framhävt kort (white paper) */
+.featured-card { display:block; border:2px solid #FFA047; padding:32px; margin-bottom:40px; text-decoration:none; color:inherit; border-radius:0 10px 0 10px; transition:background 0.2s; }
+.featured-card:hover { background:rgba(255,160,71,0.04); }
+.featured-eyebrow { font-size:11px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#FFA047; margin-bottom:12px; }
+.featured-card h2 { font-family:'Crimson Pro',Georgia,serif; font-size:28px; font-weight:500; color:#2B2B2B; margin:0 0 8px; letter-spacing:-0.01em; line-height:1.25; }
+.featured-card p { font-size:15px; color:rgba(43,43,43,0.55); line-height:1.6; margin:0 0 16px; }
+.featured-card-link { font-size:13px; font-weight:700; color:#FFA047; }
+.featured-img { width:100%; max-height:200px; object-fit:cover; border-radius:6px; margin-bottom:16px; }
+
+/* Sektionsrubrik */
+.section-label { font-size:12px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:rgba(43,43,43,0.35); margin:40px 0 16px; }
+
+/* Vanliga kort */
 .tal-card { display:block; border:1px solid rgba(43,43,43,0.12); padding:28px; margin-bottom:16px; text-decoration:none; color:inherit; transition:border-color 0.2s; border-radius:0 10px 0 10px; }
 .tal-card:hover { border-color:#2B2B2B; }
 .tal-card-top { display:flex; align-items:center; gap:12px; margin-bottom:4px; }
-.tal-card-top img { width:20px; height:20px; opacity:0.5; }
 .tal-card-datum { font-size:12px; color:rgba(43,43,43,0.45); }
 .tal-card h2 { font-family:'Crimson Pro',Georgia,serif; font-size:24px; font-weight:500; color:#2B2B2B; margin:4px 0; letter-spacing:-0.01em; }
 .tal-card-rubrik { font-family:'Crimson Pro',Georgia,serif; font-style:italic; font-size:16px; color:#FFA047; margin-bottom:8px; }
 .tal-card p { font-size:14px; color:rgba(43,43,43,0.55); line-height:1.55; }
 .tal-card-link { font-size:13px; font-weight:700; color:#FFA047; margin-top:12px; display:inline-block; }
+.tal-card-note { font-size:12px; color:rgba(43,43,43,0.4); font-style:italic; margin-top:8px; }
 
 .loading { text-align:center; padding:40px; color:rgba(43,43,43,0.45); font-size:14px; }
-.error { text-align:center; padding:40px; color:#c00; font-size:14px; }
 
 footer { text-align:center; padding:24px; font-size:12px; color:rgba(43,43,43,0.45); border-top:1px solid rgba(43,43,43,0.1); }
 footer a { color:rgba(43,43,43,0.45); text-decoration:none; }
 </style>
-<link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest"></head>
+<link rel="icon" type="image/x-icon" href="/favicon.ico"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="manifest" href="/site.webmanifest">
+</head>
 <body>
 
 <header>
   <img class="hero-icon" src="assets/startsida/startsida-samtal-ren-blixt.svg" alt="">
   <p class="eyebrow">Spr&aring;km&ouml;nsterlabbet</p>
-  <h1>Talanalyser</h1>
-  <p>K&auml;nda svenska tal analyserade utifr&aring;n fem spr&aring;km&ouml;nster. Varje citat ordagrant verifierat.</p>
+  <h1>Spr&aring;km&ouml;nsteranalyser</h1>
+  <p>Politiskt tal och offentligt spr&aring;k analyserat utifr&aring;n spr&aring;km&ouml;nster. Varje citat ordagrant verifierat.</p>
 </header>
 
-<div class="tal-list" id="tal-list">
-  <div class="loading">Laddar talanalyser...</div>
+<div class="content" id="content">
+  <div class="loading">Laddar analyser...</div>
 </div>
 
 <footer>
-  <a href="/profil.html">&larr; Tillbaka till Spr&aring;km&ouml;nsterlabbet</a>
+  <a href="/profil">&larr; Tillbaka till Spr&aring;km&ouml;nsterlabbet</a>
 </footer>
 
 <script>
 (async function() {
-  const container = document.getElementById('tal-list');
+  var container = document.getElementById('content');
   try {
-    const res = await fetch('https://deep-thought.holmbergfriends.com/api/tal-analys');
+    var res = await fetch('https://deep-thought.holmbergfriends.com/api/tal-analys');
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    const data = await res.json();
-    const tal = data.tal || [];
-    if (tal.length === 0) {
-      container.innerHTML = '<div class="loading">Inga talanalyser publicerade \u00e4nnu.</div>';
-      return;
+    var data = await res.json();
+    var tal = data.tal || [];
+
+    var html = '';
+
+    // Framhävt kort — white papern
+    html += '<a href="https://www.holmbergfriends.com/inspiration/partiledarnas-sprakmonster-hela-materialet" class="featured-card">';
+    html += '<div class="featured-eyebrow">Partiledaranalysen 2026</div>';
+    html += '<img class="featured-img" src="https://assets.holmbergfriends.com/artiklar/partiledarnas-sprakmonster-hero.jpg" alt="Nio partiledare">';
+    html += '<h2>Nio partiledare, 81\u00a0000 ord riksdagsprotokoll, tre spr\u00e5km\u00f6nster</h2>';
+    html += '<p>Hela underlaget bakom partiledaranalysen \u2014 materialet, metoden och alla nio profilerna.</p>';
+    html += '<span class="featured-card-link">L\u00e4s hela analysen p\u00e5 holmbergfriends.com \u2192</span>';
+    html += '</a>';
+
+    // Tidigare analyser
+    if (tal.length > 0) {
+      html += '<div class="section-label">Tidigare analyser</div>';
+      html += tal.map(function(t) {
+        var inramning = (t.inramning || '').substring(0, 160);
+        if ((t.inramning || '').length > 160) inramning += '...';
+        return '<a href="https://holmbergfriends.com/inspiration/' + t.slug + '" class="tal-card" target="_blank">' +
+          '<div class="tal-card-top"><span class="tal-card-datum">' + (t.datum || '') + '</span></div>' +
+          '<h2>' + (t.talare || '') + ' \u2014 ' + (t.titel || '') + '</h2>' +
+          (t.rubrik ? '<p class="tal-card-rubrik">' + t.rubrik + '</p>' : '') +
+          '<p>' + inramning + '</p>' +
+          '<p class="tal-card-note">Gjord med en tidigare m\u00e4tmetod.</p>' +
+          '<span class="tal-card-link">L\u00e4s analysen p\u00e5 holmbergfriends.com \u2192</span>' +
+        '</a>';
+      }).join('');
     }
-    container.innerHTML = tal.map(function(t) {
-      var inramning = (t.inramning || '').substring(0, 160);
-      if ((t.inramning || '').length > 160) inramning += '...';
-      return '<a href="https://holmbergfriends.com/inspiration/' + t.slug + '" class="tal-card" target="_blank">' +
-        '<div class="tal-card-top"><span class="tal-card-datum">' + (t.datum || '') + '</span></div>' +
-        '<h2>' + t.talare + ' \u2014 ' + t.titel + '</h2>' +
-        '<p class="tal-card-rubrik">' + (t.rubrik || '') + '</p>' +
-        '<p>' + inramning + '</p>' +
-        '<span class="tal-card-link">L\u00e4s analysen p\u00e5 holmbergfriends.com \u2192</span>' +
-      '</a>';
-    }).join('');
+
+    container.innerHTML = html;
   } catch(e) {
-    container.innerHTML = '<div class="error">Kunde inte ladda talanalyser.</div>';
+    container.innerHTML = '<div class="error">Kunde inte ladda analyser.</div>';
   }
 })();
 </script>
