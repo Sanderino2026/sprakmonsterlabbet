@@ -1093,21 +1093,13 @@
       <div class="alexander-text">
         <h3>JAG HÖR MÖNSTER INNAN JAG HÖR ÅSIKTER.</h3>
         <p>Det är en yrkesskada efter 21 år som coach och utbildare. Orden människor väljer avslöjar hur de tänker, inte vad de tycker. Det är därför kommunikation inte är ett verktyg för ledarskap. Det är ledarskapet.</p>
-        <p>Vill du prata mönster, ledarskap, eller se vad det här gör för din organisation? Boka ett möte med oss.</p>
         <div class="alexander-links">
-          <a href="https://www.holmbergfriends.com/kontakt?utm_source=sml&utm_medium=referral&utm_campaign=sml-klart" target="_blank" class="btn-primary" style="font-size:14px;padding:12px 26px;">BOKA ETT MÖTE</a>
           <a href="https://www.holmbergfriends.com?utm_source=sml" target="_blank" class="btn-link">Till holmbergfriends.com</a>
         </div>
       </div>
     </div>
 
-    <!-- Talanalyser teaser -->
-    <a href="/artiklar.html" class="teaser-link">
-      <span class="teaser-eyebrow">SPRÅKMÖNSTERLABBET</span>
-      <h3>TALANALYSER. KÄNDA SVENSKA TAL I FEM MÖNSTER.</h3>
-      <p>Palme, Schyman, Carl XVI Gustaf. Varje citat ordagrant verifierat mot källtexten.</p>
-      <span class="teaser-arrow">SE ANALYSERNA &rarr;</span>
-    </a>
+    <!-- Talanalyser-teaser borttagen — besökarna kommer redan från artikeln -->
 
     <footer class="site-footer"><span>Ett verktyg från</span><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:12px;opacity:0.6;"></footer>
   </div>
@@ -1461,7 +1453,19 @@
   // ── BUY PROFILE CTA ──
   document.getElementById('btnBuyProfile').addEventListener('click', function() {
     try { smlBeacon('sml_kop_klick'); } catch(e) {}
-    // TODO: Connect to /api/stripe/checkout with profile_id
+    var pid = sessionStorage.getItem('sml_profile_id');
+    if (!pid) return;
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'LADDAR...';
+    fetch(API + '/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ priceId: 'price_1TE9RZHrTws6MQZqVEhOtaY0', price_type: 'rapport_full', profile_id: pid })
+    }).then(function(r) { return r.json(); }).then(function(d) {
+      if (d.ok && d.url) { window.location.href = d.url; }
+      else { btn.disabled = false; btn.textContent = 'SE HELA PROFILEN'; }
+    }).catch(function() { btn.disabled = false; btn.textContent = 'SE HELA PROFILEN'; });
   });
 
 })();
