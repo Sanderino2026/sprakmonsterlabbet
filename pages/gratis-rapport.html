@@ -362,6 +362,36 @@
     margin-top: 14px;
   }
 
+  /* KÖPÖVERLÄGG */
+  @import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
+  .kop-overlay{display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);justify-content:center;align-items:center;padding:24px}
+  .kop-overlay.vis{display:flex}
+  .kop-kort{background:#F4F1EC;color:#232323;max-width:560px;width:100%;max-height:90vh;overflow-y:auto;padding:48px 40px 40px;position:relative}
+  .kop-kort h2{font-family:'Big Shoulders Display',sans-serif;font-size:26px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin:0 0 32px;color:#232323}
+  .kop-avdelare{border:none;border-top:1px dashed #bbb;margin:28px 0}
+  .kop-kolumner{display:flex;gap:32px}
+  .kop-kol{flex:1}
+  .kop-kol-rubrik{font-family:'Big Shoulders Display',sans-serif;font-size:15px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:#232323;margin:0 0 12px}
+  .kop-kol p,.kop-kol li{font-family:'Lora',Georgia,serif;font-size:14px;line-height:1.7;color:#444;margin:0 0 6px}
+  .kop-kol ul{list-style:none;padding:0}
+  .kop-kol li::before{content:'\2014\00a0';color:#D9481E}
+  .kop-pris-block{text-align:center;margin:8px 0 0}
+  .kop-pris{font-family:'Big Shoulders Display',sans-serif;font-size:42px;font-weight:800;color:#232323;margin:0}
+  .kop-pris-kampanj{font-family:'Lora',serif;font-size:13px;color:#666;margin:4px 0 0}
+  .kop-pris-ordinarie{font-family:'Lora',serif;font-size:13px;color:#999;margin:2px 0 0}
+  .kop-pris-engång{font-family:'Lora',serif;font-size:12px;color:#999;margin:2px 0 16px}
+  .kop-knapp{display:block;width:100%;padding:16px 0;background:#D9481E;color:#fff;border:none;font-family:'Big Shoulders Display',sans-serif;font-size:18px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;transition:opacity .15s}
+  .kop-knapp:hover{opacity:.85}
+  .kop-knapp:disabled{opacity:.3;cursor:default}
+  .kop-stripe{font-family:'Lora',serif;font-style:italic;font-size:12px;color:#999;text-align:center;margin:12px 0 0}
+  .kop-inte-nu{display:block;margin:20px auto 0;background:none;border:none;font-family:'Lora',serif;font-size:14px;color:#999;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+  .kop-inte-nu:hover{color:#232323}
+  @media(max-width:560px){
+    .kop-kort{padding:32px 20px 28px}
+    .kop-kolumner{flex-direction:column;gap:20px}
+    .kop-pris{font-size:36px}
+  }
+
   /* FOOTER */
   .footer {
     text-align: center;
@@ -649,14 +679,14 @@
         });
     }
 
-    // Main buy button
+    // Main buy button → öppna överlägg
     document.getElementById('buyBtn').addEventListener('click', function() {
-      handleBuy(this);
+      window.visaKopOverlay();
     });
 
-    // Sidebar buy button
+    // Sidebar buy button → öppna överlägg
     document.getElementById('sidebarBuyBtn').addEventListener('click', function() {
-      handleBuy(this);
+      window.visaKopOverlay();
     });
 
     // Delningsknapp
@@ -703,5 +733,84 @@
 })();
 </script>
 <script src="/beacon.js"></script>
+<!-- Köpöverlägg -->
+<div class="kop-overlay" id="kopOverlay">
+<div class="kop-kort">
+<h2>HELA DIN KOMMUNIKATIONSPROFIL</h2>
+<div class="kop-kolumner">
+<div class="kop-kol">
+<div class="kop-kol-rubrik">Det du har läst</div>
+<p>Ett mönster: hur du lägger upp ett resonemang.</p>
+</div>
+<div class="kop-kol">
+<div class="kop-kol-rubrik">Hela profilen</div>
+<ul>
+<li>Alla tre mönstren.</li>
+<li>Hexagonen — din profil som form.</li>
+<li>Var mönster: vad det ger dig, vad det kostar, och vad som händer när du möter någon som gör tvärtom.</li>
+<li>Rapporten som nedladdningsbar fil.</li>
+</ul>
+</div>
+</div>
+<hr class="kop-avdelare">
+<div class="kop-pris-block">
+<div class="kop-pris" id="kopPris">199 kr</div>
+<div class="kop-pris-kampanj" id="kopKampanj">Kampanjpris via partiledarserien, till 30 september.</div>
+<div class="kop-pris-ordinarie" id="kopOrdinarie">Ordinarie 499 kr.</div>
+<div class="kop-pris-engång">Engångsbetalning. Ingen prenumeration.</div>
+</div>
+<button class="kop-knapp" id="kopKnapp">KÖP — 199 KR</button>
+<div class="kop-stripe">Säker betalning via Stripe.</div>
+<button class="kop-inte-nu" id="kopInteNu">Inte nu</button>
+</div>
+</div>
+<script>
+(function(){
+  var overlay=document.getElementById('kopOverlay');
+  var knapp=document.getElementById('kopKnapp');
+  var inteNu=document.getElementById('kopInteNu');
+
+  // Uppdatera priser från backend
+  function uppdateraKopPris(){
+    var p=document.getElementById('kopPris');
+    var k=document.getElementById('kopKampanj');
+    var o=document.getElementById('kopOrdinarie');
+    if(typeof RAPPORT_PRIS_TEXT!=='undefined'&&RAPPORT_PRIS_TEXT){
+      p.textContent=RAPPORT_PRIS_TEXT;
+      knapp.textContent='KÖP \u2014 '+RAPPORT_PRIS_TEXT.toUpperCase();
+      if(RAPPORT_KAMPANJ){
+        k.textContent='Kampanjpris via partiledarserien, till 30 september.';
+        o.textContent='Ordinarie '+RAPPORT_ORDINARIE+'.';
+        o.style.display='';
+      }else{
+        k.textContent='';
+        o.style.display='none';
+      }
+    }
+  }
+
+  // Öppna overlayern
+  window.visaKopOverlay=function(){
+    uppdateraKopPris();
+    overlay.classList.add('vis');
+  };
+
+  // Stäng
+  inteNu.addEventListener('click',function(){overlay.classList.remove('vis')});
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.classList.remove('vis')});
+
+  // Köp
+  knapp.addEventListener('click',function(){
+    knapp.disabled=true;knapp.textContent='LADDAR...';
+    fetch((typeof API!=='undefined'?API:'')+'/api/stripe/checkout',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({priceId:RAPPORT_PRICE_ID,price_type:'rapport_full',profile_id:typeof profileId!=='undefined'?profileId:''})
+    }).then(function(r){return r.json()}).then(function(d){
+      if(d.ok&&d.url){sessionStorage.setItem('checkout_profile_id',typeof profileId!=='undefined'?profileId:'');window.location.href=d.url}
+      else{knapp.disabled=false;uppdateraKopPris();alert('N\u00e5got gick fel.')}
+    }).catch(function(){knapp.disabled=false;uppdateraKopPris();alert('N\u00e5got gick fel.')});
+  });
+})();
+</script>
 </body>
 </html>
