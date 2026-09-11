@@ -10,6 +10,7 @@ import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 import { handleGdprRadera } from './gdpr_radera.js';
 import { handleGdprExport } from './gdpr_export.js';
+import { handleGratisRapportStream } from './gratis_rapport_stream.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -162,6 +163,11 @@ export default {
     if (path === '/api/gratis-rapport' && method === 'GET') {
       const result = await handleGratisRapport(request, env);
       return reply(result.body, result.status);
+    }
+
+    // ── /api/gratis-rapport-stream (SSE) ─────────────────────────
+    if (path === '/api/gratis-rapport-stream' && method === 'GET') {
+      return handleGratisRapportStream(request, env);
     }
 
     // ── /api/profile/submit-free ────────────────────────────────

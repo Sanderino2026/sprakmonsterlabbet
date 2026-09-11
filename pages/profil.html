@@ -1261,8 +1261,8 @@
         }).catch(function() {});
       } catch(e) {}
 
-      // Navigera till v\u00e4ntsidan
-      window.location.href = '/vantar';
+      // Starta str\u00f6mmad rapport inline
+      startStream(r.data.profile_id);
     })
     .catch(function(err) {
       errEl.textContent = 'N\u00e5got gick fel: ' + err.message;
@@ -1272,35 +1272,103 @@
     });
   });
 
-  // ── RENDER RESULT ──
-  function renderResult(serverData) {
+  // ── STRÖMMAD RAPPORT ──
+  function startStream(profileId) {
+    // Visa rapportvy
+    show(11);
     var titleEl = document.getElementById('resultTitle');
     var scoreEl = document.getElementById('resultScore');
     var textEl = document.getElementById('resultText');
 
-    var proc, alt;
-    if (serverData && serverData.förståelse) {
-      proc = serverData.förståelse.procedur_total || 0;
-      alt = serverData.förståelse.alternativ_total || 0;
-    } else {
-      proc = 0; alt = 0;
-      for (var i = 0; i < answers.length; i++) {
-        if (answers[i].svar === 'Procedur') proc++; else alt++;
-      }
+    titleEl.textContent = 'Vi l\u00e4ser dina svar\u2026';
+    scoreEl.textContent = '';
+    textEl.innerHTML = '<p style="color:rgba(43,43,43,0.5)">Det tar ungef\u00e4r en halv minut.</p>';
+
+    // H\u00e4mta rapport_token via polling f\u00f6rst
+    var tokenAttempts = 0;
+    function pollToken() {
+      tokenAttempts++;
+      fetch(API + '/api/report-by-profile?profile_id=' + encodeURIComponent(profileId))
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data.token) {
+            connectStream(data.token);
+          } else if (tokenAttempts < 20) {
+            setTimeout(pollToken, 1500);
+          } else {
+            // Fallback: navigera till gratis-rapport
+            window.location.href = '/gratis-rapport?token=' + (data.token || profileId);
+          }
+        })
+        .catch(function() {
+          if (tokenAttempts < 20) setTimeout(pollToken, 1500);
+        });
+    }
+    pollToken();
+
+    function connectStream(token) {
+      var es = new EventSource(API + '/api/gratis-rapport-stream?token=' + encodeURIComponent(token));
+      var fullText = '';
+      var gotMeta = false;
+
+      es.onmessage = function(ev) {
+        try {
+          var d = JSON.parse(ev.data);
+
+          if (d.type === 'meta' && !gotMeta) {
+            gotMeta = true;
+            var isAlt = d.signal && d.signal.toLowerCase().indexOf('alternativ') !== -1;
+            titleEl.textContent = isAlt ? 'Du b\u00f6rjar i m\u00f6jligheterna' : 'Du b\u00f6rjar i ordningen';
+            scoreEl.textContent = d.storleksklass || '';
+            textEl.innerHTML = '';
+          }
+
+          if (d.type === 'chunk') {
+            fullText += d.text;
+            textEl.innerHTML = renderMd(fullText);
+          }
+
+          if (d.type === 'done') {
+            es.close();
+            // Strippa eventuell f\u00f6rsta rubrik som AI:n la till
+            var clean = fullText.replace(/^#+ .+\n+/, '');
+            textEl.innerHTML = renderMd(clean);
+            // Visa CTA
+            var ctaEl = document.getElementById('resultCta');
+            if (ctaEl) ctaEl.style.display = 'block';
+            try { smlBeacon('sml_monster_visat'); } catch(e2) {}
+          }
+
+          if (d.error) {
+            es.close();
+            // Fallback till polling
+            window.location.href = '/gratis-rapport?token=' + encodeURIComponent(token);
+          }
+        } catch(e3) { /* skip */ }
+      };
+
+      es.onerror = function() {
+        es.close();
+        // Fallback
+        if (!gotMeta) {
+          window.location.href = '/gratis-rapport?token=' + encodeURIComponent(token);
+        }
+      };
     }
 
-    if (proc > alt) {
-      titleEl.textContent = 'Dina svar lutar åt procedur.';
-      scoreEl.textContent = proc + ' av 10 poäng åt Procedur';
-      textEl.innerHTML = FORSTAELSE_PROCEDUR_TEXT;
-    } else if (alt > proc) {
-      titleEl.textContent = 'Dina svar lutar åt alternativ.';
-      scoreEl.textContent = alt + ' av 10 poäng åt Alternativ';
-      textEl.innerHTML = FORSTAELSE_ALTERNATIV_TEXT;
-    } else {
-      titleEl.textContent = 'Dina svar fördelar sig jämnt.';
-      scoreEl.textContent = proc + ' av 10 poäng åt vardera';
-      textEl.innerHTML = FORSTAELSE_MIXED_TEXT;
+    function renderMd(text) {
+      if (!text) return '';
+      var html = text
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/^## (.+)$/gm, '<h3 style="margin:28px 0 8px;font-size:20px;font-weight:600;color:var(--color-text);">$1</h3>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>');
+      html = html.split('\n\n').map(function(b) {
+        b = b.trim();
+        if (!b || b.startsWith('<h')) return b;
+        return '<p>' + b.replace(/\n/g, '<br>') + '</p>';
+      }).join('');
+      return html;
     }
   }
 

@@ -590,6 +590,13 @@
     html += '<div class="sell-stripe-note">S\u00e4ker betalning via Stripe</div>';
     html += '</div>';
 
+    // Delningslänk
+    html += '<div style="border-top:1px solid var(--color-border);margin:48px 0 0;padding:32px 0 0;text-align:center">';
+    html += '<p style="font-size:16px;color:var(--color-text);line-height:1.6;margin:0 0 12px">Prata om det h\u00e4r med n\u00e5gon.</p>';
+    html += '<p style="font-size:14px;color:var(--color-text-light);line-height:1.6;margin:0 0 20px">Skicka den h\u00e4r l\u00e4nken s\u00e5 g\u00f6r de testet och s\u00e5 kan ni j\u00e4mf\u00f6ra.</p>';
+    html += '<button class="sell-btn" id="shareBtn" style="background:#2B2B2B">Kopiera l\u00e4nk</button>';
+    html += '</div>';
+
     html += '<div class="footer"><img src="assets/logotype_horizontal.webp" alt="holmberg &amp; friends" style="height:12px;opacity:0.6;"></div>';
 
     wrap.innerHTML = html;
@@ -635,6 +642,22 @@
     document.getElementById('sidebarBuyBtn').addEventListener('click', function() {
       handleBuy(this);
     });
+
+    // Delningsknapp
+    var shareBtn = document.getElementById('shareBtn');
+    if (shareBtn) {
+      var shareUrl = 'https://sprakmonsterlabbet.holmbergfriends.com/profil?fran=delning';
+      shareBtn.addEventListener('click', function() {
+        if (navigator.share) {
+          navigator.share({ title: 'G\u00f6r din spr\u00e5kprofil', url: shareUrl }).catch(function(){});
+        } else if (navigator.clipboard) {
+          navigator.clipboard.writeText(shareUrl).then(function() {
+            shareBtn.textContent = 'Kopierad!';
+            setTimeout(function() { shareBtn.textContent = 'Kopiera l\u00e4nk'; }, 2000);
+          });
+        }
+      });
+    }
   }
 
   function esc(s) {
