@@ -2,6 +2,25 @@
 // These are served directly without going through Claude,
 // solving the Cloudflare Workers 30s timeout issue.
 
+export const rapportInledning = 'Språkmönsterlabbet visar tendenser, inte sanningar. Mönstren tillhör texten du skrev, inte dig som person. Rapporten utvecklas — vi lägger till mönster och skärper mätningen allteftersom.';
+
+export const sektioner = {
+  grundmonster: {
+    titel: 'Grundmönstren',
+    inledning: 'De här tre mönstren vilar på etablerad forskning och är de vi granskat noggrannast. Motivationsriktning bygger på regulatory focus-teorin, beslutsram på lingvistisk evidentialitetsforskning.',
+    monster: ['motivationsriktning', 'beslutsram', 'förståelse'],
+  },
+  utforskande: {
+    titel: 'Utforskande mönster',
+    inledning: 'De här mönstren utvecklar vi fortfarande. De bygger på iakttagelser snarare än på etablerad forskning, och vi redovisar dem för att de ofta är igenkännbara — inte för att de är lika säkra som de tre första. Läs dem som uppslag, inte som slutsatser.',
+    monster: ['sinneskommunikationskanal', 'förändringsrelation', 'omfång', 'handlingsstil'],
+  },
+};
+
+export const monsterNoteringar = {
+  handlingsstil: 'Handlingsstil beräknas på hur snabbt du svarade, inte på hur du formulerade dig. Det är ett grovt mått och ska läsas därefter.',
+};
+
 export const pedagogik = {
   motivationsriktning: {
     titel: 'Motivationsriktning',

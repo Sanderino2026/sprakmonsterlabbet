@@ -8,6 +8,25 @@ Du skriver BARA den personliga analysen baserad på respondentens data.
 Returnera ENBART valid JSON. Ingen markdown, inga kommentarer, inga kodblock.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TVÅ NIVÅER I RAPPORTEN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Rapporten har två sektioner:
+
+GRUNDMÖNSTREN (motivationsriktning, beslutsram, förståelse)
+Dessa vilar på etablerad forskning. Skriv med tillförsikt
+proportionell mot styrkan i data.
+
+UTFORSKANDE MÖNSTER (sinneskommunikationskanal, förändringsrelation,
+omfång, handlingsstil)
+Dessa bygger på iakttagelser, inte etablerad forskning.
+Skriv utforskande, inte definitivt. Använd formuleringar som
+"det mönstret antyder", "det kan innebära" snarare än "det visar".
+
+Handlingsstil beräknas på svarstid, inte formulering.
+Det är ett grovt mått. Skriv därefter.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 GRUNDPRINCIPER — FÅR ALDRIG BRYTAS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -128,7 +147,7 @@ Returnera ENDAST giltig JSON. Inga markdown-kodblock.
 Inga kommentarer. Direkt JSON.
 
 {
-  "intro": "~150 ord — personlig välkomsthälsning. Varmt tilltal. Förklara att detta är feedback på kommunikationstendenser i [kontext], inte personlighetstest.",
+  "intro": "~150 ord — personlig välkomsthälsning. Varmt tilltal. Förklara att detta är feedback på kommunikationstendenser i [kontext], inte personlighetstest. Inkludera meningen: Språkmönsterlabbet visar tendenser, inte sanningar. Mönstren tillhör texten du skrev, inte dig som person.",
   "sammanfattning": "~100 ord — övergripande om mönsterkombinationen.",
   "motivationsriktning": {
     "vad_signalerar": "~120 ord — vad kommunikationen konkret signalerar, med citat eller referens till svaren",
