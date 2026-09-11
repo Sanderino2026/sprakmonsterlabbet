@@ -437,7 +437,25 @@
 <script>
 (function() {
   var API = 'https://sprakmonsterlabbet.alexander-894.workers.dev';
-  var RAPPORT_PRICE_ID = 'price_1TE9RZHrTws6MQZqVEhOtaY0';
+  var RAPPORT_PRICE_ID = '';
+  var RAPPORT_PRIS_TEXT = '';
+  var RAPPORT_KAMPANJ = false;
+  var RAPPORT_ORDINARIE = '';
+  // Hämta pris från backend
+  fetch(API + '/api/rapport-pris').then(function(r){return r.json()}).then(function(p){
+    RAPPORT_PRICE_ID = p.price_id;
+    RAPPORT_PRIS_TEXT = p.belopp + ' kr';
+    RAPPORT_KAMPANJ = p.kampanj;
+    RAPPORT_ORDINARIE = p.ordinarie ? (p.ordinarie + ' kr') : '';
+    // Uppdatera sidebar
+    var ctaP = document.getElementById('ctaPrice');
+    var ctaM = document.getElementById('ctaMeta');
+    if(ctaP) ctaP.textContent = RAPPORT_PRIS_TEXT;
+    if(ctaM) ctaM.textContent = p.kampanj ? ('Kampanjpris via partiledarserien \u00b7 t.o.m. ' + p.kampanj_slutar + '. Ordinarie ' + RAPPORT_ORDINARIE) : 'Eng\u00e5ngsbetalning';
+  }).catch(function(){
+    RAPPORT_PRICE_ID = 'price_1TE9RZHrTws6MQZqVEhOtaY0';
+    RAPPORT_PRIS_TEXT = '499 kr';
+  });
   var params = new URLSearchParams(window.location.search);
   var token = params.get('token');
   var wrap = document.getElementById('mainWrap');
@@ -581,10 +599,8 @@
     html += '\u00b7 En helhetsbild av hur dina m\u00f6nster samspelar';
     html += '</div>';
 
-    var now = new Date();
-    var kampanj = now < new Date('2026-10-01');
-    html += '<div class="sell-price">' + (kampanj ? '199 kr' : '499 kr') + '</div>';
-    if (kampanj) html += '<div class="sell-price-meta">Kampanjpris via partiledarserien \u00b7 t.o.m. 30 september. Ordinarie 499 kr.</div>';
+    html += '<div class="sell-price">' + (RAPPORT_PRIS_TEXT || '499 kr') + '</div>';
+    if (RAPPORT_KAMPANJ) html += '<div class="sell-price-meta">Kampanjpris via partiledarserien \u00b7 t.o.m. 30 september. Ordinarie ' + RAPPORT_ORDINARIE + '.</div>';
     else html += '<div class="sell-price-meta">Eng\u00e5ngsbetalning. Rapporten levereras direkt till din e-post.</div>';
     html += '<button class="sell-btn" id="buyBtn">K\u00d6P HELA RAPPORTEN</button>';
     html += '<div class="sell-stripe-note">S\u00e4ker betalning via Stripe</div>';

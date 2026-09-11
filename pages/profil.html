@@ -1111,6 +1111,8 @@
 
   var API = 'https://sprakmonsterlabbet.holmbergfriends.com';
   var LEAD_URL = 'https://deep-thought.holmbergfriends.com/api/lead';
+  window._rapportPriceId = '';
+  fetch(API + '/api/rapport-pris').then(function(r){return r.json()}).then(function(p){window._rapportPriceId=p.price_id}).catch(function(){});
 
   // ── UTM PERSISTENCE ──
   (function() {
@@ -1461,7 +1463,7 @@
     fetch(API + '/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId: 'price_1TE9RZHrTws6MQZqVEhOtaY0', price_type: 'rapport_full', profile_id: pid })
+      body: JSON.stringify({ priceId: window._rapportPriceId || 'price_1TE9RZHrTws6MQZqVEhOtaY0', price_type: 'rapport_full', profile_id: pid })
     }).then(function(r) { return r.json(); }).then(function(d) {
       if (d.ok && d.url) { window.location.href = d.url; }
       else { btn.disabled = false; btn.textContent = 'SE HELA PROFILEN'; }

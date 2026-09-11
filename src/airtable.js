@@ -167,6 +167,10 @@ const PRICE_CONFIG = {
   'price_1T9j6zQc0eK2st18E4ezJAo0': { accessType: 'paid_once',    remainingDelta: 3  },
   'price_1T9j7LQc0eK2st18vGZHIUq5': { accessType: 'paid_monthly', remainingSet:   20 },
   'price_1T9j7cQc0eK2st18NIrthzpG': { accessType: 'paid_yearly',  remainingSet:   20 },
+  // Rapport-priser (engångs, sätter access_type till paid_rapport)
+  'price_1UEXTLHrTws6MQZqhYhf2711': { accessType: 'paid_rapport', remainingDelta: 0 },  // 199 kampanj
+  'price_1TE9RZHrTws6MQZqVEhOtaY0': { accessType: 'paid_rapport', remainingDelta: 0 },  // 499 ordinarie
+  'price_1TE6FFHrTws6MQZqOiYLRzGE': { accessType: 'paid_rapport', remainingDelta: 0 },  // 799 fullständig
 };
 
 export async function updateUserAfterPayment(email, priceId, env) {

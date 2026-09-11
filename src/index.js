@@ -89,6 +89,28 @@ export default {
       });
     }
 
+    // ── /api/rapport-pris ──────────────────────────────────────
+    if (path === '/api/rapport-pris' && method === 'GET') {
+      const now = new Date();
+      const kampanjSlut = new Date('2026-10-01T00:00:00Z');
+      if (now < kampanjSlut) {
+        return reply({
+          price_id: 'price_1UEXTLHrTws6MQZqhYhf2711',
+          belopp: 199,
+          valuta: 'SEK',
+          kampanj: true,
+          ordinarie: 499,
+          kampanj_slutar: '2026-09-30',
+        });
+      }
+      return reply({
+        price_id: 'price_1TE9RZHrTws6MQZqVEhOtaY0',
+        belopp: 499,
+        valuta: 'SEK',
+        kampanj: false,
+      });
+    }
+
     // ── /api/auth/login ──────────────────────────────────────────
     if (path === '/api/auth/login' && method === 'POST') {
       const result = await handleLogin(request, env);

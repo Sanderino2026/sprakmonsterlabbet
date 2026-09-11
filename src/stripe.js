@@ -111,7 +111,7 @@ export async function handleStripeWebhook(request, env) {
     console.log('[webhook] price_type från metadata:', priceType ?? '(saknas)');
     console.log('[webhook] profile_id från metadata:', profileId ?? '(saknas)');
 
-    // Rapport-köp: generera och skicka fullständig rapport
+    // Rapport-köp: generera rapport + sätt access_type
     if ((priceType === 'rapport_full' || priceType === 'rapport_alumni') && profileId) {
       console.log('[webhook] Rapport-köp — genererar rapport för profile_id:', profileId);
       try {
@@ -120,6 +120,14 @@ export async function handleStripeWebhook(request, env) {
         console.log('[webhook] Rapportgenerering klar:', result.status, JSON.stringify(result.body));
       } catch (err) {
         console.error('[webhook] handleReportGenerate fel:', err);
+      }
+      // Sätt access_type via email om den finns
+      if (email && priceId) {
+        try {
+          await updateUserAfterPayment(email, priceId, env);
+        } catch (err) {
+          console.error('[webhook] updateUserAfterPayment (rapport) fel:', err);
+        }
       }
     } else if (!priceId) {
       console.error('[webhook] priceId saknas — kan inte uppdatera användaren');
