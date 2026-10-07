@@ -172,7 +172,7 @@ Skriv fyra stycken med rubrikerna: Vad det ger dig, Vad det kostar, När ni kroc
     }
 
     const data = await res.json();
-    return data.content?.[0]?.text || 'Analysen kunde inte genereras just nu.';
+    return data.content?.find(b => b.type === 'text')?.text || 'Analysen kunde inte genereras just nu.';
   } catch (err) {
     console.error('[generateShortAnalysis] Nätverksfel:', err);
     return 'Analysen kunde inte genereras just nu.';

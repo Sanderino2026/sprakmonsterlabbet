@@ -110,7 +110,7 @@ export async function handleReportGenerate(request, env) {
       return { status: 500, body: { error: 'Claude API-fel vid rapportgenerering', detail: claudeData } };
     }
 
-    const rawText = claudeData.content?.[0]?.text ?? '';
+    const rawText = claudeData.content?.find(b => b.type === 'text')?.text ?? '';
     console.log('[Claude API] rawText length:', rawText.length);
 
     // 8. Parsa Claude-svaret som JSON

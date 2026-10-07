@@ -34,7 +34,7 @@ async function analyseFreeText(text, env) {
       return null;
     }
     const data = await res.json().catch(() => null);
-    const raw = data?.content?.[0]?.text ?? null;
+    const raw = data?.content?.find(b => b.type === 'text')?.text ?? null;
     if (!raw) return null;
 
     const cleaned = raw.replace(/```json|```/g, '').trim();

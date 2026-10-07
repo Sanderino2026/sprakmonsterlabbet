@@ -57,7 +57,7 @@ export async function runProfileAnalysis(env, profileId) {
     }
 
     const claudeData = await claudeRes.json();
-    const rawText = claudeData.content?.[0]?.text ?? '';
+    const rawText = claudeData.content?.find(b => b.type === 'text')?.text ?? '';
 
     // 5. Parsa som JSON (strippa eventuella markdown-kodblock)
     let jsonText = rawText.trim();

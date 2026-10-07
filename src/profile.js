@@ -66,7 +66,7 @@ async function callClaude(answers, env) {
   if (!res.ok) return null;
 
   const data = await res.json().catch(() => null);
-  return data?.content?.[0]?.text ?? null;
+  return data?.content?.find(b => b.type === 'text')?.text ?? null;
 }
 
 function parseResult(raw) {
