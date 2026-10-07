@@ -3,7 +3,7 @@ import { pedagogik, utmaningar } from './report_content.js';
 import { skickaSmlMail } from './sml_mail.js';
 
 const CLAUDE_API = 'https://api.anthropic.com/v1/messages';
-const MODEL = 'claude-sonnet-4-6';
+const MODEL = 'claude-sonnet-5-5';
 
 export async function handleReportGenerate(request, env) {
   let body;
