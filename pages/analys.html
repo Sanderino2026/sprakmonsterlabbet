@@ -922,6 +922,26 @@
   </div>
 </div>
 
+<!-- ②½ E-POST-GATE -->
+<div id="page-emailgate" class="page">
+  <div class="wrap" style="max-width:480px;margin:0 auto;text-align:center;">
+    <p class="eyebrow">Innan du analyserar</p>
+    <h1>Vem skickar vi<br><em>resultatet till?</em></h1>
+    <p class="intro-text" style="margin-bottom:32px;">Ange din e-postadress så att vi kan koppla analysen till dig.</p>
+    <div style="text-align:left;">
+      <div class="input-label">E-post</div>
+      <input type="email" id="gate-email" placeholder="din@epost.se" autocomplete="email" required
+        style="width:100%;padding:14px 16px;font-size:16px;border:1px solid var(--border);border-radius:8px;font-family:inherit;background:var(--white);color:var(--dark);margin-bottom:12px;">
+      <label style="display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--mid);line-height:1.5;cursor:pointer;margin-bottom:24px;">
+        <input type="checkbox" id="gate-nyhetsbrev" style="margin-top:3px;width:18px;height:18px;accent-color:#FFA047;flex-shrink:0;">
+        Intresserad av ledarskap? Fa vart nyhetsbrev med trender, tips och verktyg.
+      </label>
+      <button class="btn-primary" onclick="submitEmailGate()" style="width:100%;background:#FFA047;color:#fff;border:none;padding:14px 28px;border-radius:0 10px 0 10px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">Ga vidare till analysen</button>
+      <p id="gate-error" style="color:#c0392b;font-size:13px;margin-top:12px;display:none;"></p>
+    </div>
+  </div>
+</div>
+
 <!-- ③ ANALYS -->
 <div id="page-analys" class="page">
   <div class="wrap">
@@ -1160,12 +1180,85 @@
   }
 
   function show(id) {
+    // Blockera analys-steget om e-post inte registrerad
+    if (id === 'analys' && !localStorage.getItem('sml_email_registered')) {
+      id = 'emailgate';
+    }
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
+    const el = document.getElementById('page-' + id);
+    if (el) el.classList.add('active');
     const order = ['intro','quiz','analys','resultat','upgrade'];
-    document.querySelectorAll('.demo-tab')[order.indexOf(id)].classList.add('active');
+    const tabIdx = order.indexOf(id);
+    if (tabIdx >= 0) document.querySelectorAll('.demo-tab')[tabIdx].classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function submitEmailGate() {
+    const email = document.getElementById('gate-email').value.trim();
+    const errEl = document.getElementById('gate-error');
+    errEl.style.display = 'none';
+    if (!email || !email.includes('@') || !email.includes('.')) {
+      errEl.textContent = 'Ange en giltig e-postadress.';
+      errEl.style.display = 'block';
+      return;
+    }
+    const nyhetsbrevOpt = document.getElementById('gate-nyhetsbrev').checked;
+    const guestId = localStorage.getItem('sml_guest_id');
+
+    // Skapa gästsession om den saknas
+    let activeGuestId = guestId;
+    if (!activeGuestId) {
+      try {
+        const statusRes = await fetch(BASE_URL + '/api/analyses-status');
+        const statusData = await statusRes.json();
+        // Trigga en gästrad via en dummy-status-check — guest_id skapas server-side vid analys
+      } catch (e) { /* ok */ }
+    }
+
+    // Registrera e-post via SML backend
+    try {
+      const res = await fetch(BASE_URL + '/api/register-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, nyhetsbrev_opt: nyhetsbrevOpt, guest_id: activeGuestId }),
+      });
+      const data = await res.json();
+      if (!data.ok && data.error === 'missing_guest_id') {
+        // Ingen gästrad finns — skapas vid första analys. Spara e-post lokalt, gate passerar.
+        // Server-side-spärren fångar ändå om guest_id saknar e-post vid analys.
+      } else if (!data.ok) {
+        errEl.textContent = data.message || 'Något gick fel.';
+        errEl.style.display = 'block';
+        return;
+      }
+    } catch (e) {
+      errEl.textContent = 'Kunde inte ansluta. Försök igen.';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    // Lead till deep-thought (fire-and-forget, befintlig väg)
+    try {
+      var utm = getUtm();
+      fetch(LEAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'skapa',
+          epost: email,
+          kalla: 'sml-analys-gate',
+          anteckning: 'E-post insamlad via SML-gate fore analys',
+          utm_source: utm.utm_source,
+          utm_medium: utm.utm_medium,
+          utm_campaign: utm.utm_campaign,
+          nyhetsbrev_opt: nyhetsbrevOpt
+        })
+      }).catch(function() {});
+    } catch (e) { /* lead-POST far aldrig blockera */ }
+
+    localStorage.setItem('sml_email_registered', email);
+    show('analys');
   }
   function updateCount(el) {
     const n = el.value.length;
@@ -1249,6 +1342,13 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text, guest_id: guestId }),
       });
+      if (res.status === 403) {
+        const errData = await res.json().catch(() => ({}));
+        if (errData.guest_id) localStorage.setItem('sml_guest_id', errData.guest_id);
+        localStorage.removeItem('sml_email_registered');
+        show('emailgate');
+        return;
+      }
       if (res.status === 402) {
         show('upgrade');
         return;

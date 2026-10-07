@@ -148,6 +148,26 @@
     .spektrum-lock { display: flex; align-items: center; justify-content: flex-end; gap: 6px; color: var(--text); font-size: 12px; letter-spacing: 0.04em; }
     .lock-svg { width: 12px; height: 12px; }
 
+    /* Bipolar bar labels */
+    .spektrum-poles { display: flex; justify-content: space-between; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.45; margin-top: 4px; }
+
+    /* Four-step scale (Förändringsrelation) */
+    .fourstep { position: relative; height: 2px; background: rgba(20,18,16,0.16); }
+    .fourstep-stops { display: flex; justify-content: space-between; position: absolute; top: 50%; left: 0; right: 0; transform: translateY(-50%); }
+    .fourstep-stop { width: 9px; height: 9px; border-radius: 50%; background: rgba(20,18,16,0.2); border: 2px solid var(--canvas); }
+    .fourstep-stop.active { background: var(--accent); box-shadow: 0 0 0 1px var(--accent); width: 13px; height: 13px; }
+    .fourstep-labels { display: flex; justify-content: space-between; font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.4; margin-top: 6px; }
+
+    /* Three-channel (Kanal) */
+    .kanal-viz { display: flex; flex-direction: column; gap: 8px; }
+    .kanal-row { display: flex; align-items: center; gap: 14px; }
+    .kanal-label { width: 60px; font-size: 12px; font-weight: 700; color: var(--dark); }
+    .kanal-bar { flex: 1; height: 10px; background: rgba(20,18,16,0.08); border-radius: 5px; overflow: hidden; }
+    .kanal-fill { height: 100%; border-radius: 5px; transition: width 0.5s; }
+    .kanal-fill.dominant { background: var(--accent); }
+    .kanal-fill.secondary { background: rgba(20,18,16,0.25); }
+    .kanal-pct { width: 36px; text-align: right; font-size: 12px; font-weight: 600; color: var(--dark); }
+
     /* Free pattern detail */
     .pattern-detail { margin-bottom: 64px; }
     .pattern-detail-eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.5; margin-bottom: 12px; }
@@ -168,15 +188,15 @@
     .pattern-tip-label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; margin-bottom: 6px; }
     .pattern-tip p { font-size: 15px; line-height: 1.7; color: var(--dark); margin: 0; }
 
-    /* Channel viz (Kanal) */
-    .channel-bars { display: flex; flex-direction: column; gap: 16px; }
-    .channel-row { display: flex; align-items: center; gap: 18px; }
-    .channel-label { width: 70px; font-size: 13px; font-weight: 700; color: var(--dark); }
-    .channel-bar { flex: 1; height: 8px; background: rgba(20,18,16,0.1); border-radius: 4px; position: relative; }
-    .channel-fill { position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px; }
-    .channel-fill.primary { background: var(--accent); }
-    .channel-fill.secondary { background: rgba(20,18,16,0.3); }
-    .channel-pct { width: 40px; text-align: right; font-size: 13px; }
+    /* Channel detail viz (Kanal, free pattern detail) */
+    .channel-detail-bars { display: flex; flex-direction: column; gap: 16px; }
+    .channel-detail-row { display: flex; align-items: center; gap: 18px; }
+    .channel-detail-label { width: 70px; font-size: 13px; font-weight: 700; color: var(--dark); }
+    .channel-detail-bar { flex: 1; height: 8px; background: rgba(20,18,16,0.1); border-radius: 4px; position: relative; overflow: hidden; }
+    .channel-detail-fill { height: 100%; border-radius: 4px; }
+    .channel-detail-fill.dominant { background: var(--accent); }
+    .channel-detail-fill.secondary { background: rgba(20,18,16,0.3); }
+    .channel-detail-pct { width: 40px; text-align: right; font-size: 13px; }
 
     /* Paywall */
     .paywall { background: var(--dark); border-radius: var(--radius); padding: 48px 52px; color: var(--canvas); }
@@ -390,19 +410,31 @@
   var DT = 'https://deep-thought.holmbergfriends.com';
   var PRICE_ID = 'price_1TE9RZHrTws6MQZqVEhOtaY0';
 
+  // Pattern definitions: structure only. Descriptive text comes from D1 mönsterbank.
+  var MONSTER_ORDER = [
+    { nr: 1, name: 'Motivationsriktning', form: 'bipolar', free: true },
+    { nr: 3, name: 'Kanal', form: 'channel', free: true },
+    { nr: 2, name: 'Beslutsram', form: 'bipolar', free: false },
+    { nr: 4, name: 'Förståelse', form: 'bipolar', free: false },
+    { nr: 5, name: 'Förändringsrelation', form: 'fourstep', free: false },
+    { nr: 6, name: 'Handlingsstil', form: 'bipolar', free: false },
+    { nr: 7, name: 'Detaljnivå', form: 'bipolar', free: false }
+  ];
+
   var state = {
     name: '', email: '', nyhetsbrev: false,
     answers: {}, wordClicks: [], wordData: [],
     responseTimes: {}, currentQ: 0,
-    profileId: null, profile: null, qStartTime: null
+    profileId: null, profile: null, qStartTime: null,
+    monsterbank: []
   };
 
   var QUESTIONS = [
-    { label: 'Motivationsriktning, fråga 1 av 5', text: 'Vad är viktigt för dig i ditt arbete?', hint: 'Ju mer du beskriver, desto mer träffsäker blir analysen. Skriv gärna 3\u20135 meningar.', key: 'q1' },
-    { label: 'Beslutsram, fråga 2 av 5', text: 'Hur vet du att du har gjort ett bra jobb?', hint: 'Svara spontant utifrån din första känsla. Det finns inget rätt svar.', key: 'q2' },
-    { label: 'Kanal, fråga 3 av 5', text: 'Hur vet du att någon annan har gjort ett bra jobb?', hint: 'Beskriv konkret. Vad ser, hör eller märker du?', key: 'q3' },
-    { label: 'Förståelse, fråga 4 av 5', text: 'Varför valde du ditt nuvarande arbete?', hint: 'Tänk på vad som faktiskt fick dig att tacka ja, inte vad som låter bra.', key: 'q4' },
-    { label: 'Förändringsrelation, fråga 5 av 5', text: 'Vad är relationen mellan ditt nuvarande arbete och ditt förra?', hint: 'Beskriv likheter, skillnader eller hur de hänger ihop. Det finns inget rätt svar.', key: 'q5' }
+    { label: 'Motivationsriktning, fråga 1 av 5', text: 'Vad är viktigt för dig i ditt arbete?', key: 'q1' },
+    { label: 'Beslutsram, fråga 2 av 5', text: 'Hur vet du att du har gjort ett bra jobb?', key: 'q2' },
+    { label: 'Kanal, fråga 3 av 5', text: 'Hur vet du att någon annan har gjort ett bra jobb? Beskriv så konkret du kan.', key: 'q3' },
+    { label: 'Förståelse, fråga 4 av 5', text: 'Varför valde du ditt nuvarande arbete?', key: 'q4' },
+    { label: 'Förändringsrelation, fråga 5 av 5', text: 'Vad är relationen mellan ditt nuvarande arbete och ditt förra?', key: 'q5' }
   ];
 
   var WORDS = [
@@ -412,15 +444,35 @@
     'Uthållighet','Mod','Kommunikation','Lyhördhet','Effektivitet'
   ];
 
-  var PATTERNS = [
-    { name: 'Motivationsriktning', poles: ['Ifrån','Till'], free: true },
-    { name: 'Kanal', poles: ['Syn','Hörsel','Känsel'], free: true, isChannel: true },
-    { name: 'Beslutsram', poles: ['Extern','Intern'], free: false },
-    { name: 'Förståelse', poles: ['Procedur','Alternativ'], free: false },
-    { name: 'Förändringsrelation', poles: ['Likhet','Skillnad'], free: false },
-    { name: 'Handlingsstil', poles: ['Reaktiv','Proaktiv'], free: false },
-    { name: 'Detaljnivå', poles: ['Detalj','Helhet'], free: false }
-  ];
+  // Fetch mönsterbank from deep-thought on load
+  fetch(DT + '/api/sml-monsterbank')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.ok && data.patterns) state.monsterbank = data.patterns;
+    })
+    .catch(function() {});
+
+  // Helper: find mönsterbank rows for a given monster name
+  function getBankRows(monsterName) {
+    return state.monsterbank.filter(function(r) {
+      return r.monster === monsterName;
+    });
+  }
+
+  // Helper: find the bank row matching a signal
+  function getBankRow(monsterName, signal) {
+    var rows = getBankRows(monsterName);
+    if (!signal) return rows[0] || null;
+    var s = signal.toLowerCase();
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].pol.toLowerCase() === s) return rows[i];
+    }
+    // Fuzzy match (e.g. "Sinneskommunikationskanaler" → "Kanal")
+    for (var i = 0; i < rows.length; i++) {
+      if (s.indexOf(rows[i].pol.toLowerCase()) >= 0) return rows[i];
+    }
+    return rows[0] || null;
+  }
 
   window.showFrame = function(id) {
     document.querySelectorAll('.frame').forEach(function(f) { f.classList.remove('active'); });
@@ -436,92 +488,118 @@
 
     if (!name) { errEl.textContent = 'Ange ditt förnamn.'; errEl.style.display = 'block'; return; }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { errEl.textContent = 'Ange en giltig e-postadress.'; errEl.style.display = 'block'; return; }
-    // Block disposable / @tmp
     if (/@tmp$/i.test(email) || /mailinator|guerrilla|tempmail|throwaway|yopmail/i.test(email)) {
       errEl.textContent = 'Ange en riktig e-postadress.'; errEl.style.display = 'block'; return;
     }
     errEl.style.display = 'none';
-    state.name = name;
-    state.email = email;
-    state.nyhetsbrev = document.getElementById('inp-nyhetsbrev').checked;
 
-    // Register lead to deep-thought
+    // Disable button while checking
+    var btn = document.getElementById('btn-start');
+    btn.disabled = true;
+    btn.textContent = 'Kontrollerar...';
+
+    // Register lead + check teaser dedup
     fetch(DT + '/api/sml-lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ epost: email, namn: name })
-    }).catch(function() {});
-
-    state.currentQ = 0;
-    showQuestion();
-    showFrame('frame-test');
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.teaser_anvand) {
+        errEl.textContent = 'Du har redan fått ditt gratisresultat. Köp den fullständiga rapporten för att se alla sju mönster.';
+        errEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Starta frågorna';
+        return;
+      }
+      state.name = name;
+      state.email = email;
+      state.nyhetsbrev = document.getElementById('inp-nyhetsbrev').checked;
+      state.currentQ = 0;
+      showQuestion();
+      showFrame('frame-test');
+    })
+    .catch(function() {
+      // Network error: let them through (gate is a guard, not a wall)
+      state.name = name;
+      state.email = email;
+      state.nyhetsbrev = document.getElementById('inp-nyhetsbrev').checked;
+      state.currentQ = 0;
+      showQuestion();
+      showFrame('frame-test');
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = 'Starta frågorna';
+    });
   };
 
   // ── QUESTIONS ──
   function showQuestion() {
     var q = QUESTIONS[state.currentQ];
-    var prog = document.getElementById('test-progress');
-    prog.innerHTML = '';
+    var progress = document.getElementById('test-progress');
+    progress.innerHTML = '';
     for (var i = 0; i < QUESTIONS.length; i++) {
       var s = document.createElement('span');
       if (i < state.currentQ) s.className = 'done';
       else if (i === state.currentQ) s.className = 'active';
-      prog.appendChild(s);
+      progress.appendChild(s);
     }
     document.getElementById('q-label').textContent = q.label;
     document.getElementById('q-text').textContent = q.text;
-    document.getElementById('q-hint').textContent = q.hint;
+    document.getElementById('q-hint').textContent = '';
     var ta = document.getElementById('q-answer');
     ta.value = state.answers[q.key] || '';
-    updateCharCount();
     ta.focus();
+    updateCharCount();
     state.qStartTime = Date.now();
   }
 
   function updateCharCount() {
     var len = document.getElementById('q-answer').value.length;
     document.getElementById('q-chars').textContent = len + ' / 50 tecken';
-    document.getElementById('btn-next-q').disabled = len < 20;
+    document.getElementById('btn-next-q').disabled = len < 50;
   }
   document.getElementById('q-answer').addEventListener('input', updateCharCount);
 
   window.nextQuestion = function() {
     var q = QUESTIONS[state.currentQ];
-    state.answers[q.key] = document.getElementById('q-answer').value.trim();
+    state.answers[q.key] = document.getElementById('q-answer').value;
     state.responseTimes[q.key] = Date.now() - state.qStartTime;
     state.currentQ++;
     if (state.currentQ < QUESTIONS.length) {
       showQuestion();
     } else {
-      showWordPick();
+      renderWordPick();
       showFrame('frame-wordpick');
     }
   };
 
   // ── WORD PICK ──
-  function showWordPick() {
+  function renderWordPick() {
     var grid = document.getElementById('chips-grid');
     grid.innerHTML = '';
-    WORDS.forEach(function(w) {
-      var c = document.createElement('div');
-      c.className = 'chip';
-      c.textContent = w;
-      c.addEventListener('click', function() { toggleChip(c, w); });
-      grid.appendChild(c);
+    WORDS.forEach(function(word) {
+      var chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = word;
+      chip.onclick = function() { toggleChip(chip, word); };
+      grid.appendChild(chip);
     });
   }
 
-  function toggleChip(el, word) {
-    if (el.classList.contains('selected')) {
-      el.classList.remove('selected');
+  function toggleChip(chip, word) {
+    if (chip.classList.contains('disabled')) return;
+    if (chip.classList.contains('selected')) {
+      chip.classList.remove('selected');
       state.wordClicks = state.wordClicks.filter(function(w) { return w !== word; });
     } else if (state.wordClicks.length < 5) {
-      el.classList.add('selected');
+      chip.classList.add('selected');
       state.wordClicks.push(word);
     }
     document.getElementById('chips-count').textContent = state.wordClicks.length + ' av 5 valda';
     document.getElementById('btn-submit').disabled = state.wordClicks.length !== 5;
-    // Disable unselected when 5 reached
     document.querySelectorAll('.chip').forEach(function(c) {
       if (!c.classList.contains('selected')) {
         c.classList.toggle('disabled', state.wordClicks.length >= 5);
@@ -553,7 +631,6 @@
     .then(function(data) {
       if (data.success && data.profile_id) {
         state.profileId = data.profile_id;
-        // Poll for result
         pollForResult(data.profile_id);
       } else {
         alert('Något gick fel: ' + (data.error || 'okänt fel'));
@@ -578,9 +655,14 @@
             state.profile = data.profile;
             renderResult(data);
             showFrame('frame-pedagogik');
+            // Mark teaser as used
+            fetch(DT + '/api/sml-lead', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ epost: state.email, mark_teaser: true })
+            }).catch(function() {});
           } else if (attempts > 60) {
             clearInterval(poll);
-            // Show pedagogik with demo data
             showFrame('frame-pedagogik');
           }
         })
@@ -597,88 +679,131 @@
     // Build sidebar nav
     var nav = document.getElementById('sidebar-nav');
     nav.innerHTML = '';
-    PATTERNS.forEach(function(p, i) {
+    MONSTER_ORDER.forEach(function(m, i) {
       var d = document.createElement('div');
-      d.className = 'sidebar-item' + (i === 0 ? ' active' : '') + (!p.free ? ' locked' : '');
-      if (!p.free) {
-        d.innerHTML = '<svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' + p.name;
+      d.className = 'sidebar-item' + (i === 0 ? ' active' : '') + (!m.free ? ' locked' : '');
+      if (!m.free) {
+        d.innerHTML = '<svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>' + m.name;
       } else {
-        d.textContent = p.name;
+        d.textContent = m.name;
       }
       nav.appendChild(d);
     });
 
-    // Build spektrumstack
+    // Build spektrumstack with three forms
     var spektrum = document.getElementById('spektrum');
     spektrum.innerHTML = '';
-    PATTERNS.forEach(function(p) {
-      var match = findPattern(profile, p.name);
+    MONSTER_ORDER.forEach(function(m) {
+      var match = findPattern(profile, m.name);
       var row = document.createElement('div');
-      row.className = 'spektrum-row' + (!p.free ? ' locked' : '');
+      row.className = 'spektrum-row' + (!m.free ? ' locked' : '');
 
-      var pos = match ? getPosition(match) : 50;
-      var signal = match ? match.signal : '';
-      var strength = match ? match.strength : '';
-
-      if (p.free && match) {
-        row.innerHTML =
-          '<div class="spektrum-name">' + p.name + '</div>' +
-          '<div class="spektrum-bar"><span class="spektrum-dot" style="left:' + pos + '%;"></span></div>' +
-          '<div class="spektrum-val">' + signal + ' <span class="strength">&middot; ' + strength + '</span></div>';
+      if (m.free && match) {
+        if (m.form === 'channel') {
+          // Three-channel mini viz in spektrumstack
+          row.innerHTML =
+            '<div class="spektrum-name">' + m.name + '</div>' +
+            '<div>' + renderMiniChannels(match) + '</div>' +
+            '<div class="spektrum-val">' + (match.signal || '') + ' <span class="strength">&middot; ' + (match.strength || '') + '</span></div>';
+        } else {
+          // Bipolar with labels
+          var pos = getBipolarPosition(match);
+          var bankRows = getBankRows(m.name);
+          var pole1 = bankRows[0] ? bankRows[0].pol : '';
+          var pole2 = bankRows[1] ? bankRows[1].pol : '';
+          row.innerHTML =
+            '<div class="spektrum-name">' + m.name + '</div>' +
+            '<div><div class="spektrum-bar"><span class="spektrum-dot" style="left:' + pos + '%;"></span></div><div class="spektrum-poles"><span>' + pole1 + '</span><span>' + pole2 + '</span></div></div>' +
+            '<div class="spektrum-val">' + (match.signal || '') + ' <span class="strength">&middot; ' + (match.strength || '') + '</span></div>';
+        }
+      } else if (!m.free && match) {
+        if (m.form === 'fourstep') {
+          // Four-step locked
+          row.innerHTML =
+            '<div class="spektrum-name">' + m.name + '</div>' +
+            '<div><div class="fourstep"><div class="fourstep-stops">' +
+            '<span class="fourstep-stop"></span><span class="fourstep-stop"></span><span class="fourstep-stop"></span><span class="fourstep-stop"></span>' +
+            '</div></div><div class="fourstep-labels"><span>Likhet</span><span>Skillnad</span></div></div>' +
+            '<div class="spektrum-lock"><svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Låst</div>';
+        } else {
+          // Bipolar locked
+          row.innerHTML =
+            '<div class="spektrum-name">' + m.name + '</div>' +
+            '<div class="spektrum-bar"><span class="spektrum-dot blurred" style="left:' + (30 + Math.random()*40) + '%;"></span></div>' +
+            '<div class="spektrum-lock"><svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Låst</div>';
+        }
       } else {
+        // No match data
         row.innerHTML =
-          '<div class="spektrum-name">' + p.name + '</div>' +
+          '<div class="spektrum-name">' + m.name + '</div>' +
           '<div class="spektrum-bar"><span class="spektrum-dot blurred" style="left:' + (30 + Math.random()*40) + '%;"></span></div>' +
           '<div class="spektrum-lock"><svg class="lock-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Låst</div>';
       }
       spektrum.appendChild(row);
     });
 
-    // Build free pattern details
+    // Build free pattern details (from mönsterbank)
     var freeDiv = document.getElementById('free-patterns');
     freeDiv.innerHTML = '';
-    PATTERNS.filter(function(p) { return p.free; }).forEach(function(p, idx) {
-      var match = findPattern(profile, p.name);
+    var freeIdx = 0;
+    MONSTER_ORDER.filter(function(m) { return m.free; }).forEach(function(m) {
+      freeIdx++;
+      var match = findPattern(profile, m.name);
       if (!match) return;
+      var bankRow = getBankRow(m.name, match.signal);
+
       var detail = document.createElement('div');
       detail.className = 'pattern-detail';
-      var pos = getPosition(match);
 
-      if (p.isChannel) {
-        // Channel visualization
+      if (m.form === 'channel') {
+        // Channel detail: three weighted bars from mönsterbank
         detail.innerHTML =
-          '<div class="pattern-detail-eyebrow">Mönster ' + (idx+1) + ' &middot; ' + p.name + '</div>' +
-          '<h3>' + getChannelHeadline(match) + '</h3>' +
-          '<div class="pattern-viz">' + renderChannelBars(match) + '</div>' +
-          '<p class="pattern-text">' + (match.insight || '') + '</p>';
+          '<div class="pattern-detail-eyebrow">Mönster ' + freeIdx + ' &middot; ' + m.name + '</div>' +
+          '<h3>Ditt språk lutar mot <em>' + (match.signal || 'okänt') + '</em></h3>' +
+          '<div class="pattern-viz">' + renderChannelDetail(match) + '</div>' +
+          (bankRow ? '<p class="pattern-text">' + bankRow.vad_det_ar + '</p>' : '') +
+          (bankRow && bankRow.exempel ? '<p class="pattern-text" style="font-size:15px;color:var(--text);opacity:0.8;font-style:italic;">' + bankRow.exempel + '</p>' : '') +
+          (bankRow && bankRow.att_ledas_av ? '<div class="pattern-tip"><div class="pattern-tip-label">Att ledas av</div><p>' + bankRow.att_ledas_av + '</p></div>' : '') +
+          (bankRow && bankRow.utmaning ? '<div class="pattern-tip" style="margin-top:16px;"><div class="pattern-tip-label">Utmaning</div><p>' + bankRow.utmaning + '</p></div>' : '');
       } else {
+        // Bipolar detail
+        var pos = getBipolarPosition(match);
+        var bankRows = getBankRows(m.name);
+        var pole1 = bankRows[0] ? bankRows[0].pol : '';
+        var pole2 = bankRows[1] ? bankRows[1].pol : '';
         var strengthClass = (match.strength||'').toLowerCase().indexOf('tydlig') >= 0 ? 'tydlig' : 'trolig';
+
         detail.innerHTML =
-          '<div class="pattern-detail-eyebrow">Mönster ' + (idx+1) + ' &middot; ' + p.name + '</div>' +
-          '<h3>Ditt språk rör sig <em>' + getSignalWord(match) + '</em></h3>' +
+          '<div class="pattern-detail-eyebrow">Mönster ' + freeIdx + ' &middot; ' + m.name + '</div>' +
+          '<h3>Ditt språk rör sig <em>' + (match.signal || '').toLowerCase() + '</em></h3>' +
           '<div class="pattern-viz">' +
-            '<div class="pattern-viz-labels"><span>' + p.poles[0] + '</span><span>' + p.poles[1] + '</span></div>' +
+            '<div class="pattern-viz-labels"><span>' + pole1 + '</span><span>' + pole2 + '</span></div>' +
             '<div class="pattern-bar"><span class="pattern-bar-fill" style="width:' + pos + '%;"></span><span class="pattern-bar-dot" style="left:' + pos + '%;"></span></div>' +
             '<div class="pattern-meta"><span>Position: <strong style="color:var(--dark);">' + Math.round(pos/10) + ' av 10 mot ' + match.signal + '</strong></span><span class="strength-badge ' + strengthClass + '">' + match.strength + '</span></div>' +
           '</div>' +
-          '<p class="pattern-text">' + (match.insight || '') + '</p>';
-      }
-
-      if (match.evidence && match.evidence.length) {
-        detail.innerHTML += '<div class="pattern-tip"><div class="pattern-tip-label">Lägg märke till</div><p>' + match.evidence[0] + '</p></div>';
+          (bankRow ? '<p class="pattern-text">' + bankRow.vad_det_ar + '</p>' : '') +
+          (bankRow && bankRow.exempel ? '<p class="pattern-text" style="font-size:15px;color:var(--text);opacity:0.8;font-style:italic;">' + bankRow.exempel + '</p>' : '') +
+          (bankRow && bankRow.att_ledas_av ? '<div class="pattern-tip"><div class="pattern-tip-label">Att ledas av</div><p>' + bankRow.att_ledas_av + '</p></div>' : '') +
+          (bankRow && bankRow.utmaning ? '<div class="pattern-tip" style="margin-top:16px;"><div class="pattern-tip-label">Utmaning</div><p>' + bankRow.utmaning + '</p></div>' : '');
       }
       freeDiv.appendChild(detail);
     });
   }
 
+  // ── HELPERS ──
   function findPattern(profile, name) {
+    var n = name.toLowerCase();
     for (var i = 0; i < profile.length; i++) {
-      if (profile[i].category && profile[i].category.toLowerCase().indexOf(name.toLowerCase().slice(0,6)) >= 0) return profile[i];
+      var cat = (profile[i].category || '').toLowerCase();
+      if (cat === n) return profile[i];
+      if (cat.indexOf(n.slice(0,6)) >= 0) return profile[i];
+      // Map "Sinneskommunikationskanaler" → "Kanal"
+      if (n === 'kanal' && (cat.indexOf('sinnes') >= 0 || cat.indexOf('kanal') >= 0)) return profile[i];
     }
     return null;
   }
 
-  function getPosition(match) {
+  function getBipolarPosition(match) {
     if (!match || !match.signal) return 50;
     var s = (match.signal || '').toLowerCase();
     var str = (match.strength || '').toLowerCase();
@@ -686,40 +811,41 @@
     if (str.indexOf('tydlig') >= 0) base = 80;
     else if (str.indexOf('trolig') >= 0) base = 70;
     else base = 60;
-    // Flip for "first pole" signals
+    // First pole = left side (low %), second pole = right side (high %)
     if (s.indexOf('ifrån') >= 0 || s.indexOf('extern') >= 0 || s.indexOf('procedur') >= 0 ||
-        s.indexOf('likhet') >= 0 || s.indexOf('reaktiv') >= 0 || s.indexOf('detalj') >= 0) {
+        s.indexOf('reaktiv') >= 0 || s.indexOf('detalj') >= 0) {
       base = 100 - base;
     }
     return base;
   }
 
-  function getSignalWord(match) {
-    if (!match) return '';
-    var s = (match.signal || '');
-    if (s.toLowerCase().indexOf('till') >= 0) return 'mot mål';
-    return s.toLowerCase();
-  }
-
-  function getChannelHeadline(match) {
-    var s = (match.signal || '').toLowerCase();
-    if (s.indexOf('syn') >= 0) return 'Du tänker i <em>bilder</em>';
-    if (s.indexOf('hörsel') >= 0) return 'Du tänker i <em>ljud</em>';
-    return 'Du tänker i <em>känslor</em>';
-  }
-
-  function renderChannelBars(match) {
-    // Simple channel bar rendering based on signal
+  function renderMiniChannels(match) {
     var primary = (match.signal || 'Syn').split('/')[0].trim();
     var channels = ['Syn','Hörsel','Känsel'];
-    var html = '<div class="channel-bars">';
+    var html = '<div class="kanal-viz">';
     channels.forEach(function(ch) {
       var isPrimary = ch.toLowerCase() === primary.toLowerCase();
-      var pct = isPrimary ? 82 : (20 + Math.floor(Math.random() * 30));
-      html += '<div class="channel-row">' +
-        '<span class="channel-label">' + ch + '</span>' +
-        '<span class="channel-bar"><span class="channel-fill ' + (isPrimary ? 'primary' : 'secondary') + '" style="width:' + pct + '%;"></span></span>' +
-        '<span class="channel-pct">' + pct + '%</span></div>';
+      var pct = isPrimary ? 78 : (15 + Math.floor(Math.random() * 20));
+      html += '<div class="kanal-row">' +
+        '<span class="kanal-label">' + ch + '</span>' +
+        '<span class="kanal-bar"><span class="kanal-fill ' + (isPrimary ? 'dominant' : 'secondary') + '" style="width:' + pct + '%;"></span></span>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function renderChannelDetail(match) {
+    var primary = (match.signal || 'Syn').split('/')[0].trim();
+    var channels = ['Syn','Hörsel','Känsel'];
+    var html = '<div class="channel-detail-bars">';
+    channels.forEach(function(ch) {
+      var isPrimary = ch.toLowerCase() === primary.toLowerCase();
+      var pct = isPrimary ? 82 : (12 + Math.floor(Math.random() * 25));
+      html += '<div class="channel-detail-row">' +
+        '<span class="channel-detail-label">' + ch + '</span>' +
+        '<span class="channel-detail-bar"><span class="channel-detail-fill ' + (isPrimary ? 'dominant' : 'secondary') + '" style="width:' + pct + '%;"></span></span>' +
+        '<span class="channel-detail-pct">' + pct + '%</span></div>';
     });
     html += '</div>';
     html += '<div style="display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:1.5px solid rgba(20,18,16,0.1);"><span style="font-size:13px;">Tydligast: <strong style="color:var(--dark);">' + primary + '</strong></span><span class="strength-badge trolig">' + (match.strength || 'TROLIG') + '</span></div>';
@@ -760,7 +886,6 @@
     for (var i = 0; i < 18; i++) {
       nodes.push({ x: 100 + Math.random() * (cw - 200), y: 80 + Math.random() * (ch - 200), r: 3 + Math.random() * 3 });
     }
-    // Draw lines
     ctx.strokeStyle = 'rgba(20,18,16,0.12)';
     ctx.lineWidth = 1;
     nodes.forEach(function(a, i) {
@@ -772,7 +897,6 @@
         }
       });
     });
-    // Draw nodes
     nodes.forEach(function(n, i) {
       ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
       if (i % 5 === 0) {
@@ -788,11 +912,11 @@
     });
   }
 
-  // ── DEMO MODE (show result with placeholder data for checkpoint) ──
+  // ── DEMO MODE ──
   function loadDemoResult() {
     var demoProfile = [
-      { category: 'Motivationsriktning', signal: 'Till', strength: 'Tydlig', evidence: ['I samtal där faror behöver vägas, stanna lika länge vid det som ska undvikas som vid det som ska nås.'], insight: 'Ditt språk rör sig mot det du vill uppnå. När du beskriver din roll återkommer formuleringar om vad du strävar efter, vad som ska byggas och vart det leder. Kommunikationen prioriterar mål framför hinder.' },
-      { category: 'Sinneskommunikationskanaler', signal: 'Syn', strength: 'Trolig', evidence: ['Med någon vars språk lutar mot hörsel eller känsel kan budskapet tappa fäste.'], insight: 'Kommunikationen lutar mot det visuella. Du beskriver hur saker ser ut, målar upp lägen och använder ord som klart, tydligt och perspektiv.' },
+      { category: 'Motivationsriktning', signal: 'Till', strength: 'Tydlig', evidence: ['I samtal där faror behöver vägas, stanna lika länge vid det som ska undvikas som vid det som ska nås.'], insight: '' },
+      { category: 'Sinneskommunikationskanaler', signal: 'Syn', strength: 'Trolig', evidence: ['Med någon vars språk lutar mot hörsel eller känsel kan budskapet tappa fäste.'], insight: '' },
       { category: 'Beslutsram', signal: 'Intern', strength: 'Trolig', evidence: [], insight: '' },
       { category: 'Förståelse', signal: 'Alternativ', strength: 'Möjlig', evidence: [], insight: '' },
       { category: 'Förändringsrelation', signal: 'Likhet med undantag', strength: 'Trolig', evidence: [], insight: '' },
@@ -807,10 +931,21 @@
   // Init
   drawConstellation();
 
-  // If URL has ?demo, show result directly
   if (window.location.search.indexOf('demo') >= 0) {
-    loadDemoResult();
-    showFrame('frame-resultat');
+    // Wait for mönsterbank to load before rendering demo
+    var waitForBank = setInterval(function() {
+      if (state.monsterbank.length > 0) {
+        clearInterval(waitForBank);
+        loadDemoResult();
+        showFrame('frame-resultat');
+      }
+    }, 100);
+    // Fallback after 3s
+    setTimeout(function() {
+      clearInterval(waitForBank);
+      loadDemoResult();
+      showFrame('frame-resultat');
+    }, 3000);
   }
 })();
 </script>

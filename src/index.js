@@ -14,6 +14,7 @@ import { handleAnalyseTal } from './analyse_tal.js';
 import { handleGratisRapport } from './gratis_rapport.js';
 import { handleGdprRadera } from './gdpr_radera.js';
 import { handleGdprExport } from './gdpr_export.js';
+import { handleRegisterEmail } from './register_email.js';
 
 const ALLOWED_ORIGINS = [
   'https://holmbergfriends.com',
@@ -108,6 +109,12 @@ export default {
     if (path === '/api/auth/logout' && method === 'POST') {
       const result = await handleLogout(request, env);
       return reply(result.body, result.status, result.cookie ?? null);
+    }
+
+    // ── /api/register-email ──────────────────────────────────────
+    if (path === '/api/register-email' && method === 'POST') {
+      const result = await handleRegisterEmail(request, env);
+      return reply(result.body, result.status);
     }
 
     // ── /api/gdpr-export ─────────────────────────────────────────

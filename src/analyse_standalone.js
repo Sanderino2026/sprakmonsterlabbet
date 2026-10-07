@@ -33,6 +33,11 @@ export async function handleAnalyseTextStandalone(request, env) {
     console.log('[standalone] Ny gästrad skapad:', newId);
   }
 
+  // ── Server-side e-postspärr: avvisa om ingen riktig e-post registrerad ──
+  if (!guestRecord.email || guestRecord.email.startsWith('guest_')) {
+    return { status: 403, body: { ok: false, error: 'email_required', message: 'Du behöver ange din e-postadress innan du kan analysera.', guest_id: guestRecord.id } };
+  }
+
   if ((guestRecord.remaining_analyses ?? 0) <= 0) {
     return { status: 402, body: { ok: false, error: 'limit_reached', remaining_analyses: 0, access_type: guestRecord.access_type } };
   }
