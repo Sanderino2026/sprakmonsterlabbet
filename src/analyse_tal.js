@@ -22,7 +22,6 @@ export async function handleAnalyseTal(request, env) {
     body: JSON.stringify({
       model: MODEL,
       max_tokens: MAX_TOKENS,
-      temperature: 0,
       system: [{ type: 'text', text: ANALYSE_TAL_PROMPT, cache_control: { type: 'ephemeral' } }],
       messages: [{ role: 'user', content: `Analysera språkmönstren i följande tal:\n\n"${text}"` }],
     }),
